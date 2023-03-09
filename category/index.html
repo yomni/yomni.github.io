@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>category | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                
+
+
+
+    <div class="container">
+        <div class="post-wrap categories">
+            <h2 class="post-title">&nbsp;Categories&nbsp;</h2>
+            <div class="categories-card">
+                
+                    <div class="card-item">
+                        <div class="categories">
+                            <a href="/category/backend-roadmap/">
+                                <h3>
+                                    <i class="iconfont icon-category" style="padding-right:3px"></i>
+                                    Backend Roadmap
+                                </h3>
+                            </a>
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2022/09/26/backend-roadmap/6_why-javascript/">[<b>6</b>] 자바스크립트란?</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2022/08/30/backend-roadmap/5_front-end-basic/">[<b>5</b>] Front-End 에 대한 기본 지식</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2022/08/27/backend-roadmap/4_broswer/">[<b>4</b>] 브라우저 작동 방식</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2022/06/27/backend-roadmap/3_http-note-summary/">[<b>3</b>] Web의 발명으로부터 살펴보는 HTTP에 대한 정리</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2022/06/20/backend-roadmap/2_protocols/">[<b>2</b>] 개발자라면 반드시 알고있어야 하는 프로토콜</a>
+                                    </article>
+                                
+                            
+                                
+                            
+                            
+                                <a class="more-post-link" href="/category/backend-roadmap/">More >></a>
+                            
+                        </div>
+                    </div>
+                
+                    <div class="card-item">
+                        <div class="categories">
+                            <a href="/category/home/">
+                                <h3>
+                                    <i class="iconfont icon-category" style="padding-right:3px"></i>
+                                    Home
+                                </h3>
+                            </a>
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/01/20/home/3-2022-retrospect/">[<b>3</b>] Korean New Year 에 작성하는 조금 늦은 2022년 회고</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2022/05/18/home/2_roadmap/">[<b>2</b>] 뭘 공부해야 할까?(feat. Roadmap)</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2022/05/11/home/1_hello-y-log/">[<b>1</b>] Y-Log 블로그를 시작하며...</a>
+                                    </article>
+                                
+                            
+                            
+                        </div>
+                    </div>
+                
+                    <div class="card-item">
+                        <div class="categories">
+                            <a href="/category/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%94%84-pro-5%EA%B8%B0-%ED%9A%8C%EA%B3%A0%EB%A1%9D/">
+                                <h3>
+                                    <i class="iconfont icon-category" style="padding-right:3px"></i>
+                                    우아한 테크 캠프 Pro 5기 회고록
+                                </h3>
+                            </a>
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/01/19/woowahan-tech-camp-pro-5th/8-create-reliable-service/">[<b>8</b>] 안정적인 서비스 만들기(성능 개선) 미션 회고</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/01/13/woowahan-tech-camp-pro-5th/7-refactoring/">[<b>7</b>] 레거시 리팩터링(도메인 주도 설계) 미션 회고</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/01/12/woowahan-tech-camp-pro-5th/6-diagnose-service/">[<b>6</b>] 서비스 진단하기(웹 성능 진단) 미션 회고</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/01/11/woowahan-tech-camp-pro-5th/5-atdd%EA%B8%B0%EB%B0%98-tdd/">[<b>5</b>] 인수 테스트 기반 TDD(인수 테스트 기반 리팩터링) 미션 회고</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2022/11/28/woowahan-tech-camp-pro-5th/4-infra/">[<b>4</b>] 그럴듯한 서비스 만들기 (AWS를 활용한 Infra 구축) 미션 회고</a>
+                                    </article>
+                                
+                            
+                                
+                            
+                                
+                            
+                                
+                            
+                            
+                                <a class="more-post-link" href="/category/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%94%84-pro-5%EA%B8%B0-%ED%9A%8C%EA%B3%A0%EB%A1%9D/">More >></a>
+                            
+                        </div>
+                    </div>
+                
+                    <div class="card-item">
+                        <div class="categories">
+                            <a href="/category/infrastructure/">
+                                <h3>
+                                    <i class="iconfont icon-category" style="padding-right:3px"></i>
+                                    Infrastructure
+                                </h3>
+                            </a>
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2022/08/08/infrastructure/1_docker-summary/">[<b>1</b>] Docker 요약 정리</a>
+                                    </article>
+                                
+                            
+                            
+                        </div>
+                    </div>
+                
+                    <div class="card-item">
+                        <div class="categories">
+                            <a href="/category/web-tech/">
+                                <h3>
+                                    <i class="iconfont icon-category" style="padding-right:3px"></i>
+                                    Web Tech
+                                </h3>
+                            </a>
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/01/29/web-tech/2-jwt/">[<b>2</b>] JWT(JSON WEB Tokens)</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/01/26/web-tech/1-restful-api/">[<b>1</b>] RESTful API</a>
+                                    </article>
+                                
+                            
+                            
+                        </div>
+                    </div>
+                
+                    <div class="card-item">
+                        <div class="categories">
+                            <a href="/category/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/">
+                                <h3>
+                                    <i class="iconfont icon-category" style="padding-right:3px"></i>
+                                    디자인 패턴
+                                </h3>
+                            </a>
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/02/28/design-pattern/13-proxy/">[<b>13</b>] 프록시 패턴(State Pattern)</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/02/27/design-pattern/12-state/">[<b>12</b>] 스테이트 패턴(State Pattern)</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/02/26/design-pattern/11-composite/">[<b>11</b>] 복합 패턴(Composite Pattern)</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/02/16/design-pattern/10-iterator/">[<b>10</b>] 반복자 패턴(Iterator Pattern)</a>
+                                    </article>
+                                
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/02/15/design-pattern/9-template-method/">[<b>9</b>] 템플릿 메소드 패턴(Template Method Pattern)</a>
+                                    </article>
+                                
+                            
+                                
+                            
+                                
+                            
+                                
+                            
+                                
+                            
+                                
+                            
+                                
+                            
+                                
+                            
+                                
+                            
+                            
+                                <a class="more-post-link" href="/category/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/">More >></a>
+                            
+                        </div>
+                    </div>
+                
+                    <div class="card-item">
+                        <div class="categories">
+                            <a href="/category/%EB%8F%85%ED%9B%84%EA%B0%90/">
+                                <h3>
+                                    <i class="iconfont icon-category" style="padding-right:3px"></i>
+                                    독후감
+                                </h3>
+                            </a>
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/01/17/book-report/1-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%9D%98-%EC%82%AC%EC%8B%A4%EA%B3%BC-%EC%98%A4%ED%95%B4/">[<b>1</b>] 객체지향의 사실과 오해를 읽고</a>
+                                    </article>
+                                
+                            
+                            
+                        </div>
+                    </div>
+                
+                    <div class="card-item">
+                        <div class="categories">
+                            <a href="/category/java/">
+                                <h3>
+                                    <i class="iconfont icon-category" style="padding-right:3px"></i>
+                                    Java
+                                </h3>
+                            </a>
+                            
+                                
+                                    <article class="archive-item">
+                                        <a class="archive-item-link"
+                                           href="/2023/01/25/language/java/1-exception/">[<b>1</b>] Exception 에 대한 고찰</a>
+                                    </article>
+                                
+                            
+                            
+                        </div>
+                    </div>
+                
+            </div>
+
+        </div>
+    </div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

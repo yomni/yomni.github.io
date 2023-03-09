@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>자바스크립트란? | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">자바스크립트란?</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/backend-roadmap/">Backend Roadmap</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="머릿말"><a href="#머릿말" class="headerlink" title="머릿말"></a>머릿말</h2><p>Front-end의 메인 언어인 자바스크립트(JavaScript)가 언어로서 지닌 특성에 대해 알아보자.<br>또한 자바스크립트로 어떤 것을 할 수 있는지에 대해 정리해보려고 한다.</p>
+<h2 id="자바스크립트란"><a href="#자바스크립트란" class="headerlink" title="자바스크립트란?"></a>자바스크립트란?</h2><ul>
+<li>브라우저에서 스타일을 수정하거나 HTML을 추가삭제 하는 등의 제어하는 역할</li>
+<li>모던 자바스크립트는 브라우저 외에 다양한 환경에서 쓰임(Node.js, Next.js 등등..)</li>
+<li>자바스크립트로 <code>트랜스파일</code>할 수 있는 언어가 다양하고, 각 언어별로 고유한 기능을 제공(<strong>근본은 자바스크립트</strong>)</li>
+</ul>
+<h2 id="자바스크립트-심화"><a href="#자바스크립트-심화" class="headerlink" title="자바스크립트 심화"></a>자바스크립트 심화</h2><h3 id="자바스크립트의-강점"><a href="#자바스크립트의-강점" class="headerlink" title="자바스크립트의 강점"></a>자바스크립트의 강점</h3><ul>
+<li>HTML &#x2F; CSS와 완전히 통합된다</li>
+<li>간단한 일은 간단하게 처리 할 수 있다</li>
+<li>모든 주요 브라우저에서 지원하고, 기본 언어로 사용된다</li>
+</ul>
+<p>자바스크립트엔 여러 장점이 있지만, 세 가지만 추리면 위와 같다.<br>이런 세 가지를 모두 지원할 수 있는 브라우저 연관 언어는 자바스크립트 뿐이다.<br>따라서 브라우저 인터페이스를 만들 때 가장 널리 사용되는 것 또한 자바스크립트이다.<br>이 외에도 자바스크립트를 이용해 서버나 모바일 앱 등을 만드는 것도 가능하다.</p>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><h3 id="브라우저-x2F-서버에서-동작하는-자바스크립트는-어떤-차이가-있을까"><a href="#브라우저-x2F-서버에서-동작하는-자바스크립트는-어떤-차이가-있을까" class="headerlink" title="브라우저 &#x2F; 서버에서 동작하는 자바스크립트는 어떤 차이가 있을까?"></a>브라우저 &#x2F; 서버에서 동작하는 자바스크립트는 어떤 차이가 있을까?</h3><ul>
+<li>브라우저 내에서는 메모리나 파일시스템, CPU등의 Low-Level 수준에서의 접근은 필요 없다.<br>따라서 이러한 접근은 서버에서 동작하는 자바스크립트에서도 제한적으로 허용된다.</li>
+</ul>
+<h2 id="좋은-HOW-추천"><a href="#좋은-HOW-추천" class="headerlink" title="좋은 HOW 추천"></a>좋은 <code>HOW</code> 추천</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://ko.javascript.info/">Javascript.info</a></li>
+</ul>
+<h2 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://ko.javascript.info/intro">Javascript.info</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/back-end-roadmap/"># Back-End Roadmap</a>
+                    
+                        <a href="/tag/javascript/"># javascript</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/11/10/woowahan-tech-camp-pro-5th/1-tdd-refactoring/">TDD, Refactoring 미션 회고</a>
+            
+            
+            <a class="next" rel="next" href="/2022/08/30/backend-roadmap/5_front-end-basic/">Front-End 에 대한 기본 지식</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

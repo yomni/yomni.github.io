@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>Web의 발명으로부터 살펴보는 HTTP에 대한 정리 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Web의 발명으로부터 살펴보는 HTTP에 대한 정리</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/backend-roadmap/">Backend Roadmap</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="머릿말"><a href="#머릿말" class="headerlink" title="머릿말"></a>머릿말</h2><blockquote>
+<p>평소 웹 백엔드 개발자라고 하면서 <strong>Web이 뭔지?</strong>, <strong>HTTP가 무엇인지?</strong> 제대로 숙지하지 않은채로 개발하고 있었다.<br>이번 글을 작성하면서 Web의 발명 계기로부터 HTTP의 필요성을 <code>HOW</code>보다는 <code>WHY</code>에 집중하면서 알아보려고 한다.</p>
+</blockquote>
+<h2 id="결론-어떻게-Web이-탄생했는가-그래서-HTTP란"><a href="#결론-어떻게-Web이-탄생했는가-그래서-HTTP란" class="headerlink" title="결론 : 어떻게 Web이 탄생했는가? 그래서 HTTP란?"></a>결론 : 어떻게 Web이 탄생했는가? 그래서 HTTP란?</h2><p>World Wide Web(3W)은 1989년 CERN(유럽 입자 물리 연구소)에서 영국 과학자 Tim Berners-Lee에 의해 발명되었다.</p>
+<p><strong>이 프로젝트는 전 세계 대학과 연구소의 연구원들 간의 정보 공유를 위해 고안되고 개발되었다고 한다.</strong></p>
+<p>여기서 말하는 정보 공유의 방법이 바로 <strong>HTML</strong>(HyperText Markup Language) 이고,<br><strong>HTTP</strong>(HyperText Transfer Protocol)는 이런 HTML을 전송하기 위한 <strong>통신 규약</strong>이었다.</p>
+<h3 id="Web이-없다면"><a href="#Web이-없다면" class="headerlink" title="Web이 없다면?"></a>Web이 없다면?</h3><p>Web이전의 시대에 연구원들 간 혹은 학생 간 어떻게 정보 공유를 할 수 있었을까?<br>단순히 상상해봐도 정보 공유를 위하여 많은 시간과 노력이 들었을 것 같다.</p>
+<ul>
+<li>프린트 출력물로 스캔 후 팩스 등등..</li>
+<li>FTP를 통한 파일전송 등등..</li>
+</ul>
+<p>하지만 이러한 문제점을 인지하고 있던 Tim Berners-Lee는 W3(World Wide Web)을 개발하게 된다.<br>이제 공유하고싶은 자료들은 웹 서버에 올려두고,<br>이 자료가 필요한 연구원들은 해당 웹사이트를 접속하여 하이퍼텍스트 형태로 언제든지 열람이 가능하게 되었다!</p>
+<p>또한 HTML은 다른 페이지와도 링크를 통해 유연하게 연결되므로<br>연구원들은 자료 공유에 드는 비용을 획기적으로 감소할 수 있게 되었다!</p>
+<p>당시 최초로 개발된 HTML의 화면이다. <del>상당히 투박하지만, 아름답다</del></p>
+<img src="/2022/06/27/backend-roadmap/3_http-note-summary/info.cern.ch.gif" class="">
+<center>(출처 : info.cern.ch)</center>
+
+<p><code>참고로 2013년에 CERN은 세계 최초 웹사이트인 info.cern.ch를 복원하는 프로젝트를 시작했다</code></p>
+<h2 id="HTTP에-대하여-자세히-알기"><a href="#HTTP에-대하여-자세히-알기" class="headerlink" title="HTTP에 대하여 자세히 알기"></a>HTTP에 대하여 자세히 알기</h2><p>거리와 시간의 제약을 없앤 W3는 매우 빠른 속도로 사용자를 늘렸고,<br>이는 HTTP의 발전에 이바지하였다.</p>
+<p>HTTP는 버전을 높여갈 수록 메서드 추가나 헤더의 추가 등으로 인해<br>빠르게 확장할 수 있었고, 현재는 HTTP로 거의 모든 유형의 데이터를 주고받을 수 있게 되었다.</p>
+<blockquote>
+<p>HTTP로 통신이 가능한 데이터 유형</p>
+<ul>
+<li>HTML, TEXT</li>
+<li>Image, 음성, 영상, 파일</li>
+<li>JSON, XML(API)</li>
+<li>서버간에 데이터를 주고 받을 때도 대부분 HTTP를 사용</li>
+</ul>
+</blockquote>
+<h3 id="HTTP-버전별-특징"><a href="#HTTP-버전별-특징" class="headerlink" title="HTTP 버전별 특징"></a>HTTP 버전별 특징</h3><ul>
+<li>HTTP&#x2F;0.9 1991년 : GET 메서드만 지원, HTTP Header X</li>
+<li>HTTP&#x2F;1.0 1996년 : 메서드, 헤더 추가</li>
+<li>HTTP&#x2F;1.1 1997년 : 가장 많이 사용, 우리에게 가장 중요한 버전<ul>
+<li>RFC2068(1997) –&gt; RFC2616(1999) –&gt; RFC7230~7235(2014)</li>
+</ul>
+</li>
+<li>HTTP&#x2F;2 2015년 : 성능 개선</li>
+<li>HTTP&#x2F;3 진행중 : TCP 대신에 UDP 사용(UDP가 Stateless이므로 비교적 상당히 빠르다), 성능 개선</li>
+</ul>
+<h4 id="HTTP의-버전별-기반-프로토콜"><a href="#HTTP의-버전별-기반-프로토콜" class="headerlink" title="HTTP의 버전별 기반 프로토콜"></a>HTTP의 버전별 기반 프로토콜</h4><ul>
+<li>TCP : HTTP&#x2F;1.1, HTTP&#x2F;2</li>
+<li>UDP : HTTP&#x2F;3</li>
+</ul>
+<p>현재는 HTTP&#x2F;1.1을 주로 사용하고 있다.<br>하지만, HTTP&#x2F;2, HTTP&#x2F;3도 점점 증가하는 추세이다.</p>
+<img src="/2022/06/27/backend-roadmap/3_http-note-summary/%EA%B0%9C%EB%B0%9C%EC%9E%90%EB%8F%84%EA%B5%AC_http%EB%B2%84%EC%A0%84%ED%99%95%EC%9D%B8.png" class="">
+
+<h3 id="HTTP-특징"><a href="#HTTP-특징" class="headerlink" title="HTTP 특징"></a>HTTP 특징</h3><h4 id="Client-Server-구조"><a href="#Client-Server-구조" class="headerlink" title="Client - Server 구조"></a>Client - Server 구조</h4><ul>
+<li>Request &#x2F; Response 구조</li>
+<li>클라이언트는 서버에 요청을 보내고, 응답을 대기</li>
+<li>서버가 요청에 대한 결과를 만들어서 응답</li>
+</ul>
+<h4 id="무상태-프로토콜-Stateless-비연결성"><a href="#무상태-프로토콜-Stateless-비연결성" class="headerlink" title="무상태 프로토콜(Stateless), 비연결성"></a>무상태 프로토콜(Stateless), 비연결성</h4><ul>
+<li>서버가 클라이언트의 <strong>상태를 보존 하지 않는다</strong><ul>
+<li>장점 : <ol>
+<li>서버 자원을 매우 효율적으로 사용할 수 있다.</li>
+<li>서버 확장성 높음(Scale out)</li>
+</ol>
+</li>
+<li>단점 : <ol>
+<li>클라이언트가 상태에 대한 데이터를 메시지마다 전송해야 함</li>
+<li>연결마다 TCP&#x2F;IP 연결또한 새로 맺어야 함 (3-way handshake 시간 추가)</li>
+<li>기본적으로 웹 브라우저는 html 뿐만 아니라 js, css, 이미지 등의 수 많은 자원이 함께 다운로드</li>
+<li>지금은 <code>HTTP 지속 연결(Persistent Connections)</code>로 문제 해결</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="무상태-프로토콜-Stateless-의-한계"><a href="#무상태-프로토콜-Stateless-의-한계" class="headerlink" title="무상태 프로토콜(Stateless)의 한계"></a>무상태 프로토콜(Stateless)의 한계</h5><ul>
+<li>모든 것을 무상태로 설계할 수 있는 경우도 있고, 없는 경우도 있다.</li>
+<li>대표적인 상태유지 필요 서비스의 예 <ol>
+<li><strong>로그인</strong><ul>
+<li>로그인한 사용자의 경우 <code>로그인 한 상태</code>를 서버에 유지한다.</li>
+<li>일반적으로 <code>브라우저의 쿠키와 서버 세션등을 사용</code>해서 이 상태를 유지한다</li>
+</ul>
+</li>
+<li>비교적 짧은 시간 내에 발생하는 대용량 트래픽 발생 시스템<ul>
+<li>선착순 이벤트, 명절 KTX 예약, 수강신청, 티켓팅 </li>
+<li>상태 유지는 최소한으로 사용해야 한다</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<h3 id="HTTP-메시지-구조"><a href="#HTTP-메시지-구조" class="headerlink" title="HTTP 메시지 구조"></a>HTTP 메시지 구조</h3><p>이 부분은 다시 정리하기보단 잘 정리된 내용에 대한 가이드로 넘어가겠다.</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/ko/docs/Web/HTTP/Messages">Mozilla 개발자 네트워크 중 HTTP 구조에 대한 설명</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cloudflare.com/en-gb/learning/ddos/glossary/hypertext-transfer-protocol-http/">Cloudflare - What is HTTP?</a></li>
+</ol>
+<h2 id="HTTP에-대하여-더-알고-싶다면"><a href="#HTTP에-대하여-더-알고-싶다면" class="headerlink" title="HTTP에 대하여 더 알고 싶다면?"></a>HTTP에 대하여 더 알고 싶다면?</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://roadmap.sh/backend">Roadmap.sh - Backend</a> 의 <code>What is HTTP?</code></li>
+<li>김영한님의 인프런 <a target="_blank" rel="noopener" href="https://www.inflearn.com/course/http-%EC%9B%B9-%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC/dashboard">모든 개발자를 위한 HTTP 웹 기본 지식 강의</a></li>
+</ol>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/internet/"># Internet</a>
+                    
+                        <a href="/tag/back-end-roadmap/"># Back-End Roadmap</a>
+                    
+                        <a href="/tag/http/"># HTTP</a>
+                    
+                        <a href="/tag/www/"># WWW</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/08/08/infrastructure/1_docker-summary/">Docker 요약 정리</a>
+            
+            
+            <a class="next" rel="next" href="/2022/06/20/backend-roadmap/2_protocols/">개발자라면 반드시 알고있어야 하는 프로토콜</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

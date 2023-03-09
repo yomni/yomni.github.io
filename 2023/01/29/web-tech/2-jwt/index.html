@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>JWT(JSON WEB Tokens) | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">JWT(JSON WEB Tokens)</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/web-tech/">Web Tech</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="JWT-가-뭔데"><a href="#JWT-가-뭔데" class="headerlink" title="JWT 가 뭔데?"></a>JWT 가 뭔데?</h2><p>웹의 기능제공자(서버)와 클라이언트간 데이터를 주고받기 위한 수단으로<br>주로 사용자를 서버에서 인증하기 위해 사용한다.</p>
+<img src="/2023/01/29/web-tech/2-jwt/jwt.png" class="">
+
+<p>JWT는 <strong>헤더</strong>, <strong>페이로드</strong>, <strong>서명</strong>으로 구성된다.<br>헤더와 페이로드는 JSON 문자열(key - value)을 base64 방식으로 인코딩 한 데이터이고,<br>이를 검증하기 위한 서명부분으로 구성되어 있다.</p>
+<h3 id="헤더-Header"><a href="#헤더-Header" class="headerlink" title="헤더(Header)"></a>헤더(Header)</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;alg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;HS256&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;typ&quot;</span><span class="punctuation">:</span> <span class="string">&quot;JWT&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>헤더는 일반적으로 두 가지 정보를 포함하고 있다.</p>
+<ul>
+<li>alg : 해싱 알고리즘 종류<ul>
+<li>HMAC SHA256 : 키 1개 필요</li>
+<li>RSA : 공개키 + 비밀키 총 2개 필요</li>
+</ul>
+</li>
+<li>typ : JWT</li>
+</ul>
+<h3 id="페이로드-Payload"><a href="#페이로드-Payload" class="headerlink" title="페이로드(Payload)"></a>페이로드(Payload)</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;sub&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1234567890&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;John Doe&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;iat&quot;</span><span class="punctuation">:</span> <span class="number">1516239022</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>페이로드는 클레임을 포함한 JWT 의 두번째 부분이다.<br>위 예시에서 <code>&quot;sub&quot;: &quot;1234567890&quot;</code> 같이 하나의 프로퍼티를 클레임이라고 하며,<br>일반적으로는 엔터티 및 추가데이터에 대한 실질적인 데이터를 포함하고 있다.<br>모든 클레임은 서버와 그 사용자가 정의하기 나름이지만, 미리 정의된 클레임도 존재한다.</p>
+<p>클레임에는 아래와 같이 크게 3 가지 유형으로 나눌 수 있다.</p>
+<ol>
+<li>Registered claims : 필수는 아니지만, JWT 사용자 간 원활한 통신을 위해 미리 정의해 둔 클레임이다.<br><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc7519#section-4.1">RFC7519 4.1 section</a> 명세서에 명시되어 있다.</li>
+<li>Public claims : JWT 를 사용하는 당사자가 정의할 수 있는 사용자 정의 클레임이다.<br>  다만, 충돌을 피하기 위해 공개 클레임은 <a target="_blank" rel="noopener" href="https://www.iana.org/assignments/jwt/jwt.xhtml">IANA JSON Web Token Registry</a>에 정의해야 한다.</li>
+<li>Private claims : 사용자간 정보를 공유하기 위해 만들어진 사용자 정의 클레임</li>
+</ol>
+<p>여기서 조금 헷갈릴 수도 있는 부분이 <code>Registered claims</code> vs <code>Public claims</code>이다.  </p>
+<p>Registered claims 는 RFC Specification 에 정의된 규칙이다.<br>예를 들면, <code>iss : Issuer</code>, <code>sub : Subject</code>, <code>aud : Audience</code>, <code>exp : Expiration Time</code><br>으로 정의되어 있는데, 각 의미의 클레임을 JWT 페이로드에 사용하려면 반드시 저런 key 값으로 정의되어야 한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Claims</span> <span class="keyword">extends</span> <span class="title class_">Map</span>&lt;String, Object&gt;, ClaimsMutator&lt;Claims&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** JWT &#123;<span class="doctag">@code</span> Issuer&#125; claims parameter name: &lt;code&gt;&quot;iss&quot;&lt;/code&gt; */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">ISSUER</span> <span class="operator">=</span> <span class="string">&quot;iss&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** JWT &#123;<span class="doctag">@code</span> Subject&#125; claims parameter name: &lt;code&gt;&quot;sub&quot;&lt;/code&gt; */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">SUBJECT</span> <span class="operator">=</span> <span class="string">&quot;sub&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** JWT &#123;<span class="doctag">@code</span> Audience&#125; claims parameter name: &lt;code&gt;&quot;aud&quot;&lt;/code&gt; */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">AUDIENCE</span> <span class="operator">=</span> <span class="string">&quot;aud&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** JWT &#123;<span class="doctag">@code</span> Expiration&#125; claims parameter name: &lt;code&gt;&quot;exp&quot;&lt;/code&gt; */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">EXPIRATION</span> <span class="operator">=</span> <span class="string">&quot;exp&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** JWT &#123;<span class="doctag">@code</span> Not Before&#125; claims parameter name: &lt;code&gt;&quot;nbf&quot;&lt;/code&gt; */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">NOT_BEFORE</span> <span class="operator">=</span> <span class="string">&quot;nbf&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** JWT &#123;<span class="doctag">@code</span> Issued At&#125; claims parameter name: &lt;code&gt;&quot;iat&quot;&lt;/code&gt; */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">ISSUED_AT</span> <span class="operator">=</span> <span class="string">&quot;iat&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** JWT &#123;<span class="doctag">@code</span> JWT ID&#125; claims parameter name: &lt;code&gt;&quot;jti&quot;&lt;/code&gt; */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">ID</span> <span class="operator">=</span> <span class="string">&quot;jti&quot;</span>;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>JWT의 Java 라이브러리를 뜯어보면, Claims 라는 인터페이스 내부에 Registered Claims 7가지가 미리 정의되어 있는 것을 볼 수 있다.</p>
+</blockquote>
+<p>반면, Public Claims 는 라이브러리 내에서 확인할 수 있는 맵은 없다. 다만, <code>email</code>, <code>uuid</code> 등과 같이<br>잘 알려진 프로퍼티에 대해서 미리 claims 명을 정의해놓은 것이 바로 public claims 이고, 이를 IANA에서 확인 해봐야 한다.<br>IANA 에서 미리 확인하고 충돌되지 않도록 설계하라는 것이다.</p>
+<p>스타크래프트를 예로 들어보면, 게임사에서 정의한 승리 목표는<br>‘상대방의 건물을 모두 파괴하라’ 이고, 이런 승리를 <code>elimination</code> 이라고 한다.<br>상대방의 건물을 모두 파괴하면, 유닛과 자원이 얼마가 남아있건 간에 승리하게 된다.  </p>
+<p>반면 비공식적으로 게임의 흐름상 자신의 패배가 확실하다거나, 혹은 더 이상 게임을 유지할 수 없을 정도로 멘탈이 박살나면,<br>채팅으로 <code>GG(Good Game)</code>을 치고, 상대방의 승리를 인정하며 게임에서 나가는 문화가 있다.</p>
+<p><code>elimination</code> 이 Registered Claims (공식적인 규칙) 이라면,<br><code>gg</code>는 Public Claims 이다.</p>
+<p>아주 간략하게 정리해보면 이렇게 구분할 수 있다.</p>
+<ol>
+<li>Registered Claims : <strong>진짜 미리</strong> 정의된 클레임</li>
+<li>Public Claims : <strong>아마도 미리</strong> 정의된 클레임 <ul>
+<li>일반적인 jwt 사용 수준에서 ‘이거 정의되어 있을라나?’ 싶을만한 것들은 거진 다 정의되어 있다고 보면 된다.</li>
+</ul>
+</li>
+<li>Private Claims : 나머지 수준에서 jwt 발급자와 사용자가 협의한 클레임</li>
+</ol>
+<h3 id="서명-Signature"><a href="#서명-Signature" class="headerlink" title="서명(Signature)"></a>서명(Signature)</h3><p>서명의 사전적 정의는 ‘본인의 자필로 이름을 써넣는 것’으로 공적 신뢰도를 보장하는 상징적 수단이다.<br>가령 서명이란 서명한 자 A가 아닌 다른 제 3자 누군가가 보더라도 A가 서명했다라는 것을 인정할 수 있을만한 공적 수단이란 것이다.  </p>
+<p>이런 의미에서 JWT의 서명 부분은 JWT로 표현된 데이터가 서명한 자에 의해 발급되었다는 것을 증명할 수 있는 수단이다.</p>
+<p>방법적으로는 헤더와 페이로드를 각각 base64로 인코딩한 후,<br>각 해싱 알고리즘(<code>SHA256</code> or <code>RSA</code>)을 통해 각 알고리즘에 맞는 키로 해싱을 거쳐 완성된다.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">-- SHA256의 경우</span><br><span class="line">HMACSHA256(</span><br><span class="line">  base64UrlEncode(header) + &quot;.&quot; + base64UrlEncode(payload), secret-key</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">-- RSA의 경우</span><br><span class="line">RSASHA256(</span><br><span class="line">  base64UrlEncode(header) + &quot;.&quot; +  base64UrlEncode(payload), </span><br><span class="line">  public-key, </span><br><span class="line">  private-key</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>(+, -, &#x2F;, &#x3D;) 같은 URL에는 포함될 수 없는 문자(URL-safe)가 기본적인 base64 인코딩에는 포함될 수 있다.<br>따라서, base64 인코딩 시 URL-safe 하도록 인코딩하는 것이 base64UrlEncoding 이다. </p>
+<h2 id="JWT-왜-씀"><a href="#JWT-왜-씀" class="headerlink" title="JWT 왜 씀?"></a>JWT 왜 씀?</h2><p>JWT는 실세계의 놀이동산 티켓과 매우 유사한 점이 많다.  </p>
+<p>놀이공원에서 놀이기구를 타는데까지 프로세스를 정리해보자.  </p>
+<ol>
+<li>입구 매표소에서 티켓을 구매한다.<ul>
+<li>만약 예약한 사람이라면, 신분증과 함께 예약한 티켓을 받는다.(<strong>인증</strong>)</li>
+<li>티켓에는 유효기간(당일)이 있다.</li>
+<li>티켓의 종류에 따라 <code>입장권</code>,<code>자유이용권</code>,<code>빅5</code> 등으로 나눈다.</li>
+</ul>
+</li>
+<li>구매한 티켓으로 놀이기구에 줄을선다.</li>
+<li>놀이기구 운용직원은 티켓을 확인하고 각 권한에 맞도록 이용하게 해준다.(<strong>인가</strong>)<ul>
+<li>입장권 : 이용 불가 –&gt; 이용권 추가구매</li>
+<li>자유이용권 : 입장을 허용하며, 대기줄로 안내한다</li>
+<li>빅5 : 만약 빅5 놀이기구라면 바로 이용할 수 있도록 안내한다.</li>
+</ul>
+</li>
+</ol>
+<p>JWT 도 위 메커니즘과 정확히 일치한다.</p>
+<ol>
+<li>자신의 id &#x2F; pwd 로 로그인 하여, jwt 를 서버로부터 발급받는다.<ul>
+<li>jwt 에는 유효기간(<code>iat</code>)이 존재하므로, 특정 시간 후에는 사용할 수 없다.</li>
+</ul>
+</li>
+<li>발급받은 jwt 를 통해 특정 기능에 대한 인증과 인가를 동시에 받을 수 있다.</li>
+</ol>
+<h2 id="JWT-어떻게-씀"><a href="#JWT-어떻게-씀" class="headerlink" title="JWT 어떻게 씀?"></a>JWT 어떻게 씀?</h2><p>java의 경우 <code>io.jsonwebtoken:jjwt</code>를 사용한다.<br>해당 라이브러리에 있는 Jwts.builder를 사용하여 header, payload, signature를 쉽게 지정 가능하다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> String <span class="title function_">createToken</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> Jwts.builder()</span><br><span class="line">        .setClaims(claims)</span><br><span class="line">        .setIssuedAt(now)</span><br><span class="line">        .setExpiration(validity)</span><br><span class="line">        .signWith(SignatureAlgorithm.HS256, secretKey)</span><br><span class="line">        .compact();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>JWT 는 웹 어플리케이션이 Resource 위주의 MSA(Micro Service Architecture)로 발전하게 되면서,<br>효율적인 보안을 위해 탄생한 기술이다.</p>
+<p>항상 보안이란 단어가 나오면</p>
+<ul>
+<li>사용자의 편의성</li>
+<li>보안적인 안전성</li>
+<li>성능 차원에서의 효율</li>
+</ul>
+<p>자신의 시스템이 3가지 중 어떤 것을 중요하게 보는 가치인지 선택해야하는 순간이 오게된다.<br>JWT 는 효율적인 보안기술이란 점에 있어서 많이 사용되고 있긴 하지만, 여전히 탈취나 검증부분에서 취약점이 분명하게 존재한다.<br>따라서, 해킹방법이나 사용자의 편의성 차원에서 refresh token, sliding session 등의 기술을 도입하려 한다면,<br>안전성 차원에서 반드시 검토가 필요하다.  </p>
+<p>만약 SHA256 방식의 해싱 알고리즘을 사용한다면, Secret key는 정말정말 안전하게 보관해야 한다.<br>또한, JWT 를 제대로 사용하려면, JWT 만 알아선 안된다는 생각이 들었다.</p>
+<p>JWT 의 취약점을 면밀히 추가학습해야하고, 해킹방법, 해싱 알고리즘에 대한 이해가 어느정도 필요하다는 생각이 들었다.<br>따라서 다음 섹션엔 추가 학습에 대한 키워드를 남기고 추가 학습해 볼 예정이다.</p>
+<h2 id="추가-학습-키워드"><a href="#추가-학습-키워드" class="headerlink" title="추가 학습 키워드"></a>추가 학습 키워드</h2><ul>
+<li>보안 관점에서 JWT 의 취약점</li>
+<li>Sliding Session, Refresh Token</li>
+<li>Secret key 관리</li>
+<li>암호화 알고리즘 종류</li>
+<li>Session - Cookie</li>
+</ul>
+<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://www.rfc-editor.org/rfc/rfc7519.html">RFC7519 - JWT RFC 스펙</a></li>
+<li><a target="_blank" rel="noopener" href="https://jwt.io/introduction">JWT.io - JWT 설명</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EC%9B%B9-%EA%B8%B0%EC%88%A0/"># 웹 기술</a>
+                    
+                        <a href="/tag/jwt/"># JWT</a>
+                    
+                        <a href="/tag/%EC%9D%B8%EC%A6%9D/"># 인증</a>
+                    
+                        <a href="/tag/%EC%9D%B8%EA%B0%80/"># 인가</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/02/01/design-pattern/1-strategy/">전략 패턴(Strategy Pattern)</a>
+            
+            
+            <a class="next" rel="next" href="/2023/01/26/web-tech/1-restful-api/">RESTful API</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

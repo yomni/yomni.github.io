@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>옵저버 패턴(Observer Pattern) | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">옵저버 패턴(Observer Pattern)</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/">디자인 패턴</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <img src="/2023/02/02/design-pattern/2-observer/observer-pattern.png" class="">
+
+<h2 id="옵저버-패턴-Observer-Pattern-의존-일대다관계-단방향-상태-느슨한-결합"><a href="#옵저버-패턴-Observer-Pattern-의존-일대다관계-단방향-상태-느슨한-결합" class="headerlink" title="옵저버 패턴(Observer Pattern) ; 의존, 일대다관계(단방향), 상태, 느슨한 결합"></a>옵저버 패턴(Observer Pattern) ; 의존, 일대다관계(단방향), 상태, 느슨한 결합</h2><p>한 객체의 <strong>상태</strong>가 바뀌면, 그 객체에 <strong>의존</strong>하는 다른 객체들한테 <strong>연락</strong>이 가고,<br>자동으로 내용이 갱신되는 방식으로 일대다(One-to-Many) 의존성을 정의한다.  </p>
+<p>-&gt; <strong><em>출판사와 구독자</em></strong> 의 관계와 정확하게 부합한다.</p>
+<h3 id="느슨한-결합-Loose-Coupling"><a href="#느슨한-결합-Loose-Coupling" class="headerlink" title="느슨한 결합(Loose Coupling)"></a>느슨한 결합(Loose Coupling)</h3><p>두 객체가 느슨하게 결합되어 있다는 것은, 그 둘이 상호작용을 하긴 하지만 서로에 대해 잘 모른다는 것을 의미한다.  </p>
+<p>옵저버 패턴에서는 주제와 옵저버가 느슨하게 결합되어 있는 객체 디자인을 제공한다. 왜 그럴까?</p>
+<p>객체 사이의 상호의존성을 최소화 할 수 있기 때문이다.</p>
+<ol>
+<li>옵저버는 언제든지 새로 추가하고 제거할 수 있다.</li>
+<li>새로운 형식의 옵저버를 추가할때도 주제를 전혀 변경할 필요가 없다.</li>
+<li>주제와 옵저버는 서로 독립적으로 재사용할 수 있다.</li>
+<li>주제나 옵저버가 바뀌더라도 서로한테 영향을 미치는 정도가 낮다.</li>
+</ol>
+<p>느슨하게 결합하는 디자인을 사용하면 변경 사항이 생겨도 무난히 처리할 수 있는 유연한 객체지향 시스템을 구축할 수 있다.  </p>
+<h3 id="책에서-나오는-예시"><a href="#책에서-나오는-예시" class="headerlink" title="책에서 나오는 예시"></a>책에서 나오는 예시</h3><p>책에서는 기상데이터(주제)와 이를 표시하는 서드파티디스플레이 모듈(옵저버)의 예시를 들어 설명하고 있다.<br>기상 데이터보다는 개인적으로 발행 - 구독이란 관계에서 블로그의 글 게시 - 구독자 관계를 구현해보았다.</p>
+<img src="/2023/02/02/design-pattern/2-observer/blog-subscribe.png" class="">
+
+<h4 id="Blog"><a href="#Blog" class="headerlink" title="Blog"></a>Blog</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Observable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Blog</span> <span class="keyword">extends</span> <span class="title class_">Observable</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">addBlogPost</span><span class="params">(String blogPostTitle)</span> &#123;</span><br><span class="line">        setChanged();</span><br><span class="line">        notifyObservers(blogPostTitle);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Subscriber"><a href="#Subscriber" class="headerlink" title="Subscriber"></a>Subscriber</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Observable;</span><br><span class="line"><span class="keyword">import</span> java.util.Observer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Subscriber</span> <span class="keyword">implements</span> <span class="title class_">Observer</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">update</span><span class="params">(Observable blog, Object blogPostTitle)</span> &#123;</span><br><span class="line">        System.out.println(getClass().getSimpleName() + <span class="string">&quot; 수신 ||||| &quot;</span> + blogPostTitle);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Test"><a href="#Test" class="headerlink" title="Test"></a>Test</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">BlogTest</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">observerTest</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">Blog</span> <span class="variable">myBlog</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Blog</span>();</span><br><span class="line">        <span class="type">Observer</span> <span class="variable">subscriber</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Subscriber</span>();</span><br><span class="line">        <span class="type">Observer</span> <span class="variable">rssSubscriber</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RssSubscriber</span>();</span><br><span class="line">        <span class="type">Observer</span> <span class="variable">mailSubscriber</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MailSubscriber</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Register the observer with the subject.</span></span><br><span class="line">        myBlog.addObserver(subscriber);</span><br><span class="line">        myBlog.addObserver(rssSubscriber);</span><br><span class="line">        myBlog.addObserver(mailSubscriber);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Add some blog post titles.</span></span><br><span class="line">        myBlog.addBlogPost(<span class="string">&quot;Docker in 5 Steps&quot;</span>);</span><br><span class="line">        myBlog.addBlogPost(<span class="string">&quot;Angular vs React&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 결과</span></span><br><span class="line"><span class="comment"> MailSubscriber 수신 ||||| Docker in 5 Steps</span></span><br><span class="line"><span class="comment"> RssSubscriber 수신 ||||| Docker in 5 Steps</span></span><br><span class="line"><span class="comment"> Subscriber 수신 ||||| Docker in 5 Steps</span></span><br><span class="line"><span class="comment"> MailSubscriber 수신 ||||| Angular vs React</span></span><br><span class="line"><span class="comment"> RssSubscriber 수신 ||||| Angular vs React</span></span><br><span class="line"><span class="comment"> Subscriber 수신 ||||| Angular vs React</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Pull-vs-Push-Observer-vs-Polling"><a href="#Pull-vs-Push-Observer-vs-Polling" class="headerlink" title="Pull vs Push (Observer vs Polling)"></a>Pull vs Push (Observer vs Polling)</h3><h4 id="Pull-vs-Push-행위-관점"><a href="#Pull-vs-Push-행위-관점" class="headerlink" title="Pull vs Push(행위 관점)"></a>Pull vs Push(행위 관점)</h4><p>공통점 : 데이터가 전이된다.</p>
+<p>차이점 </p>
+<ul>
+<li>pull : 데이터를 서버로부터 끌어오는 <strong>행위</strong></li>
+<li>push : 서버가 데이터를 클라이언트에게 밀어주는 <strong>행위</strong></li>
+</ul>
+<h4 id="Polling-vs-Observer-인터페이스-관점"><a href="#Polling-vs-Observer-인터페이스-관점" class="headerlink" title="Polling vs Observer(인터페이스 관점)"></a>Polling vs Observer(인터페이스 관점)</h4><p>공통점 : 서로 규정된 인터페이스가 있다.</p>
+<p>차이점 : </p>
+<ul>
+<li>polling : 데이터가 필요한 주체가 제공 주체에게 <strong>묻는 구조</strong>    </li>
+<li>observer : 제공 주체의 상태가 바뀌면, 필요 주체에게 데이터를 <strong>자동으로 전이하는 구조</strong></li>
+</ul>
+<h2 id="Spring-에서-찾은-옵저버-패턴"><a href="#Spring-에서-찾은-옵저버-패턴" class="headerlink" title="Spring 에서 찾은 옵저버 패턴"></a>Spring 에서 찾은 옵저버 패턴</h2><p>Spring 에서는 고전적인 옵저버 패턴의 notify - update 구조보다는<br>발행 - 구독 관계가 더욱 많다. </p>
+<p>대표적인 예로 <code>ExceptionListener - ExceptionHandler</code>가 있다.<br><code>*Listener - *Handler</code> 모두 공통이긴하지만, 어떤 이벤트에 대하여 발생여부를 <strong>감지</strong> 하고,<br>이를 핸들링하는 부분 까지 모두 옵저버 패턴의 일환이라고 볼 수 있다.</p>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>모바일 환경으로 들어오면서 옵저버 패턴은 흔히 푸쉬 알림이라는 기술의 근간이 되었다고 생각한다.<br>이런 환경이 더욱 더 개선해서 메시지 매커니즘이나, 리액티브 프로그래밍, Webflux 등등 여러 기술의 근간이 된 것으로 생각된다.  </p>
+<p>옵저버 패턴의 가장 강력한 구조는 <strong>특정 객체의 상태 변경에 대하여, 자동으로 전파하는 것</strong>이 옵저버 패턴의 핵심이라고 생각된다.<br>그렇다면, ‘왜 특정 객체의 상태 변경에 대해 자동으로 알림받기를 원하는가?’ 생각해 봐야하는데,<br>고전적인 폴링(Polling) 방식에서는</p>
+<ul>
+<li>상태 변경이 빈번하지 않은데 계속 통신해야하는 오버헤드</li>
+<li>특히 빈번 주기와 상태 변경의 빈도에서 동기화를 위해 주기를 적절히 조절해야 한다는 점<br>에서 폴링이란 방식의 장점보다는 단점이 더욱 더 명확했다.</li>
+</ul>
+<p>특히 상태 변경 자동 전파 라는 개념이, 이벤트라는 비 주기적 특성과도 잘 맞는 것 같아서<br>웹플러스 등으로 발전하지 않았나 생각이 든다.</p>
+<p>리액티브 프로그래밍, 웹플럭스 등도 학습대상으로 두고 있었지만 이번 기회에 간략하게나마 그 기술의 탄생이유를 엿볼 수 있었다.</p>
+<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/108192370">헤드퍼스트 디자인패턴</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4/"># 디자인패턴</a>
+                    
+                        <a href="/tag/gof/"># GoF</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/02/03/design-pattern/3-decorator/">데코레이터 패턴(Decorator Pattern)</a>
+            
+            
+            <a class="next" rel="next" href="/2023/02/01/design-pattern/1-strategy/">전략 패턴(Strategy Pattern)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

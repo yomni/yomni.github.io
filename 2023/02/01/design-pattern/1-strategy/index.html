@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>전략 패턴(Strategy Pattern) | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">전략 패턴(Strategy Pattern)</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/">디자인 패턴</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <img src="/2023/02/01/design-pattern/1-strategy/strategy.png" class="">
+
+<h2 id="전략-패턴-Strategy-Pattern-알고리즘-캡슐화-동적교환"><a href="#전략-패턴-Strategy-Pattern-알고리즘-캡슐화-동적교환" class="headerlink" title="전략 패턴(Strategy Pattern) ; 알고리즘, 캡슐화, 동적교환"></a>전략 패턴(Strategy Pattern) ; 알고리즘, 캡슐화, 동적교환</h2><p><strong>알고리즘</strong>군을 정의하고 <strong>캡슐화</strong>하여 <strong>교환</strong>해서 사용할 수 있도록 만든다.<br>전략을 활용하면 알고리즘을 사용하는 클라이언트와는 독립적으로 알고리즘을 변경할 수 있다.</p>
+<p>객체의 행위를 전략을 통해 동적으로 바꿔 주도록 해서 유연하게 만드는 패턴이다.</p>
+<h3 id="책에서-나오는-예시"><a href="#책에서-나오는-예시" class="headerlink" title="책에서 나오는 예시"></a>책에서 나오는 예시</h3><p>책에서는 오리의 시뮬레이터를 개발하는 회사에서 개발자가 설계하는 이야기로 전략패턴을 설명하고 있다.<br>주로 상속과 비교하여 전략패턴을 사용하면 어떤 장점이 있는지 보여준다</p>
+<img src="/2023/02/01/design-pattern/1-strategy/inbook.png" class="">
+
+<p>만약 <code>fly</code>와 <code>quack</code> 을 단순히 <code>Duck</code> 클래스에 정의하고 <strong>상속</strong>을 통해 모든 하위 객체가 구현을 강제화 했다면?,    </p>
+<p>물론 상속을 통해 중복코드를 간소화 할 수 있었지만, 각 객체마다의 특성이 있는 부분은<br>(고무오리는 날지 못한다던가, 꽥하고 울지 않는다) 다시 재정의를 해줘야하는 비효율이 발생한다.  </p>
+<p>따라서 전략패턴은 <strong>알고리즘</strong>을 별도로 <strong>캡슐화</strong>하여 정의하고, 이를 <strong>교환</strong>해서 사용할 수 있도록 하는 패턴이다. </p>
+<h2 id="Spring-Boot-에서-찾은-전략-패턴"><a href="#Spring-Boot-에서-찾은-전략-패턴" class="headerlink" title="Spring Boot 에서 찾은 전략 패턴"></a>Spring Boot 에서 찾은 전략 패턴</h2><p>전략 패턴은 Spring 의 수 많은 프로젝트에서 활용된다.</p>
+<p>Spring Boot의 구동 시 <code>Banner</code> 라는 인터페이스는 실제 Spring 구동에는 전혀 쓸모없는 녀석이다.<br>이런점이 조금 Geek(괴짜)한 느낌이 들어서 살펴보게 되었다.</p>
+<h3 id="Banner-Interface"><a href="#Banner-Interface" class="headerlink" title="Banner Interface"></a>Banner Interface</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Banner</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Print the banner to the specified print stream.</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> environment the spring environment</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> sourceClass the source class for the application</span></span><br><span class="line"><span class="comment">	 * <span class="doctag">@param</span> out the output print stream</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">void</span> <span class="title function_">printBanner</span><span class="params">(Environment environment, Class&lt;?&gt; sourceClass, PrintStream out)</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * An enumeration of possible values for configuring the Banner.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">enum</span> <span class="title class_">Mode</span> &#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * Disable printing of the banner.</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		OFF,</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * Print the banner to System.out.</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		CONSOLE,</span><br><span class="line"></span><br><span class="line">		<span class="comment">/**</span></span><br><span class="line"><span class="comment">		 * Print the banner to the log file.</span></span><br><span class="line"><span class="comment">		 */</span></span><br><span class="line">		LOG</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="역할"><a href="#역할" class="headerlink" title="역할"></a>역할</h4><p>Banner 가 맡은 역할은 간단하다. Spring Boot App이 실행될 때, <code>printBanner();</code>를 통해<br>텍스트로 된 로고를 콘솔이나 로그에 기록하는 역할을 한다.</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  .   ____          _            __ _ _</span><br><span class="line"> /\\ / ___&#x27;_ __ _ _(_)_ __  __ _ \ \ \ \</span><br><span class="line">( ( )\___ | &#x27;_ | &#x27;_| | &#x27;_ \/ _` | \ \ \ \</span><br><span class="line"> \\/  ___)| |_)| | | | | || (_| |  ) ) ) )</span><br><span class="line">  &#x27;  |____| .__|_| |_|_| |_\__, | / / / /</span><br><span class="line"> =========|_|==============|___/=/_/_/_/</span><br><span class="line"> :: Spring Boot ::                (v2.7.7)</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="그래서-이게-왜-전략패턴"><a href="#그래서-이게-왜-전략패턴" class="headerlink" title="그래서 이게 왜 전략패턴?"></a>그래서 이게 왜 전략패턴?</h3><img src="/2023/02/01/design-pattern/1-strategy/banner.png" class="">
+
+<p><code>Banner</code> 인터페이스는 <code>printBanner();</code> 하나의 메소드만 가지고 있는 인터페이스이다.<br>따라서, 이를 implements 하는 구현체들은 각각의 알고리즘으로 banner에 띄울 방법을 달리하고 있다.</p>
+<p>책에서 봤던 전략 패턴을 그대로 차용하고 있는 것이다.</p>
+<h4 id="ImageBanner"><a href="#ImageBanner" class="headerlink" title="ImageBanner"></a>ImageBanner</h4><p>커스텀으로 넣은 이미지 파일과 클래스 패스를 포함한 여러 설정 정보를 기반으로 배너로 만들어 준다.</p>
+<ul>
+<li>배너에 띄울 이미지 파일  <img src="/2023/02/01/design-pattern/1-strategy/spring.png" class="" width="200"></li>
+<li>설정 정보(application.properties)  <figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring.banner.image.location</span>=<span class="string">classpath:spring.png</span></span><br><span class="line"><span class="attr">spring.banner.image.pixelmode</span>=<span class="string">block</span></span><br><span class="line"><span class="attr">spring.banner.image.width</span>=<span class="string">200</span></span><br><span class="line"><span class="attr">spring.banner.image.invert</span>=<span class="string">true</span></span><br><span class="line"><span class="comment">#spring.banner.image.height=</span></span><br><span class="line"><span class="comment">#spring.banner.image.margin=1</span></span><br></pre></td></tr></table></figure></li>
+<li>배너 실행 결과(이미지를 콘솔이나 로그의 텍스트 기반 배너로 만들어서 띄움)  <img src="/2023/02/01/design-pattern/1-strategy/img-banner.png" class="" width="250"></li>
+</ul>
+<p>ImageBanner는 printImage(); 에서<br>커스텀 이미지 파일을 텍스트로 전환하여 배너로 출력 하는 알고리즘을 수행하게 된다.</p>
+<h4 id="ResourceBanner"><a href="#ResourceBanner" class="headerlink" title="ResourceBanner"></a>ResourceBanner</h4><p>banner.txt 라는 파일을 작성하고, resources 하위 경로에 두면<br>banner.txt 안에 작성한 값이 배너로 출력된다.</p>
+<ul>
+<li>banner.txt  <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">,--.  ,--.,------.,--.   ,--.    ,-----.   ,---.,--------.,------.   ,---. ,--------.,------. ,----. ,--.   ,--. ,------.  ,---. ,--------.,--------.,------.,------. ,--.  ,--. </span><br><span class="line">|  &#x27;--&#x27;  ||  .---&#x27;|  |   |  |   &#x27;  .-.  &#x27; &#x27;   .-&#x27;--.  .--&#x27;|  .--. &#x27; /  O  \&#x27;--.  .--&#x27;|  .---&#x27;&#x27;  .-./  \  `.&#x27;  /  |  .--. &#x27;/  O  \&#x27;--.  .--&#x27;&#x27;--.  .--&#x27;|  .---&#x27;|  .--. &#x27;|  ,&#x27;.|  | </span><br><span class="line">|  .--.  ||  `--, |  |   |  |   |  | |  | `.  `-.  |  |   |  &#x27;--&#x27;.&#x27;|  .-.  |  |  |   |  `--, |  | .---.&#x27;.    /   |  &#x27;--&#x27; |  .-.  |  |  |      |  |   |  `--, |  &#x27;--&#x27;.&#x27;|  |&#x27; &#x27;  | </span><br><span class="line">|  |  |  ||  `---.|  &#x27;--.|  &#x27;--.&#x27;  &#x27;-&#x27;  &#x27; .-&#x27;    | |  |   |  |\  \ |  | |  |  |  |   |  `---.&#x27;  &#x27;--&#x27;  |  |  |    |  | --&#x27;|  | |  |  |  |      |  |   |  `---.|  |\  \ |  | `   | </span><br><span class="line">`--&#x27;  `--&#x27;`------&#x27;`-----&#x27;`-----&#x27; `-----&#x27;  `-----&#x27;  `--&#x27;   `--&#x27; &#x27;--&#x27;`--&#x27; `--&#x27;  `--&#x27;   `------&#x27; `------&#x27;   `--&#x27;    `--&#x27;    `--&#x27; `--&#x27;  `--&#x27;      `--&#x27;   `------&#x27;`--&#x27; &#x27;--&#x27;`--&#x27;  `--&#x27; </span><br><span class="line">                                                                                                                                                                                 </span><br><span class="line">$&#123;application.title&#125; $&#123;application.version&#125;</span><br><span class="line">Powered by Spring Boot $&#123;spring-boot.version&#125;</span><br></pre></td></tr></table></figure></li>
+<li>설정 정보(application.properties) ; Custom 프로퍼티  <figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">application.title</span>=<span class="string">Learn Design Pattern</span></span><br><span class="line"><span class="attr">application.version</span>=<span class="string">1.0</span></span><br></pre></td></tr></table></figure></li>
+<li>실행 결과<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">,--.  ,--.,------.,--.   ,--.    ,-----.   ,---.,--------.,------.   ,---. ,--------.,------. ,----. ,--.   ,--. ,------.  ,---. ,--------.,--------.,------.,------. ,--.  ,--. </span><br><span class="line">|  &#x27;--&#x27;  ||  .---&#x27;|  |   |  |   &#x27;  .-.  &#x27; &#x27;   .-&#x27;--.  .--&#x27;|  .--. &#x27; /  O  \&#x27;--.  .--&#x27;|  .---&#x27;&#x27;  .-./  \  `.&#x27;  /  |  .--. &#x27;/  O  \&#x27;--.  .--&#x27;&#x27;--.  .--&#x27;|  .---&#x27;|  .--. &#x27;|  ,&#x27;.|  | </span><br><span class="line">|  .--.  ||  `--, |  |   |  |   |  | |  | `.  `-.  |  |   |  &#x27;--&#x27;.&#x27;|  .-.  |  |  |   |  `--, |  | .---.&#x27;.    /   |  &#x27;--&#x27; |  .-.  |  |  |      |  |   |  `--, |  &#x27;--&#x27;.&#x27;|  |&#x27; &#x27;  | </span><br><span class="line">|  |  |  ||  `---.|  &#x27;--.|  &#x27;--.&#x27;  &#x27;-&#x27;  &#x27; .-&#x27;    | |  |   |  |\  \ |  | |  |  |  |   |  `---.&#x27;  &#x27;--&#x27;  |  |  |    |  | --&#x27;|  | |  |  |  |      |  |   |  `---.|  |\  \ |  | `   | </span><br><span class="line">`--&#x27;  `--&#x27;`------&#x27;`-----&#x27;`-----&#x27; `-----&#x27;  `-----&#x27;  `--&#x27;   `--&#x27; &#x27;--&#x27;`--&#x27; `--&#x27;  `--&#x27;   `------&#x27; `------&#x27;   `--&#x27;    `--&#x27;    `--&#x27; `--&#x27;  `--&#x27;      `--&#x27;   `------&#x27;`--&#x27; &#x27;--&#x27;`--&#x27;  `--&#x27; </span><br><span class="line">                                                                                                                                                                                 </span><br><span class="line">Learn Design Pattern 1.0</span><br><span class="line">Powered by Spring Boot 2.7.7</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="SpringBootBanner"><a href="#SpringBootBanner" class="headerlink" title="SpringBootBanner"></a>SpringBootBanner</h4><p>ImageBanner, ResourceBanner 없는 경우, 디폴트 배너로서 SpringBootBanner가 동작한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">SpringBootBanner</span> <span class="keyword">implements</span> <span class="title class_">Banner</span> &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] BANNER = &#123; <span class="string">&quot;&quot;</span>, <span class="string">&quot;  .   ____          _            __ _ _&quot;</span>,</span><br><span class="line">			<span class="string">&quot; /\\\\ / ___&#x27;_ __ _ _(_)_ __  __ _ \\ \\ \\ \\&quot;</span>, <span class="string">&quot;( ( )\\___ | &#x27;_ | &#x27;_| | &#x27;_ \\/ _` | \\ \\ \\ \\&quot;</span>,</span><br><span class="line">			<span class="string">&quot; \\\\/  ___)| |_)| | | | | || (_| |  ) ) ) )&quot;</span>, <span class="string">&quot;  &#x27;  |____| .__|_| |_|_| |_\\__, | / / / /&quot;</span>,</span><br><span class="line">			<span class="string">&quot; =========|_|==============|___/=/_/_/_/&quot;</span> &#125;;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">SPRING_BOOT</span> <span class="operator">=</span> <span class="string">&quot; :: Spring Boot :: &quot;</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">STRAP_LINE_SIZE</span> <span class="operator">=</span> <span class="number">42</span>;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">printBanner</span><span class="params">(Environment environment, Class&lt;?&gt; sourceClass, PrintStream printStream)</span> &#123;</span><br><span class="line">		<span class="keyword">for</span> (String line : BANNER) &#123;</span><br><span class="line">			printStream.println(line);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="type">String</span> <span class="variable">version</span> <span class="operator">=</span> SpringBootVersion.getVersion();</span><br><span class="line">		version = (version != <span class="literal">null</span>) ? <span class="string">&quot; (v&quot;</span> + version + <span class="string">&quot;)&quot;</span> : <span class="string">&quot;&quot;</span>;</span><br><span class="line">		<span class="type">StringBuilder</span> <span class="variable">padding</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>();</span><br><span class="line">		<span class="keyword">while</span> (padding.length() &lt; STRAP_LINE_SIZE - (version.length() + SPRING_BOOT.length())) &#123;</span><br><span class="line">			padding.append(<span class="string">&quot; &quot;</span>);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		printStream.println(AnsiOutput.toString(AnsiColor.GREEN, SPRING_BOOT, AnsiColor.DEFAULT, padding.toString(),</span><br><span class="line">				AnsiStyle.FAINT, version));</span><br><span class="line">		printStream.println();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="Banners-Class"><a href="#Banners-Class" class="headerlink" title="Banners Class"></a>Banners Class</h4><p>만약 배너로 사용되는 이미지나, banner.txt가 있다면 어떻게 해야하는가?<br>Spring에선 이런 부분을 <code>Banners</code>라는 클래스를 통해 아주 나이스하게 해결했다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Banners</span> <span class="keyword">implements</span> <span class="title class_">Banner</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> List&lt;Banner&gt; banners = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">addIfNotNull</span><span class="params">(Banner banner)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (banner != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="built_in">this</span>.banners.add(banner);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">boolean</span> <span class="title function_">hasAtLeastOneBanner</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> !<span class="built_in">this</span>.banners.isEmpty();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">printBanner</span><span class="params">(Environment environment, Class&lt;?&gt; sourceClass, PrintStream out)</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (Banner banner : <span class="built_in">this</span>.banners) &#123;</span><br><span class="line">            banner.printBanner(environment, sourceClass, out);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Banners 가 각 Banner 구현체를 수집하는 방법</span></span><br><span class="line"><span class="keyword">private</span> Banner <span class="title function_">getBanner</span><span class="params">(Environment environment)</span> &#123;</span><br><span class="line">    <span class="type">Banners</span> <span class="variable">banners</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Banners</span>();</span><br><span class="line">    banners.addIfNotNull(getImageBanner(environment));</span><br><span class="line">    banners.addIfNotNull(getTextBanner(environment));</span><br><span class="line">    <span class="keyword">if</span> (banners.hasAtLeastOneBanner()) &#123;</span><br><span class="line">        <span class="keyword">return</span> banners;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">this</span>.fallbackBanner != <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">this</span>.fallbackBanner;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> DEFAULT_BANNER;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Banner를 구현한 Banners는 </p>
+<ol>
+<li>ImageBanner, ResourceBanner 가 있다면 해당 banner의 printBanner(); 를 각각 실행<ul>
+<li>즉, image, resource 배너 둘 다 동시에 사용 혹은 각각 사용 가능</li>
+</ul>
+</li>
+<li>둘다 없다면 Spring 기본 Banner인 SpringBootBanner의 printBanner(); 를 실행</li>
+</ol>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>오픈소스라는 다수의 프로그래머가 하나의 프로덕트에 집중해서 개발한다는 점에 있어서,<br>‘배너를 어떻게 출력할 것인가?’ 어떻게 보면 굉장히 사소한 문제도 간단히 넘어가는게 없구나 생각이 들었다.<br>또한, 전략 패턴으로 아주 유연하게 구현해놓은 것을 보고 감탄하면서도 개인적으로 굉장히 재미있다는 생각이 들었다.</p>
+<p><del>Spring 이라는 굉장히 잘 짜여진 프로그램의 소스를 뜯어 본다는 것이 이렇게 즐거운 일일 줄이야..</del></p>
+<p>전략 패턴은 디자인 패턴 중에서도 아주 자주 사용되는 패턴중에 하나이다.<br>키워드인 <strong>알고리즘, 캡슐화, 동작시 교환</strong> 이란 측면이 사실상 객체지향의 모든 특징을 거진 다 가지고 있는 패턴이기 때문에<br>가장 많이 사용되는 디자인 패턴이 아닌가 생각이 든다.</p>
+<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/108192370">헤드퍼스트 디자인패턴</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4/"># 디자인패턴</a>
+                    
+                        <a href="/tag/gof/"># GoF</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/02/02/design-pattern/2-observer/">옵저버 패턴(Observer Pattern)</a>
+            
+            
+            <a class="next" rel="next" href="/2023/01/29/web-tech/2-jwt/">JWT(JSON WEB Tokens)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

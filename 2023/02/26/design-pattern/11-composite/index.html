@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>복합 패턴(Composite Pattern) | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">복합 패턴(Composite Pattern)</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/">디자인 패턴</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <img src="/2023/02/26/design-pattern/11-composite/composite.png" class="">
+
+<h2 id="복합-패턴-Composite-Pattern-추상화"><a href="#복합-패턴-Composite-Pattern-추상화" class="headerlink" title="복합 패턴(Composite Pattern) ; 추상화"></a>복합 패턴(Composite Pattern) ; 추상화</h2><p>객체들을 트리구조로 구성하여, 부분과 전체를 나타내는 계층구조로 만들 수 있다.<br>이 패턴을 이용하면 클라이언트에서 개별 객체와 다른 객체들로 구성된 복합객체(Composite)를 똑같은 방법으로 다룰 수 있다.</p>
+<p>클라이언트는 Component 라는 복합객체 인터페이스에 의존하여 복합노드를 포함한 하위 모든 객체에 접근하거나 조작 가능하다.</p>
+<h3 id="Tree와-Composite-Pattern-의-구성요소-비교"><a href="#Tree와-Composite-Pattern-의-구성요소-비교" class="headerlink" title="Tree와 Composite Pattern 의 구성요소 비교"></a>Tree와 Composite Pattern 의 구성요소 비교</h3><p>Tree의 구성요소</p>
+<ul>
+<li>노드(Node) : 자식이 있는 원소</li>
+<li>잎(Leaf) : 자식이 없는 원소</li>
+</ul>
+<p>Composite Pattern 의 구성요소</p>
+<ul>
+<li>Composite : 자식이 있는 객체</li>
+<li>Leaf : 자식이 없는 객체</li>
+</ul>
+<h2 id="책에서-나오는-예제-Category-가-다른-Menu-구성하기"><a href="#책에서-나오는-예제-Category-가-다른-Menu-구성하기" class="headerlink" title="책에서 나오는 예제 - Category 가 다른 Menu 구성하기"></a>책에서 나오는 예제 - Category 가 다른 Menu 구성하기</h2><p>클라이언트(웨이트리스)가 접근할 MenuComponent 를 구성하는 예제에 대해 설명하고 있다.  </p>
+<h3 id="MenuComponent"><a href="#MenuComponent" class="headerlink" title="MenuComponent"></a>MenuComponent</h3><p>최상위 Composite, 클라이언트가 접근할 interface</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">MenuComponent</span> &#123;</span><br><span class="line">    <span class="keyword">default</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(MenuComponent menuComponent)</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">UnsupportedOperationException</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> <span class="keyword">void</span> <span class="title function_">remove</span><span class="params">(MenuComponent menuComponent)</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">UnsupportedOperationException</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> <span class="keyword">void</span> <span class="title function_">getChild</span><span class="params">(<span class="type">int</span> i)</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">UnsupportedOperationException</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">default</span> <span class="keyword">void</span> <span class="title function_">getDescription</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">UnsupportedOperationException</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="MenuItem"><a href="#MenuItem" class="headerlink" title="MenuItem"></a>MenuItem</h3><p>Leaf에 해당하는 객체, MenuComponent 로 부터 add, remove 는 구현하지 않는다.<br>–&gt; leaf 에서 add, remove 메소드를 호출하면 <code>UnsupportedOperationException</code> 이 발생한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MenuItem</span> <span class="keyword">implements</span> <span class="title class_">MenuComponent</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String description;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> price;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MenuItem</span><span class="params">(String name, String description, <span class="type">int</span> price)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">        <span class="built_in">this</span>.description = description;</span><br><span class="line">        <span class="built_in">this</span>.price = price;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDescription</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> description;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getPrice</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Menu"><a href="#Menu" class="headerlink" title="Menu"></a>Menu</h3><p>Composite 객체, 또 다른 Components 를 멤버로 갖고 있다. 또한 leaf의 역할도 수행하기 위해 leaf 의 구성요소도 멤버로 갖고 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Menu</span> <span class="keyword">implements</span> <span class="title class_">MenuComponent</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> List&lt;MenuComponent&gt; menuComponents = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String description;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Menu</span><span class="params">(String name, String description)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">        <span class="built_in">this</span>.description = description;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(MenuComponent menuComponent)</span> &#123;</span><br><span class="line">        menuComponents.add(menuComponent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">remove</span><span class="params">(MenuComponent menuComponent)</span> &#123;</span><br><span class="line">        menuComponents.remove(menuComponent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> MenuComponent <span class="title function_">getChild</span><span class="params">(<span class="type">int</span> i)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> menuComponents.get(i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getDescription</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> description;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="결론"><a href="#결론" class="headerlink" title="결론"></a>결론</h3><p>우리가 객체를 설계할 때 그 구조가 트리구조를 가지고 있을 때, 컴포지트 패턴을 사용하면 이점이 많다.<br>하지만, 패턴은 추상화를 통해 과도하게 일반화 하고 있는 것은 아닌가 질문을 던져야 할 때가 있다.<br>컴포지트 패턴의 가장 큰 이점은 ‘클라이언트가 개별 객체와 컬렉션 객체를 동일한 인터페이스로 제어 가능’ 하다는 점을 충분히 인지해야 한다.</p>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>컴포지트 패턴에서는 그 활용도가 높을 것이라 기대하진 않았다.<br>다만, ‘Tree 자료구조를 쓰면 되지 뭐하러 이렇게 귀찮게 쓰지?’ 라는 다소 위험한 생각을 하게 되었다.</p>
+<h3 id="Tree-vs-Composite-데이터-vs-객체"><a href="#Tree-vs-Composite-데이터-vs-객체" class="headerlink" title="Tree vs Composite : 데이터 vs 객체"></a>Tree vs Composite : 데이터 vs 객체</h3><p>만약 디렉토리 구조를 시스템으로 구현한다고 가정해보자, 물론 계층구조라는 점과 node, leaf 가 명확히 구분된다는 점에서<br>‘Tree’ 라는 자료구조가 먼저 떠오르게 된다. (그리고 계층구조를 그리다 보면 필연적으로 Tree 구조로 그리게 되어 있다.)</p>
+<p>Tree 는 기본적으로 어떤 데이터를 다루기 위한 자료구조이다. 따라서 아래와 같은 장 단점이 존재할 것이다.</p>
+<p>Tree 장점</p>
+<ul>
+<li>Tree 에 익숙한 개발자라면, 구현 난이도나 활용도가 높다</li>
+<li>순회 탐색에 특화된 자료구조이기 때문에 요소 탐색의 방법이 많다(전위, 중위, 후위 …)</li>
+</ul>
+<p>Tree 단점</p>
+<ul>
+<li>Tree 라는 자료구조의 기능으로만 제한된다.</li>
+<li>실제 Tree 를 구현해보면 V, T 의 <strong>재귀</strong>형태로 구현해야 한다.<br>익숙하지 않다면, 구현하는데 꽤나 어려움이 있다.</li>
+</ul>
+<p>데이터를 다루기 위함인지, 객체를 구성하기 위함인 지 구분해야 한다.<br>컴포지트 패턴은 객체를 다루기 위한 기술이다. 목적에서도 알 수 있듯이 ‘클라이언트가 동일한 인터페이스로 개별객체와 컬렉션을 제어하기 위함’에 있음을 알아야 한다.<br>물론 구현하는 기술이나 방법은 Tree와 매우 흡사하지만, 객체의 세계에서는 전혀 다르다는 것을 알아야 할 것 같다.</p>
+<p>책에서는 방법론적인 측면에서 Tree와 재귀, 컴포지트 패턴이 매우 유사하다고만 나와 있어서 조금 아쉬웠다.</p>
+<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/108192370">헤드퍼스트 디자인패턴</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4/"># 디자인패턴</a>
+                    
+                        <a href="/tag/gof/"># GoF</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/02/27/design-pattern/12-state/">스테이트 패턴(State Pattern)</a>
+            
+            
+            <a class="next" rel="next" href="/2023/02/16/design-pattern/10-iterator/">반복자 패턴(Iterator Pattern)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

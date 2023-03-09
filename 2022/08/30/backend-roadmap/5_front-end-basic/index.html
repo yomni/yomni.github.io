@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>Front-End 에 대한 기본 지식 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Front-End 에 대한 기본 지식</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/backend-roadmap/">Backend Roadmap</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="머릿말"><a href="#머릿말" class="headerlink" title="머릿말"></a>머릿말</h2><p>웹 백엔드 개발자라도 프론트엔드의 기본적인 개념인 <code>HTML</code>, <code>CSS</code>, <code>Javascript</code>에 대한 기본적인 이해는 필요하다.</p>
+<p>이번 글에선 각 기술에 대해 간단한 정의와 해당 기술이 <code>왜 필요한지</code>에 대해 다루어 보려고 한다.</p>
+<h2 id="HTML-CSS-Javascript"><a href="#HTML-CSS-Javascript" class="headerlink" title="HTML, CSS, Javascript"></a>HTML, CSS, Javascript</h2><p>이전 글에서 브라우저의 렌더링 과정을 간단하게 살펴보면서 알아본 핵심은 <code>브라우저는 HTML을 화면에 표시하는 것이 목적</code>이라는 것이다.</p>
+<p>웹 기술이 발전함에 따라 HTML과 스타일을 따로 분리하는 것이 필요해졌고,<br>단순히 멈춰있는 화면이 아니라 사용자와 상호작용하는 것이 필요해지므로 자바스크립트가 발전하게 되었다.  </p>
+<p>HTML, CSS, Javascript는 각각 사람의 장기로 보면 아래와 같이 비유할 수 있을 것 같다.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Front-End 기술</th>
+<th align="center">사람의 장기(?)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">HTML</td>
+<td align="center">골격</td>
+</tr>
+<tr>
+<td align="center">CSS</td>
+<td align="center">겉 옷</td>
+</tr>
+<tr>
+<td align="center">Javascript</td>
+<td align="center">각종 신경 작용  <br/> (날아오는 물체가 있으면 눈을 감고 몸을 웅크린다)</td>
+</tr>
+</tbody></table>
+<h3 id="HTML"><a href="#HTML" class="headerlink" title="HTML"></a>HTML</h3><ul>
+<li>HTML은 <code>Hyper Text Markup Language</code>의 약자로 웹 페이지를 만들기 위한 표준 마크업 언어이다.</li>
+<li>웹 페이지의 구조를 담당한다.</li>
+<li>Element 단위로 구성되며, 브라우저에게 콘텐츠를 어떻게 표시하는지 알려준다</li>
+</ul>
+<h4 id="HTML-기본-구조"><a href="#HTML-기본-구조" class="headerlink" title="HTML 기본 구조"></a>HTML 기본 구조</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Page Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>My First Heading<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span>My first paragraph.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="CSS"><a href="#CSS" class="headerlink" title="CSS"></a>CSS</h3><ul>
+<li>CSS는 <code>Cascading Style Sheet</code>의 약자로 직역하면 <code>계단식 스타일 시트</code>이다.</li>
+<li>HTML의 스타일을 지정하는 데 사용되는 언어</li>
+<li>HTML이 웹 페이지의 구조를 나타낸다면, CSS는 겉 옷을 담당한다 : HTML이 DOM으로 변환 된 후 <code>어떻게 표시되어야 하는 지 설명</code>한다.</li>
+<li>Box Model : 한 HTML Element 당 하나의 박스로 모델링하여 스타일을 관리하는 기법</li>
+</ul>
+<h4 id="CSS-기본-구조"><a href="#CSS-기본-구조" class="headerlink" title="CSS 기본 구조"></a>CSS 기본 구조</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: lightblue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">h1</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: white;</span><br><span class="line">    <span class="attribute">text-align</span>: center;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">p</span> &#123;</span><br><span class="line">    <span class="attribute">font-family</span>: verdana;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">20px</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Javascript"><a href="#Javascript" class="headerlink" title="Javascript"></a>Javascript</h3><ul>
+<li>웹 페이지에서 이벤트 처리를 기술할 수 있는 언어</li>
+<li>DOM을 조작하거나 특정 이벤트에 어떤 Element를 수정하거나, 추가적인 인터페이스를 작성할 수 있다.</li>
+</ul>
+<p><strong>Javascript는 개발자들 사이에서 가장 인기있는 언어 중 하나이므로, 별도의 포스트로 런타임 환경과 컨셉에 대해 자세히 다뤄볼 예정이다.</strong></p>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><ul>
+<li>브라우저의 구동 방식과 연결지어서 HTML, CSS, Javascript를 다시 살펴보니, 간단한 내용이라도 다시 보이게 된다.<br>(왜 CSS라는 새로운 언어가 필요해진건지 : DOM 트리를 구성한 후 스타일을 각 DOM 노드에 매핑하는 과정 등등..)</li>
+</ul>
+<h2 id="좋은-HOW-추천"><a href="#좋은-HOW-추천" class="headerlink" title="좋은 HOW 추천"></a>좋은 <code>HOW</code> 추천</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.w3schools.com/">W3C Tutorial</a></li>
+</ul>
+<h2 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://roadmap.sh/">roadmap.sh</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.w3schools.com/">W3C Tutorial</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/back-end-roadmap/"># Back-End Roadmap</a>
+                    
+                        <a href="/tag/front-end-basic/"># Front-End Basic</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/09/26/backend-roadmap/6_why-javascript/">자바스크립트란?</a>
+            
+            
+            <a class="next" rel="next" href="/2022/08/27/backend-roadmap/4_broswer/">브라우저 작동 방식</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

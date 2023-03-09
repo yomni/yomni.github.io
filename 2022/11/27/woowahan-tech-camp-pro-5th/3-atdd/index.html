@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>ATDD(인수테스트 주도 개발) 미션 회고 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">ATDD(인수테스트 주도 개발) 미션 회고</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%94%84-pro-5%EA%B8%B0-%ED%9A%8C%EA%B3%A0%EB%A1%9D/">우아한 테크 캠프 Pro 5기 회고록</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="Acceptance-Test-Driven-Development-인수-테스트-주도-개발"><a href="#Acceptance-Test-Driven-Development-인수-테스트-주도-개발" class="headerlink" title="Acceptance Test Driven Development(인수 테스트 주도 개발)"></a>Acceptance Test Driven Development(인수 테스트 주도 개발)</h2><img src="/2022/11/27/woowahan-tech-camp-pro-5th/3-atdd/atdd_cycle.png" class="">
+
+<p>이번 미션에서는 <code>ATDD(인수 테스트 주도 개발)</code>에 대해 집중적으로 학습하기 위한 미션으로,<br>지하철 노선도 관리자 시스템의 각 기능들을 ATDD로 구현해보는 것이 목적이었다.</p>
+<p>각 단계별로 <code>지하철역 인수 테스트 작성</code>, <code>지하철 노선 기능</code>, <code>구간 추가 기능</code>, <code>구간 제거 기능</code>으로 구성되어 있었다.<br><code>지하철역 인수 테스트 작성</code> 에서 ATDD를 맛보기로 경험하고,<br>비교적 익숙한 도메인인 <code>지하철 노선도를 관리하는 기능</code>을 직접 개발해봄으로써 ATDD를 익히기엔 충분한 미션이었다.</p>
+<p>특히 RestAssured 를 통해 백엔드 중심의 인수테스트를 작성하였고,<br>기본적으로 frontend 구동에 필요한 소스코드와 환경은 제공하고 있었기 때문에,<br>화면을 통해 기능들을 확인해 볼 수 있다는 점이 인수테스트 주도 개발이라는 개념을 익히기에 좋은 점이었다고 생각한다.</p>
+<p>이전 미션에 학습했던 JPA를 적극적으로 활용해야 한다는 점이 다소 어려웠지만,<br>단계적인 학습을 지향하는 나에게는 아주 좋은 경험이었다</p>
+<h2 id="회고"><a href="#회고" class="headerlink" title="회고"></a>회고</h2><h3 id="이번-미션에서-잘-한-점"><a href="#이번-미션에서-잘-한-점" class="headerlink" title="이번 미션에서 잘 한 점"></a>이번 미션에서 잘 한 점</h3><h4 id="인수테스트-작성시-given-을-위한-재활용-구성"><a href="#인수테스트-작성시-given-을-위한-재활용-구성" class="headerlink" title="인수테스트 작성시 given 을 위한 재활용 구성"></a>인수테스트 작성시 given 을 위한 재활용 구성</h4><p>인수테스트는 기능을 개발하기에 앞서 그 기능을 충족시키는 요구사항을 정의하고, 요구사항대로 테스트 코드를 짜는데 그 목적이 있다.<br>따라서 요구사항은 아주 크게 보면 given &#x2F; when &#x2F; then 이란 것을 정의하게 되는데 기능들을 개발하다 보면 이전에 개발했던 기능이<br>given 조건으로 들어와야 하는 경우가 있다.</p>
+<p>예를 들면, 구간을 추가하는 기능은 노선과 역이 이미 존재하는 것을 필수조건으로 삼고, 이는 given 절에 들어갈 수 있다.<br>따라서 given 조건의 상태를 만들기 위해 역을 추가하거나 노선을 추가하는 등의 기능을 인수테스트용 util로 정의하고 적극적으로 활용하였다.</p>
+<p>하나의 예를 들면, 노선을 생성하는 인수테스트를 아래와 같은 메서드로 테스트용 공통모듈에 추가하였다.<br>이 모듈을 구간 추가하는 인수테스트에선 given에서 활용하므로 테스트 코드가 가독성도 올라가고, 깔끔하게 작성 가능했다</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ExtractableResponse&lt;Response&gt; <span class="title function_">createLine</span><span class="params">(String name, String color, String upStationId, String downStationId, String distance)</span> &#123;</span><br><span class="line">    Map&lt;String, String&gt; params = getParams(name, color, upStationId, downStationId, distance);</span><br><span class="line">    <span class="keyword">return</span> post(params, REQUEST_PATH_FOR_LINE, MediaType.APPLICATION_JSON_VALUE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Given : 새로운 구간을 생성하고</span></span><br><span class="line"><span class="comment"> * When : 새로운 구간의 길이가 기존 길이보다 작으면</span></span><br><span class="line"><span class="comment"> * Then : 구간이 등록된다.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@DisplayName(&quot;역 사이에 새로운 역을 등록할 경우, 새로운 길이를 뺀 나머지를 새롭게 추가된 역과의 길이로 설정&quot;)</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="keyword">void</span> 역사이에_새로운역_등록_성공()&#123;</span><br><span class="line">    <span class="comment">// given</span></span><br><span class="line">    경강선=LineAcceptanceTestUtil.createLine(<span class="string">&quot;경강선&quot;</span>,<span class="string">&quot;bg-blue-600&quot;</span>,판교역,경기광주역,<span class="string">&quot;10&quot;</span>)</span><br><span class="line">    .jsonPath().getString(<span class="string">&quot;id&quot;</span>);</span><br><span class="line"></span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="어려웠던-점"><a href="#어려웠던-점" class="headerlink" title="어려웠던 점"></a>어려웠던 점</h3><h4 id="예외-상황-정의에-대한-기술적인-부재"><a href="#예외-상황-정의에-대한-기술적인-부재" class="headerlink" title="예외 상황 정의에 대한 기술적인 부재"></a>예외 상황 정의에 대한 기술적인 부재</h4><p>마지막 <code>구간 제거 기능</code> 단계에선 아래와 같은 요구사항이 존재했다.</p>
+<ul>
+<li>예외 케이스에 대한 검증도 포함하세요</li>
+<li>기능 설명을 참고하여 예외가 발생할 수 있는 경우를 검증할 수 있는 인수 테스트를 만들고 이를 성공 시키세요</li>
+</ul>
+<p>한 마디로, 발생 가능할 것 같은 모든 예외케이스를 인수 테스트로 작성하고 예외를 발생시켜 테스트를 통과하는<br>안전한 코드를 작성하라는 것으로 이해했다.</p>
+<p>예외에 대한 적절한 인수테스트를 잘 작성하고, 이에 대한 예외도 적절하게 발생하는 안전한 코드를 작성했지만,<br>나는 더 나아가서 <code>동시성 문제</code>에 대한 예외도 생각해보게 되었다.</p>
+<p>처음으로 생각한 동시성 문제에 대한 예외 케이스는 아래와 같았다.</p>
+<img src="/2022/11/27/woowahan-tech-camp-pro-5th/3-atdd/concurrency-problem-case.png" class="">
+
+<ul>
+<li>이렇게 동시에 요청이 오는 경우가 드물긴 하겠지만, 만약 이런 경우가 생긴다면 어쩌지?<br>나는 이런 문제를 예방하고자 <code>List&lt;Section&gt;</code> 의 구현체를 <code>ArrayList</code>에서 <code>CopyOnWriteArrayList</code>로 변경하였다.</li>
+</ul>
+<p>결과부터 말하자면, 시간의 흐름에 따라 동시에 요청이 오는 경우가 있겠지만 내가 생각했던 동시성 문제는 발생하지 않는다.<br>왜냐하면, 동시성 문제라는 것 자체가 소스코드에서 <code>스레드간 공유하는 자원을 동시에 제어할 때 발생하는 문제</code>이기 때문이다.</p>
+<p>리뷰어님께서는 아래와 같은 리뷰를 해주셨다.</p>
+<img src="/2022/11/27/woowahan-tech-camp-pro-5th/3-atdd/concurrency-problem-review.png" class="">
+<p>(<em>정말 친절하시게도 내가 한번 더 고민해볼 수 있도록 리뷰해주셨다..</em>)</p>
+<p>이를 토대로 학습해본 결과</p>
+<ol>
+<li>하나의 request 당 thread pool 에서 한개의 thread를 할당 받는다</li>
+<li>thread간 공유하는 클래스에서 동시성 문제가 발생할 수도 있다</li>
+</ol>
+<p>라는 결론을 도출할 수 있었고, 내 소스코드 상에선 thread 간 공유하는 자원이 없었기 때문에,<br>동시성 문제를 고려하지 않아도 됐었다.</p>
+<p>추가로 대규모 대용량 서비스를 구축하거나 운영하는 관점에서는</p>
+<ul>
+<li>동시성 문제를 어떻게 인지하고 예방 혹은 대처하는 지</li>
+<li>동시성에 대한 테스트 방법<br>등이 궁금해져서 관련 질문을 했고, 아래와 같은 답변을 받았다.</li>
+</ul>
+<img src="/2022/11/27/woowahan-tech-camp-pro-5th/3-atdd/concurrency-answer.png" class="">
+
+<p>동시성 문제에 대해 학습해볼 키워드를 얻은 것 같아서, 아주 영양가 높은 리뷰였다🧐</p>
+<h5 id="동시성-문제-학습-키워드"><a href="#동시성-문제-학습-키워드" class="headerlink" title="동시성 문제 학습 키워드"></a>동시성 문제 학습 키워드</h5><ul>
+<li>소스코드에서 발생할 수 있는 동시성 문제 해결법</li>
+<li>DB에서 발생할 수 있는 동시성 문제와 해결법</li>
+<li>java multi thread 를 이용한 테스트 코드 작성</li>
+<li>stress test</li>
+</ul>
+<h2 id="느낀점"><a href="#느낀점" class="headerlink" title="느낀점"></a>느낀점</h2><p>인수 테스트 주도 개발이란 용어 자체도 처음 접해본 나로써는 이번 미션이 다소 생소했다.<br>하지만, 요구사항을 토대로 테스트를 정의하고, 이를 통과하는 코드를 만드는 개발이란 개념이<br><code>SI 개발 에서도 통용될 수 있는 것이 아닐까?</code> 라는 의문을 갖게 만들었다.<br><del>물론 인수 테스트는 <strong>잘 정의되어 있는 요구사항</strong>을 전제로 한다…</del></p>
+<p>강의 시간에 관련된 책으로 <code>린 애자일 기법을 활용한 (인수) 테스트 주도 개발</code>을 소개해줬는데 이 책도 꼭 한번 읽어봐야겠다.<br>(영어 원문으로는 <code>Lean-Agile Acceptance Test-Driven Development</code>로 되어있다. <strong>Acceptance(인수)</strong> 라는 단어의 번역을 누락한 것 같다.)</p>
+<h2 id="ATDD를-제대로-학습하기"><a href="#ATDD를-제대로-학습하기" class="headerlink" title="ATDD를 제대로 학습하기"></a>ATDD를 제대로 학습하기</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=40990966">린 애자일 기법을 활용한 (인수) 테스트 주도 개발</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EC%9A%B0%ED%85%8C%EC%BA%A0pro/"># 우테캠Pro</a>
+                    
+                        <a href="/tag/atdd/"># ATDD</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/11/28/woowahan-tech-camp-pro-5th/4-infra/">그럴듯한 서비스 만들기 (AWS를 활용한 Infra 구축) 미션 회고</a>
+            
+            
+            <a class="next" rel="next" href="/2022/11/14/woowahan-tech-camp-pro-5th/2-jpa/">JPA 미션 회고</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

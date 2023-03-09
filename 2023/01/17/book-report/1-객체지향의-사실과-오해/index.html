@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>객체지향의 사실과 오해를 읽고 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">객체지향의 사실과 오해를 읽고</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EB%8F%85%ED%9B%84%EA%B0%90/">독후감</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <img src="/2023/01/17/book-report/1-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%9D%98-%EC%82%AC%EC%8B%A4%EA%B3%BC-%EC%98%A4%ED%95%B4/book-cover.jpeg" class="" title="객체지향의 사실과 오해(조영호 지음) : 일명 토끼책">
+
+<h2 id="객체지향의-사실과-오해를-읽게-된-계기"><a href="#객체지향의-사실과-오해를-읽게-된-계기" class="headerlink" title="객체지향의 사실과 오해를 읽게 된 계기"></a>객체지향의 사실과 오해를 읽게 된 계기</h2><p>언젠가 이런 말을 들어본 적이 있다.<br>‘Java에서는 Primitive Type 이 존재하기 때문에 <strong>순수한 객체 언어</strong>가 아니라 객체<strong>지향</strong>언어로 분류된다.’<br>이 말을 듣고 순수한 객체 언어(Pure Object Language)를 찾아 보게 되었다.  </p>
+<p>Java 에서는 int, long, char, double 같은 원시타입이 존재하며. 이는 클래스로 정의되어 있지 않다.<br>따라서 순수 100% 객체로 이루어진 언어가 아니었던 것이다.  </p>
+<blockquote>
+<p>참고) Python 은 순수 객체 언어이다.</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(<span class="number">2</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(<span class="string">&quot;string&quot;</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>([]))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(&#123;&#125;))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">type</span>(()))</span><br><span class="line"></span><br><span class="line">&lt;<span class="keyword">class</span> <span class="string">&#x27;int&#x27;</span>&gt;</span><br><span class="line">&lt;<span class="keyword">class</span> <span class="string">&#x27;str&#x27;</span>&gt;</span><br><span class="line">&lt;<span class="keyword">class</span> <span class="string">&#x27;list&#x27;</span>&gt;</span><br><span class="line">&lt;<span class="keyword">class</span> <span class="string">&#x27;dict&#x27;</span>&gt;</span><br><span class="line">&lt;<span class="keyword">class</span> <span class="string">&#x27;tuple&#x27;</span>&gt;</span><br><span class="line">// python 에서는 모든 것이 클래스로 정의되어 있다.</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>Java를 순수 객체 언어가 아니라는 것을 알게 되면서 또 다른 의문이 생겼다. </p>
+<ul>
+<li>클래스는 객체와 동치인가?,  </li>
+<li>클래스가 존재한다면 객체지향인가?  </li>
+<li>절차지향과는 무엇이 다르지?  </li>
+<li><strong>객체는 무엇인가?</strong></li>
+</ul>
+<p>개발과 관련된 오픈채팅방에선 가끔 건설적인 토론이 벌어진다.<br>마음속 품고있던 객체지향이란 무엇인가? 에 대해 다른 사람들의 생각이 궁금해졌고,<br>이런 저런 대화를 나누던 중 드디어, ‘객체지향의 사실과 오해’ 라는 책을 추천받게 되었다.</p>
+<p>책의 서문을 보자마자 이 책은 반드시 읽어야 겠다는 생각이 들게 만든 문구가 있었다.<br>‘객체지향이란 무엇일까요? 이 질문에 여러분은 뭐라고 답하시겠습니까?’</p>
+<p>부끄러운 얘기지만 내가 Java 를 처음 배울 때, 클래스를 어떻게 설계해야 하는가에 초점이 맞춰져 있었고,<br>객체지향 &#x3D;&#x3D; 붕어빵틀 &amp; 붕어빵 이라는 굉장히 고전적인 이론으로 결론짓고 살고 있었다.</p>
+<h3 id="객체지향의-오해"><a href="#객체지향의-오해" class="headerlink" title="객체지향의 오해"></a>객체지향의 오해</h3><p>객체지향을 처음 접할때 ‘실세계를 직접적이고 직관적으로 모델링 할 수 있는 패러다임’ 이라는 설명과 마주하게 된다.<br>나도 객체지향언어를 처음 배울 때, ‘실세계에 있는 것들을 추상화하여 소프트웨어 세계에서 다루는 언어’ 정도로 배웠던 것 같다.</p>
+<p>하지만 이 부분에서 가장 큰 오해가 있었다.<br>실제로 애플리케이션을 개발하면서 객체에 직접적으로 대응되는 실세계의 사물을 발견할 확률은 그다지 높지 않다.  </p>
+<p><em><strong>객체지향의 목표는 실세계를 모방하는 것이 아니다.</strong></em>  </p>
+<p>이런 부분이 나를 비롯한 많은 개발자들이 객체지향에 대해 오해하고 있었던 점이다.  </p>
+<p>물론, 실세계를 모방하여 객체지향을 설명하려는 시도는 객체지향을 처음 접하는 시점에서는 매우 효과적이다.<br>하지만 실무적인 관점에서는 객체지향이 실세계를 모방한다는 것이 다소 부적합하다.<br>노련한 객체지향 전문가들은 본능적으로 이런 사실을 인지하고 있다.</p>
+<h3 id="객체지향의-사실"><a href="#객체지향의-사실" class="headerlink" title="객체지향의 사실"></a>객체지향의 사실</h3><p>책의 상당히 초반 부분인 ‘객체지향의 본질’이란 챕터에서<br>책의 서문에서 던졌던 “객체지향이란 무엇인가?”에 대한 필자의 답을 찾을 수 있다.</p>
+<ul>
+<li>객체지향이란 시스템을 상호작용하는 <strong>자율적인 객체들의 공동체</strong>로 바라보고 객체를 이용해 시스템을 분할하는 방법이다.</li>
+<li>자율적인 객체란 <strong>상태</strong>와 <strong>행위</strong>를 함께 지니며 스스로 자기 자신을 책임지는 객체를 의미한다.</li>
+<li>객체는 시스템의 행위를 구현하기 위해 다른 객체와 <strong>협력</strong>한다. 각 객체는 협력 내에서 정해진 <strong>역할</strong>을 수행하며, 역할은 관련된 <strong>책임</strong>의 집합이다.</li>
+<li>객체는 다른 객체와 협력하기 위해 메시지를 전송하고, <strong>메시지</strong>를 수신한 객체는 메시지를 처리하는 데 적합한 <strong>메서드</strong>를 자율적으로 선택한다.</li>
+</ul>
+<p>책의 상당히 초반 부분에 핵심적인 내용이 나오기 때문에, 이미 객체지향이 무엇인지 나름의 정의를 가지고 있고,<br>조영호님의 생각과 어느정도 일치한다면, 뒤에 나오는 이상한 나라의 엘리스 비유나, 앞에 있었던 커피 공화국 예시가 술술 읽힐 수 있다.</p>
+<h3 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h3><p>‘객체지향이란 무엇인가?’ 라는 질문을 봤을 때 가슴이 쿵쾅거렸다.<br>마치 알고보면 아무것도 모르는 나의 머리속 지식들이 발가벗겨진 기분이랄까..  </p>
+<p>한편으론 무시당한 것 같은 느낌이 들면서 분노와 비슷한 감정이 치밀어 올랐다.<br>그렇게 읽기 시작하면서 점점 필자의 생각과 주장에 설득되었다.</p>
+<p>우아한 테크 캠프에서 기억에 남는 강의 중 하나 였던 ‘레거시 리팩토링’ 미션에서<br>소프트웨어의 존재 가치에 대해 다루었던 적이 있다.<br><code>소프트웨어의 본질은 해당 소프트웨어의 사용자를 위해 도메인에 관련된 문제를 해결하는 능력에 있다.</code></p>
+<p>왜 이게 갑자기 생각났던 건지는 잘 모르겠지만,<br>애플리케이션을 개발하는 목적과 객체지향이 맞물려서 생각하게 되었다.</p>
+<ol>
+<li>소프트웨어의 본질은 해당 소프트웨어의 사용자를 위해 도메인에 관련된 문제를 해결하는 능력에 있다.</li>
+<li>객체지향 소프트웨어는 사용자의 문제를 해결하는 기능을 객체들의 협력을 통해 제공한다.</li>
+<li>객체는 이 때 자율적인 상태와 행위를 가지며, 이를 위해 적절한 책임을 부여받는다.</li>
+</ol>
+<p>이러한 관점에서 객체지향의 4가지 특성과 SOLID 원칙이 <strong>왜 생겨 났는가?</strong> 에 대해 다시 생각할 수 있는 기회가 되었고,<br>책에서도 적절한 역할과 책임을 부여하기 위해 4가지 특성(추상화, 상속, 캡슐화, 다형성)을 어떻게 적용해야 하는 지,<br>잘 설명되어 있었다.</p>
+<p>하지만, 나처럼 객체지향에 대한 경험이 부족하다면 이 책을 단순히 읽었을 때에는 그 본질을 정확히 이해하기가 힘들것이다.<br>책의 후반부에 코드로 직접 바람직한 객체지향을 어떻게 코딩해야 하는 지 나와있는데,<br>그 부분을 먼저 보고 앞에 커피 공화국이나 이상한 나라의 엘리스 비유를 보면서<br>머리속으로 뇌코딩 해보는 것도 이 책을 이해하는 데 좋은 방법인 것 같다.</p>
+<p>또한 책의 서문에 보면, 책을 집필하게 된 동기에 대해 나오는데,<br>작성하고 계셨던 다른 책(오브젝트)을 이해하는 데 필요한 개념과 배경 지식을 제공하고 싶었기 때문이라고 나와있다.<br><del>역시 무엇이든 힘을 빼고 해야 대박이 나나보다..</del></p>
+<p>가끔 드라마나 책을 보면서, ‘아 이건 주기적으로 정주행 해야되겠다.’ 라는 작품이 있다.<br>나에겐 이 책이 딱 그러했다.</p>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%9D%B4%EB%9E%80/"># 객체지향이란?</a>
+                    
+                        <a href="/tag/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5/"># 객체지향</a>
+                    
+                        <a href="/tag/%EB%8F%85%ED%9B%84%EA%B0%90/"># 독후감</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/01/19/woowahan-tech-camp-pro-5th/8-create-reliable-service/">안정적인 서비스 만들기(성능 개선) 미션 회고</a>
+            
+            
+            <a class="next" rel="next" href="/2023/01/13/woowahan-tech-camp-pro-5th/7-refactoring/">레거시 리팩터링(도메인 주도 설계) 미션 회고</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

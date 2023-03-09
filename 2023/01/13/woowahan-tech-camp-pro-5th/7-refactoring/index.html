@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>레거시 리팩터링(도메인 주도 설계) 미션 회고 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">레거시 리팩터링(도메인 주도 설계) 미션 회고</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%94%84-pro-5%EA%B8%B0-%ED%9A%8C%EA%B3%A0%EB%A1%9D/">우아한 테크 캠프 Pro 5기 회고록</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <img src="/2023/01/13/woowahan-tech-camp-pro-5th/7-refactoring/legacy.jpeg" class="">
+
+<h2 id="레거시-리팩터링"><a href="#레거시-리팩터링" class="headerlink" title="레거시 리팩터링"></a>레거시 리팩터링</h2><p>많은 기업들이 ‘서비스를 안정적으로 운영하면서 레거시 코드를 리팩터링 할 수 있는 역량을 갖춘 개발자’를 요구한다.<br>이번 미션에서는 리팩터링과 관련한 많은 프로세스와 내용들을 학습했다.  </p>
+<p>개인적으로는 이번 미션에 임하면서 실제 임의의 회사에 새로 이직을 했다는 생각으로,<br>레거시 코드를 바라보고 ‘어디서부터 어떻게 리팩터링 할 것 인가?’라는 생각을 가지고 임하게 되었다.</p>
+<p>많은 레거시 프로젝트들은 <strong><em>데이터 종속적인 애플리케이션</em></strong> 개발에 초점이 맞춰져 있다.</p>
+<p>데이터 종속적인 애플리케이션은 DB의 스키마가 설계되면 모든 애플리케이션의 VO가 동시에 정해지며,<br>사실상 백엔드 서버에서는 DAO 나 Service layer에 비즈니스 로직을 집중시키게 된다.</p>
+<p>따라서 빈약한 도메인 모델(Anemic Domain Model)을 가지게 되므로,<br>이에 대비하여 서비스 레이어는 거대해지기 마련이다.<br>거대한 서비스 레이어(Big Service Layer) 형태는 <strong>객체지향 설계 원칙</strong>에 맞지 않을 뿐더러,<br>객체의 행동(Behavior)를 담당하는 도메인 로직을 여러 곳에 산재하게 만든다.<br>또한, 코드의 중복과 오브젝트의 재활용성을 현저히 떨어뜨리는 원인이 된다.</p>
+<p>위의 문제는 다음과 같이 정리할 수 있다.  </p>
+<ol>
+<li>데이터 중심 설계(DB 스키마만 설계한다)</li>
+<li>도메인 모델이 빈약해진다.</li>
+<li>모든 도메인 로직 (or 비즈니스 로직)이 서비스 레이어에 집중된다.</li>
+</ol>
+<p>이런 불일치에 대한 해결책으로 DDD(Domain Driven Design)을 사용할 수 있다.</p>
+<h3 id="도메인-주도-설계-Domain-Driven-Design"><a href="#도메인-주도-설계-Domain-Driven-Design" class="headerlink" title="도메인 주도 설계(Domain Driven Design)"></a>도메인 주도 설계(Domain Driven Design)</h3><ul>
+<li>Eric Evans의 동명의 책에서 유래</li>
+<li>도메인 모델의 적용 범위를 구현까지 확장하여 도메인 지식을 구현 코드에 반영</li>
+<li>공통의 언어(유비쿼터스 언어)를 사용하여 도메인과 구현을 충분히 만족하는 모델을 만든다.</li>
+<li>실제 코드로 구현 가능한 현실성 있는 도메인 모델 분석과 그것을 추상화하는 설계</li>
+<li><strong>“설계를 하라, 그 다음에 구축하라” 가 아니다</strong></li>
+<li>다양한 원칙과 패턴</li>
+<li>도메인, 도메인 모델, 유비쿼터스 언어</li>
+<li>UML, Bounded Context ; Context Map</li>
+</ul>
+<h2 id="회고"><a href="#회고" class="headerlink" title="회고"></a>회고</h2><h3 id="이번-미션에서-잘-한-점"><a href="#이번-미션에서-잘-한-점" class="headerlink" title="이번 미션에서 잘 한 점"></a>이번 미션에서 잘 한 점</h3><h4 id="도메인-주도-설계-이해"><a href="#도메인-주도-설계-이해" class="headerlink" title="도메인 주도 설계 이해"></a>도메인 주도 설계 이해</h4><p>도메인 주도 설계에 대한 설명을 듣고 맨처음 생각이 난 단어는 바로 ‘객체지향’ 이었다.<br>왜냐하면, ‘DDD가 성공할 수 있는 전제조건, DDD 도입이 어려운 이유’를 듣고 보니,<br>내가 이제까지 했던 SI or 레거시 프로젝트 들이 모두 그 이유에 부합했기 때문이었다.  </p>
+<p>내가 경험했던 대부분의 프로젝트에선 객체지향을 도입해 보려고 하면<br>이론과 실제의 괴리가 있었고 결국 데이터 중심 설계로 진행하게 되었다.</p>
+<blockquote>
+<p>SI or 레거시 프로젝트에서 ‘객체지향’을 도입하기 어려웠던 이유</p>
+<ul>
+<li>대부분의 화면은 표(Table 혹은 Grid)이니까 DB 설계만 화면마다 잘 하면 된다.</li>
+<li>그러니까 테이블 설계 잘하고, 클래스는 테이블이랑 <strong>똑같이</strong> 만들면 된다.</li>
+<li>고객은 어떤 클래스로 설계했는지가 중요한게 아니라, 화면에 올바른 데이터가 나오는 지 중요하다.</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>DDD가 성공할 수 있는 전제 조건</p>
+<ul>
+<li>DDD는 개발자만을 위한 것이 아니다.</li>
+<li>이해관계자(stakeholder)의 스폰서십이 적극적으로 필요하다</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>DDD 도입이 어려운 이유</p>
+<ul>
+<li>사일로 내부에서만 전문가인 도메인 전문가</li>
+<li>도메인에 거의 또는 전혀 관심이 없는 동료 개발자</li>
+<li>모든 사람이 동일한 개념에 대해 다른 용어를 사용하거나, 다른 개념에 대해 동일한 용어를 사용한다.</li>
+</ul>
+</blockquote>
+<p>DDD 는 객체지향을 제대로 하기 위한 <strong>개발 방법론</strong>이나, <strong>개발 문화에 가깝다</strong>고 이해했다.<br>이렇게 이해하고 나니, 아래와 같은 기술적인 설계나 구현방법</p>
+<ul>
+<li>엔티티와 밸류</li>
+<li>Aggregate</li>
+<li>도메인 서비스에 대한 이해</li>
+<li>비즈니스 로직이 도메인에 있어야 하는 이유<br>등등 많은 부분들을 이해할 수 있었다.</li>
+</ul>
+<h3 id="어려웠던-점"><a href="#어려웠던-점" class="headerlink" title="어려웠던 점"></a>어려웠던 점</h3><h4 id="의존성-측면에서-객체지향의-제대로-된-이해"><a href="#의존성-측면에서-객체지향의-제대로-된-이해" class="headerlink" title="의존성 측면에서 객체지향의 제대로 된 이해"></a>의존성 측면에서 객체지향의 제대로 된 이해</h4><p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=dJ5C4qRqAgA&t=1s&ab_channel=%EC%9A%B0%EC%95%84%ED%95%9CTech">조영호님 - 우아한객체지향(우아한테크세미나)</a></p>
+<p>위 링크에선 ‘객체지향의 사실과 오해’, ‘오브텍트’ 의 저자로도 유명하신<br>우아한형제들의 조영호 개발실장님께서 의존성 차원에서의 설계의 중요성과 방법에 대해 세미나 한 영상이 있다.</p>
+<p>이번 미션은 4단계로 진행되었다.</p>
+<ol>
+<li>테스트를 통한 코드 보호(TDD &#x2F; ATDD를 통해 레거시 코드 보호)</li>
+<li>서비스 리팩터링(비즈니스 로직을 도메인 모델로)</li>
+<li><strong>의존성 리팩터링</strong></li>
+<li>멀티 모듈 적용</li>
+</ol>
+<p>의존성 리팩터링 미션을 진행하기 전 위 영상을 시청 하는 것을 권장했다.<br>영상을 다 보고 나니, 왜 의존성 리팩터링 전에 해당 영상을 보라고 권장했는 지 알게 되었다.</p>
+<p>좋은 설계는 의존성을 최대한 낮추고, 의존성 사이클을 없애는 것이다.<br>맨처음 객체지향을 배우면, 응집도가 높고 의존성을 낮추라는 말을 한번즈음 들어봤을 것이다.</p>
+<p>위 영상에서는 왜 의존성을 낮추는 것이 좋은 설계인지 직접적인 예시와 코드로 보여주고 있다.  </p>
+<p>또 하나 충격이었던 것은 ‘때로는 절차지향이 객체지향보다 좋다’ 라는 말을 하셨는데,<br>객체지향의 대명사급인 조영호님이 이런 말을 한다는 것이 뭔가 자기부정같은 느낌이라 영 불편했다.<br>하지만, 해당 부분을 5번 정도 돌려봤는데, 어떤 차원에서 하는 말인지 이해하게 되었다.  </p>
+<p><strong>‘때로는 절차지향이 객체지향보다 좋다’</strong> 라는 말에 대해 내가 이해한 바는 다음과 같다.  </p>
+<ol>
+<li>객체지향은 여러 객체를 오가며 로직을 파악해야 한다.</li>
+<li>따라서, Validation 같은 핵심 비즈니스와는 조금 연관성이 낮은 로직은 별도 ‘Util’로 구현한다.</li>
+<li>이 과정에서 Util은 절차지향적인 모습을 보이게 된다.</li>
+</ol>
+<p>따라서, ‘때로는 절차지향이 객체지향보다 좋다’라는 말은<br>‘절차지향 vs 객체지향’ 을 다루는 말이 아니다.</p>
+<p>객체지향을 좀 더 객체지향 답게 다루는 법에 관한 이야기었다.</p>
+<p>이 부분을 이해하는 데 있어, 객체지향을 제대로 적용해 본 경험이 부족했기 때문에<br>강의자료와 해당 영상을 여러번 살펴보았다.<br>또한 세미나 참고 코드의 링크를 찾아서 실제 의존성을 많이 제거한 코드를 분석해보기도 했다.</p>
+<h3 id="느낀점"><a href="#느낀점" class="headerlink" title="느낀점"></a>느낀점</h3><p>우테캠Pro 오리엔테이션 시간에 레거시 리팩터링 미션이 전체 미션을 통틀어 가장 어렵다고 으름장을 내놓으셨던 터라,<br>많이 긴장하고 이번 미션을 임하게 되었다.</p>
+<p>항상 미션을 진행하기 전에 일정을 짜놓고 구현을 시작했는데,<br>이번 미션에서는 그 일정을 매번 Over 하게 되었다…</p>
+<p>이번 미션에서는 아래와 같은 목표가 설정되어 있었다.</p>
+<ul>
+<li>서비스를 안정적으로 운영하면서 레거시 코드를 리팩터링 할 수 있는 역량을 키운다</li>
+<li>프로젝트를 완료한 후 일정 기간 유지보수를 함으로써 레거시 코드를 리팩터링 하는 경험</li>
+</ul>
+<p>우선 두 가지 목표를 인식하고 잘 수행 한 것 같다.</p>
+<p>많은 기업들이 최근 <code>MSA</code>, <code>도메인 주도 설계</code> 등을 키워드로 지원 공고를 올리고 있다.<br>이번 미션에서는 <code>MSA</code>, <code>도메인 주도 설계</code>가 <strong>‘왜 탄생하게 되었는가?’</strong> 잘 알 수 있는 기회였다.  </p>
+<p>어려웠던 미션인 것 만큼 많은 것을 새로 알게되는 좋은 경험이었다.  </p>
+<p>이번 미션회고 에서는 DDD 에 대해 간략하게만 정리해봤지만, 깊게 파고들 필요가 있다고 생각했다.<br>따라서 Eric Evans - 도메인 주도 설계 책을 읽어보고 이에 대해 별도의 포스트로 정리해 볼 계획이다.</p>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EC%9A%B0%ED%85%8C%EC%BA%A0pro/"># 우테캠Pro</a>
+                    
+                        <a href="/tag/%EB%A6%AC%ED%8C%A9%ED%86%A0%EB%A7%81/"># 리팩토링</a>
+                    
+                        <a href="/tag/ddd/"># DDD</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/01/17/book-report/1-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%9D%98-%EC%82%AC%EC%8B%A4%EA%B3%BC-%EC%98%A4%ED%95%B4/">객체지향의 사실과 오해를 읽고</a>
+            
+            
+            <a class="next" rel="next" href="/2023/01/12/woowahan-tech-camp-pro-5th/6-diagnose-service/">서비스 진단하기(웹 성능 진단) 미션 회고</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

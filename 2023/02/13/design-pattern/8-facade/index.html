@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>퍼사드 패턴(Facade Pattern) | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">퍼사드 패턴(Facade Pattern)</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/">디자인 패턴</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <img src="/2023/02/13/design-pattern/8-facade/facade.png" class="">
+
+<h2 id="퍼사드-패턴-Facade-Pattern-느슨한-결합-Loose-Coupling"><a href="#퍼사드-패턴-Facade-Pattern-느슨한-결합-Loose-Coupling" class="headerlink" title="퍼사드 패턴(Facade Pattern) ; 느슨한 결합(Loose Coupling)"></a>퍼사드 패턴(Facade Pattern) ; 느슨한 결합(Loose Coupling)</h2><blockquote>
+<p>Facade : 겉모양, 외관</p>
+</blockquote>
+<p>어떤 서브 시스템의 일련의 인터페이스에 대한 통합된 인터페이스를 제공한다.<br>퍼사드에서 고수준 인터페이스를 정의하기 때문에 서브 시스템을 더 쉽게 사용할 수 있다.</p>
+<p>한마디로, 서브 시스템의 복잡한 동작을 미리 정의하는 고수준의 인터페이스를 정하는 것이다.</p>
+<h2 id="책에서-나오는-예제-홈시어터의-복잡한-on-x2F-off-단계를-Facade-로-해결"><a href="#책에서-나오는-예제-홈시어터의-복잡한-on-x2F-off-단계를-Facade-로-해결" class="headerlink" title="책에서 나오는 예제 - 홈시어터의 복잡한 on&#x2F;off 단계를 Facade 로 해결"></a>책에서 나오는 예제 - 홈시어터의 복잡한 on&#x2F;off 단계를 Facade 로 해결</h2><img src="/2023/02/13/design-pattern/8-facade/genre_button.png" class="">
+
+<p>책에서 나오는 예제는 홈시어터를 통해 영화를 보는 과정의 복잡성을 먼저 소개하고,<br>이를 퍼사드 패턴을 통해 한 단계로 축약하는 극단적인 케이스를 소개한다.</p>
+<p>홈시어터로 영화를 보는 단계에 대해 먼저 알아보자.</p>
+<ol>
+<li>팝콘 튀기기</li>
+<li>전등 조절</li>
+<li>스크린을 내린다</li>
+<li>프로젝터 전원 on</li>
+<li>DVD 외부입력 설정</li>
+<li>스크린 모드로 프로젝트 조절</li>
+<li>앰프 조정 (on, DVD 출력, 서라운드 모드)</li>
+<li>DVD 재생</li>
+</ol>
+<p>만약 이런 일련의 과정을 시스템으로 구현한다고 가정해보자. 벌써 등장하는 객체만 해도 (팝콘, 전등, 스크린…) 머리가 복잡해진다.<br>그리고 이런 순서는 각 객체가 제공하는 메소드를 순서대로 클라이언트 측에서 일일히 찾아서 사용해야 하는 번거로움이 있다.</p>
+<p>따라서, 이를 한개의 인터페이스로 묶어버리고, 클라이언트에겐 해당 인터페이스만 제공하는 것으로 느슨한 결합을 달성 할 수 있다.</p>
+<p><strong><em>일종의 버튼 하나에 모든 기능을 축약한</em></strong> 리모콘의 기능을 떠올려 보면 된다.</p>
+<h3 id="최소-지식-원칙-데메르트의-법칙"><a href="#최소-지식-원칙-데메르트의-법칙" class="headerlink" title="최소 지식 원칙 ; 데메르트의 법칙"></a>최소 지식 원칙 ; 데메르트의 법칙</h3><blockquote>
+<p>정말 친한 친구하고만 얘기해라</p>
+</blockquote>
+<p>객체 사이의 상호작용은 될 수 있으면 아주 가까운 <strong>친구</strong> 사이에서만 허용하는 것이 좋다는 설계 원칙<br>최소 지식 원칙을 따를 수 있는 가이드라인 4가지(어떤 메소드에서든지 다음 4 종류의 객체의 메소드만을 호출해라)</p>
+<ol>
+<li>객체 자체</li>
+<li>메소드에 매개변수로 전달된 객체</li>
+<li>그 메소드에서 생성하거나 인스턴스를 만든 객체</li>
+<li>그 객체에 속하는 구성요소</li>
+</ol>
+<h4 id="장점"><a href="#장점" class="headerlink" title="장점"></a>장점</h4><ul>
+<li><strong>객체들 사이의 의존성을 줄일 수 있다.</strong></li>
+<li>소프트웨어의 관리가 용이해 진다.(작은 책임을 여러 객체가 나눠서 가지기 때문에)</li>
+</ul>
+<h4 id="단점"><a href="#단점" class="headerlink" title="단점"></a>단점</h4><ul>
+<li>단순 메소드 호출을 처리하기 위한 <strong>래퍼</strong> 객체가 생긴다.</li>
+<li>시스템의 복잡도가 높아진다.</li>
+<li>객체 생성 &#x2F; 소멸에 대한 자원낭비로 인해 성능이 떨어질 수 있다.</li>
+</ul>
+<h3 id="결론"><a href="#결론" class="headerlink" title="결론"></a>결론</h3><p>클라이언트는 퍼사드가 만약 존재하지 않다면, 모든 객체와 연결되어 있어야 하므로 최소 지식 원칙에 위배된다.<br>결국 퍼사드를 통해 최소 지식 원칙을 고수하면, 결합도가 낮아지게 되고 퍼사드에선 각 작업방식에 대한 책임을 부여하게 되므로<br>기본적으로 관리가 용이하다는 장점이 있다.</p>
+<p>하지만, 퍼사드 내부에서 사용하는 서브시스템 간 최소 지식 원칙을 고수하기 힘들 만큼 이미 복잡한 시스템이라면,<br>퍼사드를 추가하는 것을 다시 한번 고려해봐야 한다.</p>
+<h2 id="Spring-속-Facade-Pattern"><a href="#Spring-속-Facade-Pattern" class="headerlink" title="Spring 속 Facade Pattern"></a>Spring 속 Facade Pattern</h2><img src="/2023/02/13/design-pattern/8-facade/spring-facade.png" class="">
+
+<p>Spring 속 구현체에도 물론 Facade Pattern 이 적용된 부분이 있겠지만,<br>조금 더 친숙한 부분에서 Facade pattern 을 찾을 수 있었다. 바로 각 <code>Controller의 End Point</code>가 바로 Facade 패턴이 적용된 부분이다.  </p>
+<p>예를 들어, 상품 주문에 대한 <code>주문하기 API</code>를 갖고 있는 Controller 가 있다고 가정해보자.<br>내부적으론 OrderService, ShippingService, InventoryService 등 여러 서비스에 각 트랜잭션을 발생시켜야 할 것이다.<br>혹은, 하나의 서비스에서 한 트랜잭션으로 Order, Shipping, Inventory 등의 일련의 작업을 진행할 수도 있을 것이다.</p>
+<p>결과적으론 프론트에서 API를 호출하면 주문이 된다는 것이다. 만약 이런 end-point 가 각각 나눠져 있다면?<br>주문 API, 배송 API, 재고변경 API 등등 각 엔드포인트를 클라이언트 측에서 각각 호출해야 할 것이다.</p>
+<p>하지만, 일종의 퍼사드 패턴을 적용한 하나의 API를 제공하기 때문에 클라이언트에서는 해당 API가 어떤 역할을 하는 지만 보고,<br>규격에 맞춰서 요청을 보내면 된다.</p>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>퍼사드를 통해 일련의 작업방식을 고수준의 인터페이스 하나로 클라이언트에게 유연하게 제공할 수 있다는 것을 알았다.<br>스프링에선 이미 이런 패턴을 정말 적극적으로 활용하고 있었다는 것도 알게되었다.</p>
+<p>문득 ‘일련의 작업방식을 하나의 메소드(인터페이스)로 묶는다는 점에서 트랜잭션과 그 의미가 비슷한게 아닌가?’ 라는 생각이 들었다.</p>
+<h3 id="트랜잭션과-퍼사드-패턴"><a href="#트랜잭션과-퍼사드-패턴" class="headerlink" title="트랜잭션과 퍼사드 패턴"></a>트랜잭션과 퍼사드 패턴</h3><p>일련의 작업을 하나의 메소드 내에서 일목요연하게 정리한다는 점에서 비슷해보 일 수 있으나, 적용되는 기술과 목적이 아예 다르다.</p>
+<h4 id="공통점"><a href="#공통점" class="headerlink" title="공통점"></a>공통점</h4><ul>
+<li>일련의 작업목록들을 하나의 메소드로 묶는다.</li>
+</ul>
+<h4 id="차이점"><a href="#차이점" class="headerlink" title="차이점"></a>차이점</h4><ul>
+<li>퍼사드 패턴 : 결국 <strong>클라이언트에서 사용할 인터페이스를 정의</strong>한다.</li>
+<li>트랜잭션 : 작업단위로 그 <strong>목적은 데이터의 무결성</strong>을 위함이다.</li>
+</ul>
+<h3 id="객체지향생활체조-원칙과-데메르트의-법칙"><a href="#객체지향생활체조-원칙과-데메르트의-법칙" class="headerlink" title="객체지향생활체조 원칙과 데메르트의 법칙"></a>객체지향생활체조 원칙과 데메르트의 법칙</h3><p>객체지향생활체조 원칙 중 <strong><em>모든 원시값을 포장해라</em></strong> 라는 원칙이 나온다.<br>이를 통해 결합도를 낮추고 조금 더 객체지향적인 설계가 가능하다는 것이 목적이다.  </p>
+<p>이렇게 원시값을 포장하게 되면, 원시값에서 제공하는 많은 기능들을 <strong>제한</strong>하여 개발자가 필요로 하는 기능만 재정의 하여 제공하는 것이 가능하다.</p>
+<p><strong><em>위에서도 작성했듯이 관리에 대한 용이성과 성능상 효율성은 반작용이다.</em></strong>  </p>
+<p>실제 업무에선 이런 의견 사이에서 충돌이 일어날 수도 있다.  </p>
+<ul>
+<li><em>최소지식원칙에 의해 이 원시값은 별도 객체로 감싸야 합니다.</em></li>
+<li><em>어차피 우리(개발팀)끼리는 의미 다 통하는데 뭘 그렇게 까지해, 그거 신경 쓸 시간 없어 그냥 그렇다 쳐</em></li>
+</ul>
+<p>정말 장기적인 관점에서 객체지향적인 것을 고려하지 않고 개발자 간 편의성만 고려하면 되는걸까?…<br>한번 각자의 위치에서 고민해 볼 필요는 있다고 본다.</p>
+<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/108192370">헤드퍼스트 디자인패턴</a></li>
+<li><a target="_blank" rel="noopener" href="https://springframework.guru/gang-of-four-design-patterns/facade-pattern/">springframework.guru</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4/"># 디자인패턴</a>
+                    
+                        <a href="/tag/gof/"># GoF</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/02/15/design-pattern/9-template-method/">템플릿 메소드 패턴(Template Method Pattern)</a>
+            
+            
+            <a class="next" rel="next" href="/2023/02/12/design-pattern/7-adapter/">어댑터 패턴(Adapter Pattern)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>브라우저 작동 방식 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">브라우저 작동 방식</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/backend-roadmap/">Backend Roadmap</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="머릿말"><a href="#머릿말" class="headerlink" title="머릿말"></a>머릿말</h2><p>웹 브라우저는 가장 널리 사용되는 소프트웨어이다.<br>또한 웹 개발자로서 브라우저가 어떻게 동작하는지에 대한 이해는 반드시 필요하다고 생각한다.<br>이번 글에서는 브라우저가 내부적으로 어떻게 동작하는지에 대해 이해해보고자 한다.</p>
+<h2 id="브라우저의-역할"><a href="#브라우저의-역할" class="headerlink" title="브라우저의 역할"></a>브라우저의 역할</h2><p>브라우저의 역할은 다음 2개와 같다</p>
+<ol>
+<li><code>HTTP Request</code>를 구성하여 서버로 요청을 보낸다.</li>
+<li>서버로부터 받은 <code>HTTP Response</code>를 해석하여 화면에 표시한다.</li>
+</ol>
+<p>여러가지 유형의 리소스로 응답받을 수 있으나, 가장 근본적인 브라우저의 역할은<br><code>HTML 파일을 요청하고, 이를 응답받아 해석하여 화면에 표시하는 것</code>이다.</p>
+<p>하지만, HTTP가 발전함에 따라 HTML 이외 리소스(이미지, PDF파일 등등..)에 대해서도 브라우저가 해석하도록 발전했다.</p>
+<h2 id="브라우저의-구성요소"><a href="#브라우저의-구성요소" class="headerlink" title="브라우저의 구성요소"></a>브라우저의 구성요소</h2><p>브라우저는 HTML 파일을 해석하기 위해 몇몇 모듈로 구성되고,<br>각 모듈들은 역할에 따라 HTML 문서를 해석하여 화면에 보여준다.</p>
+<p>브라우저별로 각 구성요소별 상이한 점은 다소 있으나, 큰 맥락에서는 차이가 없다고 봐도 무방하다.<br>(예를 들면, <strong>Chrome 브라우저의 경우 각 탭에 하나씩 렌더링 엔진 인스턴스를 실행</strong>하므로, <strong>각 탭이 별도의 프로세스에서 실행된다</strong>)</p>
+<img src="/2022/08/27/backend-roadmap/4_broswer/Browser_component.png" class="" width="500">
+<div style="text-align: center;">브라우저 구성요소(출처: https://web.dev/howbrowserswork/)</div>
+
+<h3 id="User-Interface-사용자-인터페이스-UI"><a href="#User-Interface-사용자-인터페이스-UI" class="headerlink" title="User Interface(사용자 인터페이스) ; UI"></a>User Interface(사용자 인터페이스) ; UI</h3><p>요청한 페이지가 표시되는 창을 제외한 브라우저의 모든 부분이 <code>User Interface</code>에 해당한다.</p>
+<ul>
+<li>URI 표시 &#x2F; 삽입을 위한 주소표시줄</li>
+<li>뒤로 &#x2F; 앞으로 가기 버튼</li>
+<li>북마크 메뉴</li>
+<li>새로고침 &#x2F; 중지 버튼</li>
+<li>홈 버튼</li>
+</ul>
+<h3 id="Networking"><a href="#Networking" class="headerlink" title="Networking"></a>Networking</h3><p>서버로부터 리소스를 가져오기 위한 네트워크 호출을 담당한다.<br>Request 형식 지정, 프록시 처리, 캐싱 등을 적용한다.</p>
+<h3 id="UI-Back-End"><a href="#UI-Back-End" class="headerlink" title="UI Back - End"></a>UI Back - End</h3><p>기본적인 버튼, 입력 상자, 창과 같은 기본 위젯을 그리는 역할을 수행한다.<br>렌더링 엔진은 레이아웃 및 페인팅 단계에서 UI 백엔드 레이어를 사용하여 브라우저에 웹 페이지를 표시한다.</p>
+<h3 id="Javascript-Interpreter"><a href="#Javascript-Interpreter" class="headerlink" title="Javascript Interpreter"></a>Javascript Interpreter</h3><p>JavaScript 엔진은 DOM 또는 CSSOM에서 JavaScript 코드를 구문 분석하고 실행하는데 사용된다.<br>JavaScript 코드는 웹 서버에서 제공하거나 웹 브라우저에서 제공할 수 있다.</p>
+<p>초기 브라우저는 JavaScript Interpreter(컴파일 없이 한 줄씩 바로 실행)를 사용했지만,<br>최신 JavaScript 엔진은 성능 향상을 위해 <strong>부분적으로 JIT 컴파일을 사용</strong>한다</p>
+<h4 id="JavaScript-엔진의-종류"><a href="#JavaScript-엔진의-종류" class="headerlink" title="JavaScript 엔진의 종류"></a>JavaScript 엔진의 종류</h4><ul>
+<li>Chrome : V8 JavaScript Engine</li>
+<li>Safari : JavaScriptCore</li>
+<li>FireFox : SpiderMonkey Engine</li>
+</ul>
+<blockquote>
+<p>JIT : Just - In - Time<br>소스코드를 중간언어로 변환 하고 (IR : Intermediate Representation),<br>실행 시 IR을 해석하여 실행하는 방식이다.</p>
+<p>대표적으로 <code>Java</code>가 JIT 방식에 해당하는 언어이다.<br>최근 JavaScript도 부분적으로 JIT 방식을 채택하여 사용하고 있다.</p>
+</blockquote>
+<h3 id="Data-Storage"><a href="#Data-Storage" class="headerlink" title="Data Storage"></a>Data Storage</h3><p>브라우저는 때때로 데이터를 로컬(쿠키, 캐시 등)에 저장해야 할 때가 있다.<br>이 때, Data Storage 가 이 부분을 처리한다.</p>
+<p>최신 브라우저는 Local Storage, IndexedDB 및 File System과 같은 Storage 매커니즘도 지원한다.</p>
+<h3 id="Rendering-Engine"><a href="#Rendering-Engine" class="headerlink" title="Rendering Engine"></a>Rendering Engine</h3><p>브라우저의 구성요소로서 렌더링 엔진은 HTML의 구문 분석 후<br>브라우저 화면에 분석한 HTML을 표시한다는 점에서 구성요소 중 <strong>가장 큰 역할을 담당하고 있다.</strong></p>
+<p>브라우저의 발전 역사를 복기해보면 불행하게도, 표준화 되지 않고 체계가 없이 발전되어 왔다.<br>따라서 웹 표준과 호환성 측면에서 심각한 문제를 야기시켰다.<br>(물론 현재는 이런 문제를 인식하고, 웹 표준을 어느정도 준수하고 있다.)<br>브라우저의 렌더링 엔진도 이런 발전 과정에 따라 상이하게 개발되어 왔고, 브라우저마다 별도의 렌더링 엔진을 사용하게 되었다.</p>
+<p>브라우저의 점유율 순위로 보면 <code>Chrome</code>, <code>Safari</code>, <code>FireFox</code>가 압도적으로 우세하며,<br>렌더링 엔진의 종류도 사실상 위 3가지 브라우저의 렌더링 엔진만 알아두면 될 듯 하다.</p>
+<table>
+<thead>
+<tr>
+<th align="center">Browser</th>
+<th align="center">Rendering Engine</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">FireFox</td>
+<td align="center">Gecko</td>
+</tr>
+<tr>
+<td align="center"><strong>Safari</strong></td>
+<td align="center"><strong>WebKit</strong></td>
+</tr>
+<tr>
+<td align="center"><strong>Chrome</strong></td>
+<td align="center">Blink(<strong>WebKit의 포크 버전</strong>)</td>
+</tr>
+</tbody></table>
+<h4 id="렌더링-엔진의-구문-분석-주요-흐름"><a href="#렌더링-엔진의-구문-분석-주요-흐름" class="headerlink" title="렌더링 엔진의 구문 분석 주요 흐름"></a>렌더링 엔진의 구문 분석 주요 흐름</h4><p>렌더링 엔진은 네트워크 계층에서 전달된 문서의 내용을 가져오면서, 화면에 <strong>점진적으로 표시</strong>해준다.</p>
+<img src="/2022/08/27/backend-roadmap/4_broswer/Rendering_engine_basic_flow.png" class="">
+<div style="text-align: center;">렌더링 엔진의 기본 흐름(출처: https://web.dev/howbrowserswork/)</div>
+
+<p>렌더링 엔진의 주요 흐름을 디테일하게 이해하려면 반드시 <code>Tree</code>라는 자료구조에 대한 선행학습이 필요하다.</p>
+<p>핵심만 정리하자면,</p>
+<ol>
+<li><code>HTML</code>을 <code>DOM</code>으로 객체화</li>
+<li><code>DOM</code>에 <code>CSS</code> 같은 부가적인 레이아웃을 파싱하여 매핑시킴</li>
+</ol>
+<p>사실상 렌더링 엔진은 위 2 단계를 <code>반복, 점진</code>을 통해 화면에 표시한다.<br>(상세한 내용은 글 마지막에 참고자료를 참고하길 바란다.)</p>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>브라우저의 구조를 파악해보면서 그간 겉핡기 식으로만 알고 있던 지식들이 한층 정리되는 느낌이었다.</p>
+<ol>
+<li>DOM(Document Object Model)이란 개념이 추상적인 개념이 아니라 구조적인 측면으로 이해할 수 있다.<br>Java에서 클래스와 객체를 흔히 붕어빵틀과 붕어빵으로 비유하곤 한다.<br>DOM도 이제 와서 생각해보니 일종의 HTML이라는 클래스의 객체라고도 이해할 수 있을 것 같다.</li>
+<li>Apple은 왜 WebKit이라는 렌더링 엔진을 오픈소스로 공개했을까?</li>
+<li>SSR(Server Side Rendering) 에서의 렌더링이란 개념이 브라우저의 렌더링 엔진과 연관이 있는가?</li>
+</ol>
+<h2 id="브라우저에-대해-더-자세히-알고싶으면"><a href="#브라우저에-대해-더-자세히-알고싶으면" class="headerlink" title="브라우저에 대해 더 자세히 알고싶으면,"></a>브라우저에 대해 더 자세히 알고싶으면,</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://web.dev/howbrowserswork/">Tali Garsiel과 Paul Irish의 ‘How Browsers work’</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.browserstack.com/guide/browser-rendering-engine">Understanding the Role of Rendering Engine in Browsers</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/en-US/docs/Web/Performance/How_browsers_work">MDN Web Docs - how browsers work</a></li>
+</ul>
+<h2 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://web.dev/howbrowserswork/">Tali Garsiel과 Paul Irish의 ‘How Browsers work’</a></li>
+<li><a target="_blank" rel="noopener" href="https://gs.statcounter.com/">statcounter - 브라우저별 점유율</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/back-end-roadmap/"># Back-End Roadmap</a>
+                    
+                        <a href="/tag/browser/"># Browser</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/08/30/backend-roadmap/5_front-end-basic/">Front-End 에 대한 기본 지식</a>
+            
+            
+            <a class="next" rel="next" href="/2022/08/08/infrastructure/1_docker-summary/">Docker 요약 정리</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>팩토리 패턴(Factory Pattern) | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">팩토리 패턴(Factory Pattern)</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/">디자인 패턴</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="팩토리-패턴-Factory-Pattern"><a href="#팩토리-패턴-Factory-Pattern" class="headerlink" title="팩토리 패턴(Factory Pattern)"></a>팩토리 패턴(Factory Pattern)</h2><p>새로운 연산자를 만드는 것보다 객체지향에서는 ‘객체를 생성하는 과정’이 훨씬 중요하다.<br>객체의 인스턴스를 만드는 작업이 항상 공개되어야 하는것은 아니며, 모든 것을 공개했다가는 결합과 관련된 문제가 생길 수 있다.  </p>
+<p>따라서 객체 생성을 위한 별도의 클래스를 정의하고 이를 통해, <strong>불필요한 의존성을 제거</strong>할 수 있고,<br><strong>느슨한 결합을 이용하여 객체지향적으로 설계</strong>할 수 있다.</p>
+<h3 id="간단한-팩토리-Simple-Factory-SRP-OCP-객체-생성-캡슐화-변화"><a href="#간단한-팩토리-Simple-Factory-SRP-OCP-객체-생성-캡슐화-변화" class="headerlink" title="간단한 팩토리(Simple Factory) ; SRP, OCP, 객체 생성, 캡슐화, 변화"></a>간단한 팩토리(Simple Factory) ; SRP, OCP, 객체 생성, 캡슐화, 변화</h3><img src="/2023/02/06/design-pattern/4-factory/simple-factory.png" class="">
+
+<p>객체 생성 부분을 담당하는 별도의 객체, 보통 이런 객체의 이름은 <code>.*Factory</code>로 지어지며,<br>객체 생성을 담당하는 메소드는 <code>static</code>으로 정의된다.</p>
+<p>간단한 팩토리는 단순히 객체 생성 역할을 캡슐화 했다는 것에 의의가 있을 뿐,<br>설계 패턴으로는 정의되지 않는다.</p>
+<h3 id="팩토리-메서드-패턴-Factory-Method-Pattern"><a href="#팩토리-메서드-패턴-Factory-Method-Pattern" class="headerlink" title="팩토리 메서드 패턴(Factory Method Pattern)"></a>팩토리 메서드 패턴(Factory Method Pattern)</h3><img src="/2023/02/06/design-pattern/4-factory/factory-method-pattern.png" class="">
+
+<p>객체를 생성하기 위한 인터페이스를 정의한다. 이 때, 어떤 클래스의 인스턴스를 만들지는 서브 클래스에서 결정하게 만든다.<br>팩토리 메서드 패턴을 이용하면, 클래스의 인스턴스를 만드는 일을 서브 클래스에게 맡기게 된다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> Product <span class="title function_">factoryMethod</span><span class="params">(String type)</span>; <span class="comment">// 서브 클래스에서 구현 </span></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="추상-팩토리-패턴-Abstract-Factory-Pattern"><a href="#추상-팩토리-패턴-Abstract-Factory-Pattern" class="headerlink" title="추상 팩토리 패턴(Abstract Factory Pattern)"></a>추상 팩토리 패턴(Abstract Factory Pattern)</h3><img src="/2023/02/06/design-pattern/4-factory/abstract-factory-pattern.png" class="">
+
+<p>추상 팩토리 패턴에서는 인터페이스를 이용하여 서로 연관된, 또는 의존하는 객체를 구상 클래스를 지정하지 않고도 생성할 수 있다.</p>
+<p><strong>패턴을 별도로 정의하곤 있지만 발전과정일 뿐, abstract factory + factory method pattern 으로 구현되곤 한다.</strong></p>
+<h2 id="책에서-나오는-예시-피자가게-시나리오"><a href="#책에서-나오는-예시-피자가게-시나리오" class="headerlink" title="책에서 나오는 예시 - 피자가게 시나리오"></a>책에서 나오는 예시 - 피자가게 시나리오</h2><ol>
+<li>피자 종류가 추가되거나 삭제되는 경우 유연하게 확장할 수 없다.</li>
+<li>변화가 생기는 부분과 변화하지 않는 부분을 분리한다.</li>
+<li>이를 통헤 유연하게 확장이 가능하다.</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AS-IS</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PizzaStore</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> Pizza <span class="title function_">orderPizza</span><span class="params">(String type)</span> &#123;</span><br><span class="line">        Pizza pizza;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 만약 피자가 추가되거나 삭제된다면? --&gt; 변화</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;cheese&quot;</span>.equals(type)) &#123;</span><br><span class="line">            pizza = <span class="keyword">new</span> <span class="title class_">CheesePizza</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;greek&quot;</span>.equals(type)) &#123;</span><br><span class="line">            pizza = <span class="keyword">new</span> <span class="title class_">GreekPizza</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;pepperoni&quot;</span>.equals(type)) &#123;</span><br><span class="line">            pizza = <span class="keyword">new</span> <span class="title class_">PepperoniPizza</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        pizza.prepare();</span><br><span class="line">        pizza.bake();</span><br><span class="line">        pizza.cut();</span><br><span class="line">        pizza.box();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> pizza;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TO-BE</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 피자 생성을 담당하는 SRP, OCP 원칙에 맞는 별도 팩토리 클래스 정의</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SimplePizzaFactory</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Pizza <span class="title function_">createPizza</span><span class="params">(String type)</span> &#123;</span><br><span class="line">        <span class="type">Pizza</span> <span class="variable">pizza</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;cheese&quot;</span>.equals(type)) &#123;</span><br><span class="line">            pizza = <span class="keyword">new</span> <span class="title class_">CheesePizza</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;greek&quot;</span>.equals(type)) &#123;</span><br><span class="line">            pizza = <span class="keyword">new</span> <span class="title class_">GreekPizza</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;pepperoni&quot;</span>.equals(type)) &#123;</span><br><span class="line">            pizza = <span class="keyword">new</span> <span class="title class_">PepperoniPizza</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pizza;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PizzaStore</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> Pizza <span class="title function_">orderPizza</span><span class="params">(String type)</span> &#123;</span><br><span class="line">        <span class="type">Pizza</span> <span class="variable">pizza</span> <span class="operator">=</span> SimplePizzaFactory.createPizza(type);</span><br><span class="line"></span><br><span class="line">        pizza.prepare();</span><br><span class="line">        pizza.bake();</span><br><span class="line">        pizza.cut();</span><br><span class="line">        pizza.box();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> pizza;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Spring-Boot-에서-찾은-팩토리-패턴"><a href="#Spring-Boot-에서-찾은-팩토리-패턴" class="headerlink" title="Spring Boot 에서 찾은 팩토리 패턴"></a>Spring Boot 에서 찾은 팩토리 패턴</h2><p>Spring 의 핵심 개념인 IoC 의 역할이 ‘객체 생성’과 관련되어 있다 보니,<br>내부적으로 무수히 많은 Factory Pattern 을 찾아볼 수 있다.</p>
+<p>그 중 가장 많이 볼 수 있는 LoggerFactory 에 대해 살펴보려고 한다.<br>LoggerFactory의 역할은 하나다. <strong><em>내가 지금 이 클래스에서 사용할 logger의 인스턴스를 반환해줘</em></strong></p>
+<p>따라서, LoggerFactory 는 적절한 logger 인스턴스를 생성한 뒤 반환해준다.</p>
+<p>아래는 어떤 순서로 logger 인스턴스가 생성되는 지 추적해봤다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 사용 부분</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> LoggerFactory.getLogger(클래스명.class);</span><br><span class="line"></span><br><span class="line"><span class="comment">// getLogger(Class&lt;?&gt; clazz) 구현 부분</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Logger <span class="title function_">getLogger</span><span class="params">(Class&lt;?&gt; clazz)</span> &#123;</span><br><span class="line">    <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> getLogger(clazz.getName());</span><br><span class="line">    <span class="keyword">if</span> (DETECT_LOGGER_NAME_MISMATCH) &#123;</span><br><span class="line">        Class&lt;?&gt; autoComputedCallingClass = Util.getCallingClass();</span><br><span class="line">        <span class="keyword">if</span> (autoComputedCallingClass != <span class="literal">null</span> &amp;&amp; nonMatchingClasses(clazz, autoComputedCallingClass)) &#123;</span><br><span class="line">            Util.report(String.format(<span class="string">&quot;Detected logger name mismatch. Given name: \&quot;%s\&quot;; computed name: \&quot;%s\&quot;.&quot;</span>, logger.getName(),</span><br><span class="line">                    autoComputedCallingClass.getName()));</span><br><span class="line">            Util.report(<span class="string">&quot;See &quot;</span> + LOGGER_NAME_MISMATCH_URL + <span class="string">&quot; for an explanation&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> logger;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// getLogger(String name) 구현 부분</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Logger <span class="title function_">getLogger</span><span class="params">(String name)</span> &#123;</span><br><span class="line">    <span class="type">ILoggerFactory</span> <span class="variable">iLoggerFactory</span> <span class="operator">=</span> getILoggerFactory();</span><br><span class="line">    <span class="keyword">return</span> iLoggerFactory.getLogger(name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// getILoggerFactory()</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> ILoggerFactory <span class="title function_">getILoggerFactory</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (LoggerFactory.class) &#123;</span><br><span class="line">            <span class="keyword">if</span> (INITIALIZATION_STATE == UNINITIALIZED) &#123;</span><br><span class="line">                INITIALIZATION_STATE = ONGOING_INITIALIZATION;</span><br><span class="line">                performInitialization();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">switch</span> (INITIALIZATION_STATE) &#123;</span><br><span class="line">    <span class="keyword">case</span> SUCCESSFUL_INITIALIZATION:</span><br><span class="line">        <span class="keyword">return</span> StaticLoggerBinder.getSingleton().getLoggerFactory();</span><br><span class="line">    <span class="keyword">case</span> NOP_FALLBACK_INITIALIZATION:</span><br><span class="line">        <span class="keyword">return</span> NOP_FALLBACK_FACTORY;</span><br><span class="line">    <span class="keyword">case</span> FAILED_INITIALIZATION:</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(UNSUCCESSFUL_INIT_MSG);</span><br><span class="line">    <span class="keyword">case</span> ONGOING_INITIALIZATION:</span><br><span class="line">        <span class="comment">// support re-entrant behavior.</span></span><br><span class="line">        <span class="comment">// See also http://jira.qos.ch/browse/SLF4J-97</span></span><br><span class="line">        <span class="keyword">return</span> SUBST_FACTORY;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalStateException</span>(<span class="string">&quot;Unreachable code&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>LoggerFactory의 logger 구현체는 Spring Boot 의 경우 logback 을 사용하고 있다.</p>
+<p>getLoggerFactory() 안을 보면, getLoggerContext() 부분이 있는데, 이 메소드의 구현체를 보면,<br>Logback 라이브러리이다.</p>
+<h3 id="slf4j-는-인터페이스이다"><a href="#slf4j-는-인터페이스이다" class="headerlink" title="slf4j 는 인터페이스이다."></a>slf4j 는 인터페이스이다.</h3><p>slf4j 의 구현체는 여러 종류가 될 수 있다.  <code>log4j</code>, <code>logback</code> …<br>LoggerFactory 의 구현체가 어떤 라이브러리인지에 따라 나오는 logger 가 다를 수 있지만,<br>로거의 인스턴스를 각 클래스 명에 맞게 반환해준다는 점에서 abstract factory + factory method 패턴 모두가 사용되었다는 부분을 확인할 수 있다.</p>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>팩토리 패턴은 그 정의와 같이 생각해 보면 이름을 참 잘 지은 것 같다는 생각이 들었다.<br>특히 ‘변화’라는 단어에서부터 도출되는 SRP(단일 책임의 원칙), OCP(open-closed 원칙)의 객체지향의 설계 원칙이 조금씩 이해되기 시작했다.  </p>
+<p>이전 데코레이터 패턴에서도 살펴 봤듯이, 데코레이터를 사용하여 확장에 유연하게 대처할 수 있도록 설계를 고쳐보았다.<br>하지만, 결과적으론 ‘사용자가 원하는 객체를 생성하려면 어떤 래핑 클래스를 사용해야 하는가?’ 에 대한 문제가 남아 있었다.<br>이를 해결하는 방법 중 하나가 팩토리 패턴이다.  </p>
+<p>이전 데코레이터의 예시에서 다크로스트 커피를 주문하는 경우, 팩토리 패턴과 함께 사용했다면,<br>팩토리에선 래핑클래스를 사용하여 반환해주는 부분 까지 책임이 분리 될 것이다.</p>
+<p>각 디자인 패턴들이 독립적으로 사용되는 경우도 좋은 설계라고 할 수 있지만,<br>여러 디자인 패턴들을 적재적소에 적용하는 것 만큼 시너지가 날 수는 없다는 것을 알게 되었다.</p>
+<h3 id="IoC-vs-Factory"><a href="#IoC-vs-Factory" class="headerlink" title="IoC vs Factory"></a>IoC vs Factory</h3><p>문득 객체 생성의 관점에서 IoC 의 개념과 factory 패턴의 효과가 헷갈리기 시작했다.<br>정리해보면 아래와 같다.</p>
+<p>공통점</p>
+<ul>
+<li>객체를 생성하는 일을 ‘무언가’가 해준다.</li>
+</ul>
+<p>차이점 </p>
+<ul>
+<li>관점이 다르다.<ul>
+<li>IoC : 객체 생성은 신경쓰지마. 전적으로 내가 한다.</li>
+<li>팩토리 : 내가 만들 수 있는게 여러개 있거든?? 근데 선택좀 해줘.<br>선택만 해주면 생성은 내가 해줄게~</li>
+</ul>
+</li>
+<li>즉, IoC는 말 그대로 ‘의존성을 주입’ 해준다.</li>
+<li>팩토리는 어떤 관계로든 팩토리 객체를 의존할 수 밖에 없다.</li>
+</ul>
+<p>이런 차이는 클래스 다이어그램을 그려보면 더 명확하게 알 수 있다.<br>IoC는 클래스 다이어그램에서 표현할 수 없다.(IoC 컨테이너는 클래스 다이어그램에서 의존성을 표시하는 화살표를 그려주는 역할)<br>반면, 구성 객체는 어떻게든 팩토리 객체를 의존하고 있기 때문에 팩토리는 클래스 다이어그램에서 표현할 수 있다.</p>
+<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/108192370">헤드퍼스트 디자인패턴</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4/"># 디자인패턴</a>
+                    
+                        <a href="/tag/gof/"># GoF</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/02/07/design-pattern/5-singleton/">싱글턴 패턴(Singleton Pattern)</a>
+            
+            
+            <a class="next" rel="next" href="/2023/02/03/design-pattern/3-decorator/">데코레이터 패턴(Decorator Pattern)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>Docker 요약 정리 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Docker 요약 정리</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/infrastructure/">Infrastructure</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="docker-란"><a href="#docker-란" class="headerlink" title="docker 란?"></a>docker 란?</h2><h3 id="docker-이전-가상화의-문제점"><a href="#docker-이전-가상화의-문제점" class="headerlink" title="docker 이전 가상화의 문제점"></a>docker 이전 가상화의 문제점</h3><p>어느정도 규모있는 애플리케이션을 개발하려면, 운영체제 위에 여러가지 소프트웨어의 설치와 환경설정이 필요하다.<br>예를 들면, 웹서버, 데이터베이스 등등…<br>하지만, 여러 소프트웨어의 설치와 환경설정은 여간 어려운게 아니다. </p>
+<p>따라서 개발자는 각 소프트웨어의 전문가가 미리 설정해둔 소프트웨어를 제공받길 원한다.<br>하지만, 물리적으로 하드웨어를 늘리지 않으면서, 소프트웨어를 제공받기 위해 vmware, virtualbox같은<br>가상화 소프트웨어를 사용하여 운영체제를 설치하고, 운영체제 위에 각각의 소프트웨어를 설치하여 이 문제를 해결했었다.</p>
+<p>하지만, 각각의 소프트웨어를 설치하기 위해 운영체제라는 거대한 소프트웨어를 실행시켜야 하는 부담이 있었고,<br>운영체제 위에서 운영체제를 구동시키기 위해선 비교적 많은 리소스를 낭비해야하는 문제점이 있었다.</p>
+<img src="/2022/08/08/infrastructure/1_docker-summary/before_docker.png" class="">
+<center>docker 이전의 가상화(출처 : 생활코딩 Docker 입문수업 - 1) </center>
+
+<h3 id="해결책으로서의-docker"><a href="#해결책으로서의-docker" class="headerlink" title="해결책으로서의 docker"></a>해결책으로서의 docker</h3><p>가상화 소프트웨어의 장점인 <code>격리된 소프트웨어 실행 공간</code>은 살리면서<br>단점인 <code>과도한 자원낭비</code> 문제를 해결하고자 docker라는 기술이 등장하였다.  </p>
+<p>docker는 하나의 Host OS위에 격리된 공간에서 각각의 소프트웨어를 최소한의 lib, bin으로만 구동시킬 수 있고,<br>Network로 host와 통신하거나 혹은 각각의 docker 소프트웨어끼리 통신이 가능하게 되었다.</p>
+<img src="/2022/08/08/infrastructure/1_docker-summary/docker_architecture.svg" class="">
+<center>docker Architecture (출처 : docker document)</center>
+
+<blockquote>
+<h4 id="docker라는-단어의-사전적-의미로-부터-생각해보는-기술적인-역할"><a href="#docker라는-단어의-사전적-의미로-부터-생각해보는-기술적인-역할" class="headerlink" title="docker라는 단어의 사전적 의미로 부터 생각해보는 기술적인 역할"></a><code>docker</code>라는 단어의 사전적 의미로 부터 생각해보는 기술적인 역할</h4><ul>
+<li>docker(미국식 : [│dɑːkə(r)]  영국식 : [│dɒkə(r)]) : 항만[부두] 노동자 라는 의미</li>
+</ul>
+<p>각 격리된 소프트웨어 구동 환경을 Container 라고 한다. docker는 사전적 의미로부터 봤을 때,<br>이 Container를 다루는 역할을 가지고 있는 engine;daemon 등으로 이해할 수 있다.</p>
+</blockquote>
+<h2 id="docker-사용하기"><a href="#docker-사용하기" class="headerlink" title="docker 사용하기"></a>docker 사용하기</h2><h3 id="docker-install"><a href="#docker-install" class="headerlink" title="docker install"></a>docker install</h3><p>docker는 Linux OS의 Container라는 기술을 기반으로 동작한다.<br>따라서 Linux OS 위에서 기본적으로 동작해야 하며, Windows의 경우 WSL(Windows Subsystem for Linux)을 활성화 한 후<br>설치가 가능하다.</p>
+<img src="/2022/08/08/infrastructure/1_docker-summary/docker_install_architecture.png" class="">
+<center>각 OS에서 docker engine이 구동되는 architecture</center>
+
+
+<p>docker를 설치하는 방법은 아래의 docker 공식 홈페이지에서 확인하여 각 OS에 맞는 프로그램을 설치한다.</p>
+<h4 id="docker-install-manual"><a href="#docker-install-manual" class="headerlink" title="docker install manual"></a><a target="_blank" rel="noopener" href="https://docs.docker.com/get-docker/">docker install manual</a></h4><h3 id="docker-image-pull"><a href="#docker-image-pull" class="headerlink" title="docker image pull"></a>docker image pull</h3><p>image는 docker 컨테이너를 만드는 명령어가 저장된 읽기 전용 템플릿이라고 정의할 수 있다.<br>image가 있어야 docker가 container를 어떻게 구성할 지 알 수 있다.</p>
+<p>image는 <a target="_blank" rel="noopener" href="https://hub.docker.com/">docker hub</a>에서 각 소프트웨어 제조사에서 공유한<br>공식적인 image를 찾거나, 다운로드 받을 수 있다.</p>
+<img src="/2022/08/08/infrastructure/1_docker-summary/docker_hub.jpg" class="">
+
+<img src="/2022/08/08/infrastructure/1_docker-summary/docker_hub_detail.png" class="">
+<center>검색 결과 상세 화면으로 넘어가면 해당 image를 pull받는 명령어가 제공된다.</center>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull [image_name]</span><br></pre></td></tr></table></figure>
+
+<h3 id="docker-container-run"><a href="#docker-container-run" class="headerlink" title="docker container run"></a>docker container run</h3><p>docker engine 위에서 container를 실행하는 방법은 2가지가 있다.</p>
+<h4 id="docker-명령어로-실행하기"><a href="#docker-명령어로-실행하기" class="headerlink" title="docker 명령어로 실행하기"></a>docker 명령어로 실행하기</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">docker 명령어 사용법을 숙지한다.</span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">docker --<span class="built_in">help</span></span></span><br><span class="line"><span class="meta prompt_">$ </span><span class="language-bash">man docker</span></span><br></pre></td></tr></table></figure>
+<p>docker hub에서도 간략하게 container를 실행하기 위한 run 명령어를 제공한다.</p>
+<img src="/2022/08/08/infrastructure/1_docker-summary/docker_container_command.png" class="">
+
+<h4 id="docker-desktop-에서-실행하기"><a href="#docker-desktop-에서-실행하기" class="headerlink" title="docker desktop 에서 실행하기"></a>docker desktop 에서 실행하기</h4><p>image를 pull 받은 후 docker desktop 프로그램을 실행시켜 보면, images 탭에 리스트가 노출되는 것을 확인할 수 있다.    </p>
+<img src="/2022/08/08/infrastructure/1_docker-summary/docker_desktop_imgs.png" class="">
+
+<p>실행하고자 하는 image에 run 버튼을 눌러보면, 각종 설정값을 gui 환경에서 셋팅 후 실행시킬 수 있다.</p>
+<img src="/2022/08/08/infrastructure/1_docker-summary/docker_desktop_contianer_run.png" class="">
+
+<h3 id="docker-network-configuration"><a href="#docker-network-configuration" class="headerlink" title="docker network configuration"></a>docker network configuration</h3><p>docker engine 위에서 동작하는 container 중 각자 필요한 endpoint 끼리 network로 <strong>통신</strong>하도록 구성할 수 있다.<br>이로써, 보안적으로 유리하게 설정할 수 있다.</p>
+<img src="/2022/08/08/infrastructure/1_docker-summary/Architecture-of-Container-Networking-Model@2x.png" class="">
+
+<h3 id="docker-volume"><a href="#docker-volume" class="headerlink" title="docker volume"></a>docker volume</h3><p>docker의 architecture를 가만히 보면, 자연스럽게 각 container 내에 있는 파일이나 데이터를 유지하거나,<br>각 container 끼리의 파일이나 데이터 전송에 대한 의문이 생길 수 있다.<br>이러한 문제를 해결하기 위한 것이 바로 <code>docker volumn</code>이다.</p>
+<p>docker volumn은 host의 파일시스템과 container 의 파일시스템을 연결시켜 주는 host 내의 공간이다.<br>따라서 이를 도식화 해보면 다음과 같다.</p>
+<img src="/2022/08/08/infrastructure/1_docker-summary/docker_volumn.png" class="">
+
+<p>docker volumn을 통해 다음과 같은 문제를 해결할 수 있다.</p>
+<ul>
+<li>host의 파일 시스템 내에서 버전관리 하기에 용이하다.</li>
+<li>host와 container간, container와 container간 파일 공유가 가능하다.<ul>
+<li>DBMS와 같은 data파일을 host와 공유하여, container가 중지되어도 데이터를 유지할 수 있다.</li>
+</ul>
+</li>
+</ul>
+<h3 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://youtube.com/playlist?list=PLuHgQVnccGMDeMJsGq2O-55Ymtx0IdKWf">생활코딩 Docker 입문수업</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.docker.com/get-started/overview/">Docker 공식 document</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/infrastructure/"># Infrastructure</a>
+                    
+                        <a href="/tag/docker/"># Docker</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/08/27/backend-roadmap/4_broswer/">브라우저 작동 방식</a>
+            
+            
+            <a class="next" rel="next" href="/2022/06/27/backend-roadmap/3_http-note-summary/">Web의 발명으로부터 살펴보는 HTTP에 대한 정리</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

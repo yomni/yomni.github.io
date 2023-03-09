@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>안정적인 서비스 만들기(성능 개선) 미션 회고 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">안정적인 서비스 만들기(성능 개선) 미션 회고</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%94%84-pro-5%EA%B8%B0-%ED%9A%8C%EA%B3%A0%EB%A1%9D/">우아한 테크 캠프 Pro 5기 회고록</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="안정적인-서비스-만들기"><a href="#안정적인-서비스-만들기" class="headerlink" title="안정적인 서비스 만들기"></a>안정적인 서비스 만들기</h2><p>안정적인 서비스를 만들기 위해서 가장 필요한 것은 성능 개선이다.<br>성능 개선이 되면 서버와 클라이언트의 리소스가 크게 절약될 수 있고,<br>사용자는 서비스 만족도가 올라가므로 모든 서비스는 성능 개선을 목표로 하고 있다.</p>
+<p>이번 미션에서는 안정적인 서비스를 만들기 위해 성능 개선을 어떤 부분에서 접근할 수 있는 지,<br>특히 Back-end 에서 개선할 수 있는 점에 집중해서 살펴보았다.</p>
+<h3 id="리버스-프록시-개선-HTTP-개선"><a href="#리버스-프록시-개선-HTTP-개선" class="headerlink" title="리버스 프록시 개선(HTTP 개선)"></a>리버스 프록시 개선(HTTP 개선)</h3><ul>
+<li>http 1.1의 문제와 http 2.0 의 해결방법</li>
+<li>reverse proxy 성능개선<ul>
+<li>gzip 압축을 통한 content-encoding 최적화</li>
+</ul>
+</li>
+</ul>
+<h3 id="HTTP-Cache-활용"><a href="#HTTP-Cache-활용" class="headerlink" title="HTTP Cache 활용"></a>HTTP Cache 활용</h3><img src="/2023/01/19/woowahan-tech-camp-pro-5th/8-create-reliable-service/cache-control.png" class="">
+
+<ul>
+<li>HTTP 캐싱을 활용한 서버 리소스 최적화</li>
+<li>Cache-Control<ul>
+<li>no-cache : 매 요청마다 중간에 있는 캐시 서버들은 ETag(checksum 비슷한 값)를 통해 자원의 유효성을 확인<ul>
+<li>max-age &#x3D; 0 과 같다</li>
+</ul>
+</li>
+<li>no-store : 캐시하면 안되는 데이터에 대한 처리(개인정보, 민감정보 등등)</li>
+<li>public : 중간 단계를 포함한 모든 캐시 서버에 캐시가 가능 </li>
+<li>private : 요청한 사용자만 캐시 할 수 있음 (<ul>
+<li>주의) 개인정보를 보호한다는 의미는 아님</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="MySQL-최적화-대상"><a href="#MySQL-최적화-대상" class="headerlink" title="MySQL 최적화 대상"></a>MySQL 최적화 대상</h3><ul>
+<li>Client : DB를 사용하는 클라이언트 (애플리케이션 서버)<ul>
+<li>복수 건의 레코드를 한번의 호출로 집합 처리하거나, 두 개 이상의 쿼리를 한 쿼리로 통합처리</li>
+<li>JDBC Statement는 쿼리 문장 분석, 컴파일, 실행단계를 캐싱한다.<br>PreparedStatement 는 처음 한 번만 세 단계를 거친 후 캐시에 담아서 재사용한다.</li>
+<li>DB Connection Pool 사용으로 Connection 과 연관된 객체 생성 대기시간을 줄이고, 네트워크 부담도 줄일 수 있다.</li>
+<li>Fetchsize 를 조정하거나 Paging 을 활용한다.</li>
+</ul>
+</li>
+<li>Database engine<ul>
+<li>파일시스템에 저장된 데이터가 조회되면, 해당 데이터를 메모리에 저장해<br>이후 동일 데이터 조회 시 파일 시스템의 물리적인 입출력을 미연에 방지</li>
+<li>서버 파라미터를 튜닝한다</li>
+</ul>
+</li>
+<li>Filesystem<ul>
+<li>SSD를 사용</li>
+<li><strong>SQL를 최적화</strong>하여 필요이상의 데이터 블록을 읽는 것을 방지,<br>즉 <strong>SQL 튜닝이란 FileSystem 에서 읽는 블록 수를 줄여 주는 것</strong>을 의미</li>
+</ul>
+</li>
+</ul>
+<p>사실상, 프레임워크나 Public Cloud 를 사용하고 있다면,<br>물리적 자원, 애플리케이션 서버에서는 상당 부분 최적화 되어 있다.</p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/watcha/%EC%BF%BC%EB%A6%AC-%EC%B5%9C%EC%A0%81%ED%99%94-%EC%B2%AB%EA%B1%B8%EC%9D%8C-%EB%B3%B4%EB%8B%A4-%EB%B9%A0%EB%A5%B8-%EC%BF%BC%EB%A6%AC%EB%A5%BC-%EC%9C%84%ED%95%9C-7%EA%B0%80%EC%A7%80-%EC%B2%B4%ED%81%AC-%EB%A6%AC%EC%8A%A4%ED%8A%B8-bafec9d2c073">빠른 쿼리를 위한 7가지 체크리스트</a><br>를 참고해도 좋을 듯..</p>
+<h3 id="실행계획과-인덱스"><a href="#실행계획과-인덱스" class="headerlink" title="실행계획과 인덱스"></a>실행계획과 인덱스</h3><p><strong><em>Index를 사용하는 경우, Random I&#x2F;O 횟수를 줄이는 것이 관건</em></strong></p>
+<img src="/2023/01/19/woowahan-tech-camp-pro-5th/8-create-reliable-service/explain-summary.png" class="">
+
+<ul>
+<li>실행계획 확인<ul>
+<li>Full Scan : FileSystem에 저장되어 있는 모든 블럭을 탐색하는 것 –&gt; 최악</li>
+<li>인덱스를 타도록 조정해야 한다.</li>
+</ul>
+</li>
+<li>조건절 컬럼, 조인&#x2F;서브쿼리 구조, 정렬 등을 확인<ul>
+<li>Index Range Scan 을 위해선 <strong>인덱스 선두 컬럼이 조건절</strong>에 있어야 한다.</li>
+<li>테이블 액세스 최소화<ul>
+<li>단일 인덱스 vs 복합 인덱스</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>인덱스 현황을 파악<ul>
+<li>인덱스 설정에 정답은 없다. 조회하는 쿼리에 따라 가장 적합한 인덱스를 선택하는 것이 정답</li>
+</ul>
+</li>
+</ul>
+<h3 id="쿼리-튜닝하기"><a href="#쿼리-튜닝하기" class="headerlink" title="쿼리 튜닝하기"></a>쿼리 튜닝하기</h3><ul>
+<li>인덱스<ul>
+<li>인덱스 컬럼을 가공하지 말 것<ul>
+<li>리프블록의 스캔 시작점부터 중간에 멈출 수 있다.</li>
+</ul>
+</li>
+<li>인덱스 순서를 고려<ul>
+<li>인덱스 순서에 따라 Order by, group by 를 위한 sort 연산을 생략할 수 있음</li>
+</ul>
+</li>
+<li>인덱스를 제대로 사용하는 지 확인<ul>
+<li>Covered Index : 인덱스 스캔 과정에서 얻은 정보만으로 처리할 수 있어 테이블 액세스가 발생하지 않는 쿼리</li>
+</ul>
+</li>
+<li>복합 인덱스 시 범위 검색 컬럼을 뒤에 둬야 한다</li>
+<li>인덱스 구성 확인<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">## 테이블 / 인덱스 크기 확인</span><br><span class="line">SELECT</span><br><span class="line">  table_name,</span><br><span class="line">  table_rows,</span><br><span class="line">  round(data_length/(1024*1024),2) as &#x27;DATA_SIZE(MB)&#x27;,</span><br><span class="line">  round(index_length/(1024*1024),2) as &#x27;INDEX_SIZE(MB)&#x27;</span><br><span class="line">FROM information_schema.TABLES</span><br><span class="line">where table_schema = &#x27;subway&#x27;;</span><br><span class="line"></span><br><span class="line">## 미사용 인덱스 확인</span><br><span class="line">SELECT * FROM sys.schema_unused_indexes;</span><br><span class="line"></span><br><span class="line">## 중복 인덱스 확인</span><br><span class="line">SELECT * FROM sys.schema_redundant_indexes;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>조인<ul>
+<li>조인 연결 Key 들은 Join 대상 테이블 모두에서 인덱스를 가지고 있을 것</li>
+<li>데이터가 적은 테이블을 랜덤 액세스 해야한다.</li>
+<li>모수 테이블 크기를 줄인다</li>
+<li>서브쿼리보단 조인문을 활용한다</li>
+</ul>
+</li>
+</ul>
+<h2 id="회고"><a href="#회고" class="headerlink" title="회고"></a>회고</h2><h3 id="느낀점"><a href="#느낀점" class="headerlink" title="느낀점"></a>느낀점</h3><p>배민, 네이버, 카카오 등의 굴지 대기업들이 수 많은 사용자의 요청을 어떻게 처리할 수 있는 지<br>엿볼 수 있는 좋은 경험이었다.</p>
+<p>이번 미션에서 느낀점을 한줄로 표현하자면,<br>안정적인 서비스를 만든다는 것은 ‘최소의 리소스로 최상의 퍼포먼스를 내는 것’ 이라는 생각이 들었다.</p>
+<p>대략 이런 생각을 하기까지 머리속에 맴돌던 질문들을 정리해보자면 아래와 같다.</p>
+<p>Q) 최소의 리소스를 사용하려면 어떻게 해야할까?  </p>
+<ul>
+<li>리소스를 사용하지 않게 만드는 것이다.(서버의)</li>
+</ul>
+<p>Q) 그렇다면, 리소스를 사용하지 않게 만드려면 어떻게 해야할까?</p>
+<ul>
+<li>캐시를 사용한다.</li>
+</ul>
+<p>Q) 캐시를 사용했을 때 부작용은?</p>
+<ul>
+<li>캐시 데이터와 서버 데이터의 비동기</li>
+</ul>
+<p>Q) 비동기 문제를 어떻게 해결할 것인가?</p>
+<ul>
+<li><strong>클라이언트가 요청할 때 동기화 여부 확인</strong></li>
+<li>서버가 업데이트 되는 경우 일괄 캐시 서버 &#x2F; 클라이언트에게 알림<br>두 가지 방법 중 단연 전자의 경우가 훨씬 효율적이기 때문에 채택</li>
+</ul>
+<p>Q) 리소스를 아예 사용하지 않을 수는 없을 텐데 그때는 어떻게?</p>
+<ul>
+<li>서버 차원에서 리소스 사용량을 최소화 하도록 애플리케이션을 개선한다.<ul>
+<li>비즈니스 로직 개선</li>
+<li>네트워크 개선</li>
+<li><strong>쿼리 튜닝</strong></li>
+</ul>
+</li>
+</ul>
+<p>이렇게 원인을 찾아보며 미션을 진행하다 보니,<br>개인적으로 앞으로 학습할 주제에 대해 생각해 볼 수 있었다.</p>
+<p>그리고 성능 전 후 비교한 수치가 크게 차이날 때,<br>엄청난 성취감이 생겼다.</p>
+<p>마지막으로 머리속으로 알고있는 것과 실제 해본것의 차이를 확실히 알게되었다.<br>이제까지 어떤 기술에 대한 개념을 학습할 때, 각종 docs 나 포스팅을 찾아보며<br>개념만 숙지하고 넘어가곤 했다.<br>하지만, 실제로 환경을 구성하고 그 차이를 눈으로 비교한 것 과는 이해도가 확연하게 차이나는 것을 몸소 체험했다.</p>
+<p>앞으로 학습하는 과정에서 개념 숙지 후 반드시 실습까지 해봐야 겠다.</p>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EC%9A%B0%ED%85%8C%EC%BA%A0pro/"># 우테캠Pro</a>
+                    
+                        <a href="/tag/%EC%84%B1%EB%8A%A5%EA%B0%9C%EC%84%A0/"># 성능개선</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/01/20/home/3-2022-retrospect/">Korean New Year 에 작성하는 조금 늦은 2022년 회고</a>
+            
+            
+            <a class="next" rel="next" href="/2023/01/17/book-report/1-%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%9D%98-%EC%82%AC%EC%8B%A4%EA%B3%BC-%EC%98%A4%ED%95%B4/">객체지향의 사실과 오해를 읽고</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

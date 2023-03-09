@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>RESTful API | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">RESTful API</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/web-tech/">Web Tech</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="RESTful-API-가-뭔데"><a href="#RESTful-API-가-뭔데" class="headerlink" title="RESTful API 가 뭔데?"></a>RESTful API 가 뭔데?</h2><figure class="highlight http"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">https://www.googleapis.com/.../calendars/calendar_id</span><br><span class="line">&#123;</span><br><span class="line">    &quot;summary&quot;:&quot;일정&quot;,</span><br><span class="line">    &quot;timeZone&quot;:&quot;Asia/Seoul&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>REST API는 <strong>Re</strong>presentational <strong>S</strong>tate <strong>T</strong>ransfer <strong>A</strong>pplication <strong>P</strong>rogramming <strong>I</strong>nterface 의 약자로,<br>직역하자면 ‘대표적인 상태 이전을 하는(ful) API’ 정도로 해석할 수 있다.<br>조금 더 의미있게 의역하자면 ‘어떤 상태에 있는 웹 리소스를 다른 곳으로 옮길 수 있는 소통 방식’이 바로 <code>RESTful API</code>이다.</p>
+<h2 id="RESTful-API-왜-씀"><a href="#RESTful-API-왜-씀" class="headerlink" title="RESTful API 왜 씀?"></a>RESTful API 왜 씀?</h2><p>웹의 초기에는 HTML에 대한 읽는 행위밖에 제공하지 못했다.</p>
+<p>하지만, 웹의 기술이 발전하면서 웹 애플리케이션 이란 형태로 진화하였고,<br>HTML 을 읽는 행위 이외에도 다른 형태의 데이터(텍스트, 이미지 등등…)를 주고 받는 행위가 가능해졌다.<br>또한 서버의 리소스를 웹을 통해 제어하기도 했다.</p>
+<p>더 많은 데이터를 가지고 더 복잡한 기능들을 구현하려면 <strong>서버에선 다른 서버와 데이터를 주고 받거나</strong>,<br><strong>클라이언트에게서 더 많은 데이터를 제공받아야 했다.</strong><br>그렇지만, <strong>표준화된 규약</strong>이 없었기 때문에 기능 발전에는 제한적이었다.</p>
+<p>이를 해결하고자 SOAP(Simple Object Access Protocol) 라는 규약이 생겼지만,<br>‘복잡하고, 어렵고, 무겁다’ 라는 단점으로 현재는 거의 사용하지 않는 방식이 되었다.</p>
+<p>2000년에 ‘Roy Fielding’ 이라는 컴퓨터 과학자가 박사학위 논문에서 제시한 REST는<br>HTTP Method 를 통해 서버의 자원의 상태를 주고 받을 수 있는 새로운 규약으로 자리매김했다.</p>
+<p>서버대 서버, 서버대 클라이언트 간 통신 방식으로 새로운 규약이 생기게 된 계기이다.</p>
+<img src="/2023/01/26/web-tech/1-restful-api/use-rest.png" class="">
+
+<h2 id="RESTful-API-어떻게-씀"><a href="#RESTful-API-어떻게-씀" class="headerlink" title="RESTful API 어떻게 씀?"></a>RESTful API 어떻게 씀?</h2><p>RESTful API에선 두 가지 문제에 대해 다루고 있다.</p>
+<ol>
+<li>Resource를 어떻게 표시할래?</li>
+<li>Resource를 어떻게 제어할래?</li>
+</ol>
+<h3 id="1-URI로-리소스를-표시"><a href="#1-URI로-리소스를-표시" class="headerlink" title="1. URI로 리소스를 표시"></a>1. URI로 리소스를 표시</h3><p>URI(Uniform Resource Identifiers) 로 리소스를 표현한다.<br>하지만, 가이드가 없다면 설계하는 사람 마음대로 URI를 지정하게 되므로,<br>다시 통신하는데 어려움이 생기게 된다.</p>
+<p>따라서 REST URI 네이밍에는 몇가지 고려해볼만한 규칙이 존재한다.</p>
+<ol>
+<li>지원 리소스 타입<ul>
+<li>Object : 싱글 엔티티(예시 &#x3D; myplatform.com&#x2F;<strong>customers</strong>&#x2F;<strong>1628</strong>)</li>
+<li>Collections : 객체집합(예시 &#x3D; myplatform.com&#x2F;<strong>customers</strong>&#x2F;)</li>
+<li>Association : 두 객체 간 관계를 URI에서 표시(예시 &#x3D; myplatform.com&#x2F;<strong>teacher</strong>&#x2F;1256&#x2F;<strong>class</strong>&#x2F;121)<br>(id:1256 선생은 id:121 클래스에 속해있다.)</li>
+<li>Controllers : 작업을 수행하는 리소스에 대한 절차적인 개념</li>
+</ul>
+</li>
+<li><strong>명사</strong> vs 동사(명사 우선, 동사는 Case by Case)<ul>
+<li>개발자는 객체지향적인 패러다임 덕분에 명사에 더 익숙하다</li>
+<li>따라서 특별한 경우가 아닌 이상 명사로 유지하는 것이 익숙하다</li>
+<li>하지만 동사를 사용하는 것이 때로는 의미가 있을 경우가 있다.<ul>
+<li>예를 들어, 호텔과 관련된 도메인에서는 <code>check-in</code>이란 동사가<br><code>시간</code>, <code>손님의 수</code> 등등 <code>명사를 포함하는 개념</code>일 경우가 있다.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>단수형 vs <strong>복수형</strong>(Singleton vs Collection)<ul>
+<li>가능하다면 복수형으로 사용하는 것이 좋다</li>
+<li>하지만, 상황에 따라 단수형으로 쓰는 것도 고려 해야 한다<br>예를 들어, 차량&#x2F;엔진 –&gt; vehicles&#x2F;engine 등 사용 가능한 설계를 고안해야 한다</li>
+</ul>
+</li>
+<li>CRUD에 대한 표현 방식<ul>
+<li>CRUD 를 URI 에 표현하는 방식은 권장하지 않는다.(쿼리 스트링 포함)<br>비권장 포맷<ul>
+<li>myservice.com&#x2F;rooms?<strong>action&#x3D;checkout</strong></li>
+<li>myservice.com&#x2F;rooms&#x2F;<strong>delete</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>필터 혹은 정렬 필요 시<ul>
+<li>쿼리 매개변수를 사용하는 것을 권장한다.</li>
+</ul>
+</li>
+</ol>
+<h3 id="2-HTTP-Method를-통한-Resource-제어"><a href="#2-HTTP-Method를-통한-Resource-제어" class="headerlink" title="2. HTTP Method를 통한 Resource 제어"></a>2. HTTP Method를 통한 Resource 제어</h3><p>REST API는 HTTP Method를 통해 각각 CRUD 를 제어한다.</p>
+<h4 id="멱등성-Idempotent"><a href="#멱등성-Idempotent" class="headerlink" title="멱등성(Idempotent)"></a>멱등성(Idempotent)</h4><p>일부 API는 HTTP method 형식에 따라, 그 자원의 형태가 바뀌지 않아야 되는 성질이 있다.<br>요청 뒤에도 리소스의 상태가 바뀌지 않는 성질을 멱등성이라고 하며,<br>Rest 에서는 GET, PUT, DELETE 가 이런 멱등성을 만족한다.</p>
+<h4 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h4><p>리소스의 현재 상태를 가져옵니다. <strong>멱등성</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// id = 198 인 고객의 정보를 조회하는 경우</span><br><span class="line">Method: GET</span><br><span class="line">URI: myplatform.com/customers/198</span><br></pre></td></tr></table></figure>
+
+<h4 id="POST"><a href="#POST" class="headerlink" title="POST"></a>POST</h4><p>컬렉션에 대해 작동한다. 컬렉션을 만들거나 업데이트 한다.</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 고객을 생성하는 경우</span><br><span class="line">Method: POST</span><br><span class="line">URI: myplatform.com/customers</span><br></pre></td></tr></table></figure>
+
+<h4 id="PUT"><a href="#PUT" class="headerlink" title="PUT"></a>PUT</h4><p>단일 리소스에 대해 작동, 해당 상태를 생성하거나 수정한다. <strong>멱등성</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 198 회원 정보를 수정하는 경우 </span><br><span class="line">Method: PUT</span><br><span class="line">URI: myplatform.com/customers/198</span><br></pre></td></tr></table></figure>
+
+<h4 id="DELETE"><a href="#DELETE" class="headerlink" title="DELETE"></a>DELETE</h4><p>지정된 개체를 삭제한다. <strong>멱등성</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">// 198 회원 정보를 삭제하는 경우</span><br><span class="line">Method: DELETE</span><br><span class="line">URI: myplatform.com/customers/198</span><br></pre></td></tr></table></figure>
+
+<h4 id="PATCH"><a href="#PATCH" class="headerlink" title="PATCH"></a>PATCH</h4><p>리소스의 부분적인 수정을 할 때 사용</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 198 회원 정보 중 이름만 바꾸고 싶은 경우 </span><br><span class="line">Method: PATCH</span><br><span class="line">URI: myplatform.com/customers/198</span><br><span class="line">&#123;</span><br><span class="line">    &quot;name&quot;:&quot;yomni&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="결론-RESTful-API-는-설계-방식에-대한-개념이기-때문에-절대적인-규칙이-아니다"><a href="#결론-RESTful-API-는-설계-방식에-대한-개념이기-때문에-절대적인-규칙이-아니다" class="headerlink" title="결론 : RESTful API 는 설계 방식에 대한 개념이기 때문에 절대적인 규칙이 아니다."></a>결론 : RESTful API 는 설계 방식에 대한 개념이기 때문에 절대적인 규칙이 아니다.</h2><p>RESTful API로 설계한다는 것은 그 시스템의 사용자를 고려하여<br>적절한 URI에 리소스를 배치시키고, 적절한 method 에 대한 행위를 보장해야 한다.</p>
+<p>가령, PATCH를 PUT과 동일하게 사용하도록 서버에서 설계했다면, 멱등성을 만족하고,<br>일부 속성에 대해서 수정이 가능하도록 설계 할 수도 있다.</p>
+<p>이 부분에 대하여 더 자세한 내용을 알고 싶다면, <a target="_blank" rel="noopener" href="http://restfulapi.io/restful-api-design-guide/">Restful API Design Guide</a> 를 참고하세요.</p>
+<h2 id="생각해보자-귀에-걸면-귀걸이-코에-걸면-코걸이"><a href="#생각해보자-귀에-걸면-귀걸이-코에-걸면-코걸이" class="headerlink" title="생각해보자 - 귀에 걸면 귀걸이, 코에 걸면 코걸이"></a>생각해보자 - 귀에 걸면 귀걸이, 코에 걸면 코걸이</h2><p>대부분의 개념들은 <strong>문제가 있고, 그것을 해결하는 차원에서 학습</strong>하면 대부분 이해할 수 있는 경우가 많았는데,<br>REST API는 자원에 대한 소통 방식을 간단하게 해결한다는 차원에선 쉽게 이해가 가능했지만,<br>어떻게 설계하느냐에 따라서 전혀다른 결과를 도출할 수도 있다는 점이 어렵게 다가왔다.</p>
+<p>역시 이 부분에선 ‘추상도가 높아질 수록 자유도가 높아진다’라는 차원에서 접근해본다면,<br>API 설계자 입장에선 상당히 어려운 부분이 될 수도 있겠다 라는 것이 느껴졌다.</p>
+<p>REST API로 많은 설계를 해봐야 어떤 API 설계에 대한 문제가 주어졌을 때 잘 해결할 수 있을 것 같았다.</p>
+<p>–&gt; 많은 도메인에 대해 REST API 로 짜는 연습을 해보자..!!</p>
+<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=PmY3dWcCxXI&ab_channel=%EC%83%9D%ED%99%9C%EC%BD%94%EB%94%A9">생활코딩 : 기계들의 대화법 - REST API</a></li>
+<li><a target="_blank" rel="noopener" href="https://ko.wikipedia.org/wiki/SOAP">SOAP</a></li>
+<li><a target="_blank" rel="noopener" href="http://restfulapi.io/">RESTful API</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=xWA1eTPSzDE&ab_channel=%EC%9A%B0%EC%95%84%ED%95%9CTech">10분 테코톡 : 민초의 RESTful</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.mozilla.org/ko/docs/Web/HTTP/Methods/PATCH">mdn web docs - patch</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/rest/"># REST</a>
+                    
+                        <a href="/tag/restful-api/"># RESTful API</a>
+                    
+                        <a href="/tag/%EC%9B%B9-%EA%B8%B0%EC%88%A0/"># 웹 기술</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/01/29/web-tech/2-jwt/">JWT(JSON WEB Tokens)</a>
+            
+            
+            <a class="next" rel="next" href="/2023/01/25/language/java/1-exception/">Exception 에 대한 고찰</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

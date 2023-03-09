@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>개발자라면 반드시 알고있어야 하는 프로토콜 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">개발자라면 반드시 알고있어야 하는 프로토콜</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/backend-roadmap/">Backend Roadmap</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="인터넷-네트워크의-기본적인-프로토콜"><a href="#인터넷-네트워크의-기본적인-프로토콜" class="headerlink" title="인터넷 네트워크의 기본적인 프로토콜"></a>인터넷 네트워크의 기본적인 프로토콜</h1><p>만약 내가 사랑하는 사람에게 연애편지를 써서 우체통에 넣었다고 가정해보자.<br>상대방이 편지를 받으려면 아래와 같은 항목들이 필요할 것이다.</p>
+<ul>
+<li>편지지</li>
+<li>편지봉투</li>
+<li>우표</li>
+<li>편지의 내용(메시지)</li>
+<li>보내는 사람, 받는 사람 주소</li>
+<li>신뢰할 수 있는 우체부</li>
+</ul>
+<p>인터넷 환경에서도 위와 같은 항목들을 각 프로토콜이 담당하고 있다.<br>이제부터 어떤 프로토콜이 어떤 역할을 하게 되는지 알아보자.</p>
+<h2 id="IP-Internet-Protocol"><a href="#IP-Internet-Protocol" class="headerlink" title="IP(Internet Protocol)"></a>IP(Internet Protocol)</h2><blockquote>
+<p>나는 누구? 여긴 어디? 너는 누구? 너는 어디?</p>
+</blockquote>
+<p><code>IP(Internet Protocol)</code>는 <code>어디</code>와 <code>누구</code>를 표현할 수 있는 프로토콜이다.</p>
+<img src="/2022/06/20/backend-roadmap/2_protocols/%EB%AA%A8%EB%A5%B4%EB%8A%94%EB%8D%B0%EC%96%B4%EB%96%BB%EA%B2%8C%EA%B0%80%EC%9A%94.jpeg" class="" width="350" title="모르는데 어떻게가요?">
+
+<h3 id="IP-특징"><a href="#IP-특징" class="headerlink" title="IP 특징"></a>IP 특징</h3><ul>
+<li>지정한 IP 주소에 데이터 전달</li>
+<li>패킷(Packet)이라는 통신 단위로 데이터 전달</li>
+</ul>
+<h3 id="IPv4-구조"><a href="#IPv4-구조" class="headerlink" title="IPv4 구조"></a>IPv4 구조</h3><img src="/2022/06/20/backend-roadmap/2_protocols/IPv4_address_structure.png" class="">
+
+<ul>
+<li>3개의 <code>.</code>을 기준으로 구분</li>
+<li>구분자 앞뒤로 각 8bit(0~255) 까지의 숫자를 조합하여 주소를 표시</li>
+</ul>
+<h3 id="IPv6-구조"><a href="#IPv6-구조" class="headerlink" title="IPv6 구조"></a>IPv6 구조</h3><img src="/2022/06/20/backend-roadmap/2_protocols/IPv6_address_structure.png" class="">
+
+<ul>
+<li>IPv4(4,294,967,296 개 할당 가능)로 할당가능한 주소의 개수보다<br>통신장비의 수가 더 많아져서 주소를 할당할 수 없는 지경</li>
+<li>이런 문제점을 극복하고자 128bit의 IPv6를 설계</li>
+<li>하지만 IPv6는 IPv4를 호환되지 않기 때문에 IPv4와 IPv6를 혼용해서 사용</li>
+</ul>
+<h3 id="IP-프로토콜의-한계"><a href="#IP-프로토콜의-한계" class="headerlink" title="IP 프로토콜의 한계"></a>IP 프로토콜의 한계</h3><ul>
+<li>비연결성<ul>
+<li>패킷을 받을 대상이 없거나 서비스 불능 상태여도 패킷 전송</li>
+</ul>
+</li>
+<li>비신뢰성<ul>
+<li>중간에 패킷이 사라지면?<ul>
+<li>패킷이 순서대로 안오면?</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>프로그램 구분<ul>
+<li>같은 IP를 사용하는 장비로 통신하는 애플리케이션이 2개 이상이면?</li>
+</ul>
+</li>
+<li><strong>주소를 외우기 힘들다</strong></li>
+</ul>
+<h2 id="TCP-UDP"><a href="#TCP-UDP" class="headerlink" title="TCP, UDP"></a>TCP, UDP</h2><p>이전 포스팅을 살펴보면 인터넷 프로토콜 5계층 중<br>전송계층(Transport Layer)를 담당하고 있는 대표적인 2개의 프로토콜인<br><code>TCP</code>, <code>UDP</code>가 있다.</p>
+<h3 id="TCP-Transmission-Control-Protocol-특징"><a href="#TCP-Transmission-Control-Protocol-특징" class="headerlink" title="TCP(Transmission Control Protocol) 특징"></a>TCP(Transmission Control Protocol) 특징</h3><ul>
+<li>연결지향 - TCP 3 way Handshake(가상 연결)</li>
+<li>데이터 전달 보증</li>
+<li>순서 보장</li>
+<li>신뢰할 수 있는 프로토콜</li>
+<li>현재는 대부분 TCP 사용</li>
+</ul>
+<h4 id="3-Way-handshake"><a href="#3-Way-handshake" class="headerlink" title="3 Way handshake"></a>3 Way handshake</h4><p>TCP의 가장 큰 특징 중 하나인 <code>3 way handshake</code>다.<br>이를 통해 연결성을 보장하며, IP의 한계점이었던, 비연결성, 비신뢰성을 극복할 수 있다.</p>
+<img src="/2022/06/20/backend-roadmap/2_protocols/3way_handshake.jpeg" class="">
+
+<p>TCP의 나머지 특징들은 모두 연결성으로 부터 야기된다.</p>
+<ol>
+<li>데이터 순서를 보장할 수 있다.(1번 못받았으니 1번부터 다시보내)</li>
+<li>데이터 전달 보증<ol>
+<li>(데이터 보냈는데 받았어? –&gt; 아니 못받았으니 다시보내)</li>
+<li>(데이터 보냈는데 받았어? –&gt; ㅇㅇ 잘 받음)</li>
+</ol>
+</li>
+<li>연결되어 있으니 서로 신뢰할 수 있다.</li>
+</ol>
+<h3 id="UDP-User-Datagram-Protocol-특징"><a href="#UDP-User-Datagram-Protocol-특징" class="headerlink" title="UDP(User Datagram Protocol) 특징"></a>UDP(User Datagram Protocol) 특징</h3><ul>
+<li>기능이 거의 없음</li>
+<li>3 Way Handshake 없음</li>
+<li>비신뢰성</li>
+<li>데이터 전달 보증 X</li>
+<li>순서 보장 X</li>
+<li>데이터 전달 및 순서가 보장되지 않지만, <strong>단순하고 빠름</strong><ul>
+<li>IP와 거의 같지만 <code>PORT</code>, <code>체크섬</code>정도만 추가</li>
+<li>애플리케이션에서 추가 작업이 필요하다</li>
+</ul>
+</li>
+</ul>
+<img src="/2022/06/20/backend-roadmap/2_protocols/udp.png" class="">
+
+<h3 id="TCP-vs-UDP"><a href="#TCP-vs-UDP" class="headerlink" title="TCP vs UDP"></a>TCP vs UDP</h3><p>소싯적에 스타크래프트를 즐겨했으면,<br>게임속에서 TCP와 UDP를 살펴 볼 수 있다.</p>
+<img src="/2022/06/20/backend-roadmap/2_protocols/starcraft_tcp_udp.jpeg" class="">
+
+<p>위의 TCP &#x2F; UDP의 특징을 이해했으면, 각각의 특징을 살린 프로토콜을 사용해 게임을 했던 것이 기억날 것이다.</p>
+<ul>
+<li>입력한 명령에 비해 <strong>비교적 느린 응답속도</strong>를 보이지만, <strong>절대적인 연결이 중요</strong>할 때<ul>
+<li><strong>TCP</strong>에서 게임 진행</li>
+</ul>
+</li>
+<li><strong>네트워크 상태가 비교적 좋아서</strong>, <strong>빠른 반응속도가 더 중요</strong>할 때<ul>
+<li><strong>UDP</strong>에서 게임 진행</li>
+</ul>
+</li>
+</ul>
+<h2 id="PORT"><a href="#PORT" class="headerlink" title="PORT"></a>PORT</h2><blockquote>
+<p>우체부 아저씨는 주소(IP)까지 찾아갈 수 있다.<br>만약 아파트라면, 호수(Port)를 알려줘야 편지를 정확하게 전달 할 수 있다.</p>
+</blockquote>
+<img src="/2022/06/20/backend-roadmap/2_protocols/postbox.jpeg" class="">
+
+<p>IP의 한계 중 비연결성과 비신뢰성을 극복하기 위해 TCP를 사용했다면,<br>동일한 클라이언트에서 두 개 이상의 애플리케이션에 연결해야 하는 경우는 어떻게 해결 할 수 있을까?<br><code>PORT</code>가 그 해결방안이 될 수 있다.</p>
+<h3 id="PORT-사용-시-주의사항"><a href="#PORT-사용-시-주의사항" class="headerlink" title="PORT 사용 시 주의사항"></a>PORT 사용 시 주의사항</h3><ul>
+<li>0 ~ 65535 할당 가능</li>
+<li>0 ~ 1023 : Well Known Port(잘 알려진 포트)로 사용하지 않는 것을 권장함<ul>
+<li>ex1) FTP - 20, 21</li>
+<li>ex2) telnet - 23</li>
+<li>ex3) http - 80</li>
+<li>ex4) https - 443</li>
+</ul>
+</li>
+</ul>
+<h2 id="DNS"><a href="#DNS" class="headerlink" title="DNS"></a>DNS</h2><ul>
+<li>IP는 기억하기 어렵다는 한계점이 존재했다.</li>
+<li>IP는 부족하기 때문에 사용하지 않으면, 반환 &#x2F; 재할당을 통해 <strong>주소가 변경</strong>될 수 있다</li>
+<li>DNS는 이런 한계점을 극복하고자 만들어 졌다.</li>
+</ul>
+<img src="/2022/06/20/backend-roadmap/2_protocols/dns.png" class="">
+
+<ol>
+<li>example.com 이라는 Domain name으로 접속한다.</li>
+<li>DNS 서버는 <code>example.com : IP주소</code> 정보를 가지고 있다.</li>
+<li>따라서, 우리는 example.com이라고 쳐도 dns가 이를 IP로 변경해 준다.</li>
+</ol>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/internet/"># Internet</a>
+                    
+                        <a href="/tag/back-end-roadmap/"># Back-End Roadmap</a>
+                    
+                        <a href="/tag/protocol/"># Protocol</a>
+                    
+                        <a href="/tag/dns/"># DNS</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/06/27/backend-roadmap/3_http-note-summary/">Web의 발명으로부터 살펴보는 HTTP에 대한 정리</a>
+            
+            
+            <a class="next" rel="next" href="/2022/06/12/backend-roadmap/1_y-use-the-internet/">인터넷, 인터넷을 왜 사용하는가?</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

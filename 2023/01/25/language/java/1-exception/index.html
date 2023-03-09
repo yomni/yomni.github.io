@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>Exception 에 대한 고찰 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Exception 에 대한 고찰</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="Exception-에-대해-다루게-된-계기"><a href="#Exception-에-대해-다루게-된-계기" class="headerlink" title="Exception 에 대해 다루게 된 계기"></a>Exception 에 대해 다루게 된 계기</h2><p>어떤 회사의 면접 시험에서 <code>RuntimeException</code>, <code>IOException</code> 를 던지는 메소드를<br>각각 상속받는 클래스에 대한 코드를 보여주고 어떤 결과를 예상하는 지 묻는 문제가 나왔었다.</p>
+<p>부끄럽지만, 당시 RuntimeException, IOException 에 대해<br>‘아! Java가 강제로 제어하는 에러와 개발자가 제어 가능한 RuntimeException 에 대해 묻는 문제구나’<br>라는 생각으로 안일하게 접근했다가 낭패를 본 경험에서 부터 출발한다.</p>
+<h2 id="Exception-이-뭔데"><a href="#Exception-이-뭔데" class="headerlink" title="Exception 이 뭔데?"></a>Exception 이 뭔데?</h2><p>어떤 프로그램이라도 구동시 어떤 오류(예외)가 발생할 수도 발생 안할 수도 있다.<br>이 때 발생하는 오류(예외)를 Java에서는 계층구조로 정의하였다.</p>
+<p>그리고 오류(예외)가 발생 했을 때</p>
+<ul>
+<li>적절히 제어해서 회생가능? –&gt; 예외</li>
+<li>발생하면 더 이상 회생 불가능? –&gt; 오류</li>
+</ul>
+<p>로 구분지을 수 있다.</p>
+<p> Java Exception 계층구조를 살펴 보자.</p>
+<img src="/2023/01/25/language/java/1-exception/exception-architecture.png" class="">
+
+<p>구조를 보면 크게 Error, Exceptions 로 나눌 수 있고,<br>Exception 은 각각 Checked Exceptions 와 Unchecked Exceptions 로 나뉠 수 있다.</p>
+<h3 id="Error-vs-Exception"><a href="#Error-vs-Exception" class="headerlink" title="Error vs Exception"></a>Error vs Exception</h3><p>그렇다면 오류가 발생 했을 때, 이 오류를 해결하고 계속 구동이 불가능한가? 적절한 처리 이후에 가능한가?<br>이 질문의 답으로 Error 와 Exception 이 나뉠 수 있다.</p>
+<ul>
+<li>Error(오류) : <strong>발생하면 회생 불가</strong><ul>
+<li>ThreadDeath</li>
+<li>VirtualMachineError</li>
+<li>AssertionError</li>
+</ul>
+</li>
+<li>Exception(예외) : <strong>적절한 처리 후에 계속 구동 가능</strong><ul>
+<li>예외는 또 하위로 Checked, Unchecked 예외로 나눌 수 있다.</li>
+<li>IOException</li>
+<li>RuntimeException</li>
+</ul>
+</li>
+</ul>
+<h3 id="Checked-vs-Unchecked-Exception"><a href="#Checked-vs-Unchecked-Exception" class="headerlink" title="Checked vs Unchecked Exception"></a>Checked vs Unchecked Exception</h3><h4 id="Unchecked-Exception"><a href="#Unchecked-Exception" class="headerlink" title="Unchecked Exception"></a>Unchecked Exception</h4><p>Java 명세서에서 정의하는 Unchecked Exception 은 다음과 같다.</p>
+<blockquote>
+<p>Runtime Exception 클래스와 Error 클래스를 포함한다.<br>그 외 모든 Exception 은 Checked Exception 이다.</p>
+</blockquote>
+<blockquote>
+<p>Unchecked Exception 의 대표적인 종류</p>
+<ul>
+<li>NullPointerException</li>
+<li>ClassCastException</li>
+</ul>
+</blockquote>
+<p>Unchecked Exception 을 한 문장으로 정의해보면<br><strong>‘Java Program : 에이 설마 이걸 이렇게 쓸 리가 있나?’</strong> 이다.<br>효용가치가 있는 코드를 작성하는 사람이라면, 아래와 같은 코드를 작성하진 않을 것이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Object</span> <span class="variable">nullObj</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">nullObj.toString();  <span class="comment">// NullPointerException 발생!!</span></span><br></pre></td></tr></table></figure>
+<p>거진 대부분의 Unchecked Exception 은 ‘실수’로 발생할 수 있는 상황에 대해<br>예외로 정의해 놓은 것이라고 이해할 수 있다. 따라서 개발자는 <strong>Unchecked Exception 이 발생할 수도 있는 부분에는 적절한 조치를 취할 수도, 취하지 않을 수도 있다.</strong> </p>
+<p>단어에서부터 Unchecked(확인되지 않은 &#x3D; 확인 할 수 없는) 예외이다.<br>프로그램 구동 시 배열 index 에 -1 이 들어올지, 나누려는 수가 0 인지 아닌 지는 실제 값이 들어오는 순간에야 알 수 있는 것들이다.<br>하지만, Java 에서는 이런 상황에서도 예외를 발생 시켜서 오류 상황에 대해 개발자가 알아챌 수 있도록 알려주고 있다.</p>
+<h4 id="Checked-Exception"><a href="#Checked-Exception" class="headerlink" title="Checked Exception"></a>Checked Exception</h4><p>반면, 컴파일 이전에 발생할 수도 있는 오류(예외) 케이스에 대해 정의해놓은 예외가 바로 Checked Exception 이다.</p>
+<blockquote>
+<p>Checked Exception 의 대표적인 종류</p>
+<ul>
+<li>IOException</li>
+<li>ClassCastException</li>
+</ul>
+</blockquote>
+<p>아래는 FileInputStream 생성자 내부 코드이다.<br>file 이 유효하지 않은 경우에 대비하여 Checked Exception 인 <code>FileNotFoundException</code>을 발생시켜,<br>개발자에게 적절한 예외 처리를 요구하고 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">FileInputStream</span><span class="params">(File file)</span> <span class="keyword">throws</span> FileNotFoundException &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> (file != <span class="literal">null</span> ? file.getPath() : <span class="literal">null</span>);</span><br><span class="line">    <span class="type">SecurityManager</span> <span class="variable">security</span> <span class="operator">=</span> System.getSecurityManager();</span><br><span class="line">    <span class="keyword">if</span> (security != <span class="literal">null</span>) &#123;</span><br><span class="line">        security.checkRead(name);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (name == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (file.isInvalid()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">FileNotFoundException</span>(<span class="string">&quot;Invalid file path&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    fd = <span class="keyword">new</span> <span class="title class_">FileDescriptor</span>();</span><br><span class="line">    fd.attach(<span class="built_in">this</span>);</span><br><span class="line">    path = name;</span><br><span class="line">    open(name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Checked Exception</strong> 을 발생시킬 수 있는 클래스 &#x2F; 메소드를 다루는 개발자는 <strong>반드시 적절한 대처</strong>를 해주어야 한다  </p>
+<h2 id="Exception-왜-씀"><a href="#Exception-왜-씀" class="headerlink" title="Exception 왜 씀?"></a>Exception 왜 씀?</h2><p>Java 의 기본적인 철학은 <strong>‘잘못 구성된 코드는 실행되지 않는다’</strong> 이다.</p>
+<p>특히, Java 에서는 오류와 예외로 구분지어 놓고, 그 하위를 계층 구조로 촘촘하게 나누어 놨다는 것은<br>위 기본 철학에서 반영하고 있는 ‘잘못 구성된 코드는 실행되지 않는다’를 매우 적절하게 반영하고 있다.</p>
+<p>Exception 이 존재하는 이유에 대해서는 ‘만약 Exception 이란 클래스가 정의되어 있지 않다면?’ 으로 반문하면서 찾을 수 있다.    </p>
+<p>프로그램은 구동시에 반드시 오류(예외) 상황이 발생하게 된다. Exception 이 정의되어 있지 않다면,<br>프로그램 운영을 담당하는 개발자는 24시간 5분 대기조로 언제 발생할지 모르는 오류를 항상 대비하고 있어야만 할 것 이다.</p>
+<h2 id="Exception-를-어떻게-제어하나요"><a href="#Exception-를-어떻게-제어하나요" class="headerlink" title="Exception 를 어떻게 제어하나요?"></a>Exception 를 어떻게 제어하나요?</h2><h3 id="try-catch-로-제어-예외-처리-복구-전환"><a href="#try-catch-로-제어-예외-처리-복구-전환" class="headerlink" title="try - catch 로 제어 (예외 처리, 복구, 전환)"></a>try - catch 로 제어 (예외 처리, 복구, 전환)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 예외가 발생할 수도 있는 코드 위치</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123; <span class="comment">// 만약 예외가 발생했을 때, 던져진 오류(예외)를 잡는다(catch)</span></span><br><span class="line">    <span class="comment">// 잡아서 어떻게 할건데?</span></span><br><span class="line">        <span class="comment">// 1. 예외 처리</span></span><br><span class="line">        logger.error(e.getMessage()); <span class="comment">// 로깅</span></span><br><span class="line">        e.getStackTrace(); <span class="comment">// 어쩌다가 이지경까지 왔니?</span></span><br><span class="line">        <span class="comment">// 2. 예외 복구 : 다른 제 3의 로직 전개</span></span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">// 3. 예외 전환 : </span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(); </span><br><span class="line">        <span class="comment">// 예를 들어, checked Excpetion에 대해 개발자가 &#x27;이 예외는 별거 아니니까 신경꺼&#x27; 라고 RuntimeException 으로 전환</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="throws-로-제어권을-메소드-호출자에게-이관-예외-처리-회피"><a href="#throws-로-제어권을-메소드-호출자에게-이관-예외-처리-회피" class="headerlink" title="throws 로 제어권을 메소드 호출자에게 이관(예외 처리 회피)"></a>throws 로 제어권을 메소드 호출자에게 이관(예외 처리 회피)</h3><p>개발자가 작성중인 코드에서 예외가 발생할 수도 있는 경우,<br>이에 대한 처리를 메소드 호출자에게 책임을 전가 시킬 수 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> <span class="title function_">fileRead</span><span class="params">()</span> <span class="keyword">throws</span> FileNotFoundException &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>이렇게 되면 이 메소드를 사용하는 입장에서는<br><strong>Checked Exception 의 경우</strong></p>
+<ul>
+<li>다시 책임을 전가(throws)</li>
+<li>적절한 처리(try - catch)</li>
+</ul>
+<p>로 처리할 수 있다. 그리고, <strong>이는 강제사항</strong>이다.</p>
+<p>반면, <strong>Unchecked Exception 의 경우</strong>, throws로 명시 해줘도<br>이를 호출한 메소드에서 <strong>처리를 해도 되고 안해도 된다.</strong></p>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>Exception 에 대해 다시 정리해보면서, ‘이제껏 나는 적절한 Exception Handling 을 하고 있었나?’ 다시 반문하게 되었다.<br>생각해보니 ‘IDE 에서 제안하는 방법으로 처리’하거나, ‘빌드가 될 수준까지만 예외 처리’를 하고 있었다.</p>
+<p>생각없이 코드를 짜고 있었다는 것을 반성 하게 되며 여러가지 생각을 갖게 되었다.</p>
+<h3 id="Exception-의-계층구조에-대하여-드는-생각"><a href="#Exception-의-계층구조에-대하여-드는-생각" class="headerlink" title="Exception 의 계층구조에 대하여 드는 생각"></a>Exception 의 계층구조에 대하여 드는 생각</h3><p>Exception 에 대한 Java 의 철학(잘못 구성된 코드는 실행되지 않는다)을 다시 곱씹어 보면서,<br>Exception 이 가진 <strong>계층구조</strong>에 대해 생각해보는 계기가 되었다.</p>
+<p>Java의 특징 중 하나인 <strong>상속</strong>을 통해 계층구조로 Exception 을 설계했다.<br>계층구조로 인해, 계층구조의 상위 Exception 으로 갈수록 추상화 정도가 높아지고,<br>반면 하위 계층으로 갈 수록 구체화 정도가 높아지게 된다.  </p>
+<p>catch 상위 exception 에 대해 범용적으로 처리하던지<br>vs<br>특정 exception 과 그 하위에 대해서만 처리하던지</p>
+<p>범위를 개발자가 직접 지정할 수 있게 된다.  </p>
+<p>따라서, ‘잘못 구성된 코드는 실행되지 않는다.’ 라는 철학의 전반엔 계층구조를 통해,<br>개발자에게 최소한의 예외 상황에서의 자유도를 보장해주는 것이다.</p>
+<h3 id="RuntimeException-을-처리-하지-않아도-될까"><a href="#RuntimeException-을-처리-하지-않아도-될까" class="headerlink" title="RuntimeException 을 처리 하지 않아도 될까?"></a>RuntimeException 을 처리 하지 않아도 될까?</h3><p>RuntimeException 은 위에서 정의한 것 처럼 ‘실수’로 인해 발생할 수 있는 예외이다.<br>이 대목에서 숙련된 자바 개발자와 초보 개발자의 차이를 발견할 수 있는 부분인 것 같다.</p>
+<p>RuntimeException 에 대해 어떻게 처리할 수 있는가? 더 나아가서 RuntimeException 이 발생하지 않도록 어디까지 해봤니?<br>라는 질문을 던졌을 때, 대답하는 것에 따라 숙련된 개발자인지 아닌지 구별이 가능하다는 것이다.<br>면접에서도 이런 저의로 RuntimeException vs IOException 에 대한 질문이 나왔던 것 같다.</p>
+<p>예를 들면, NullPointerException 을 발생시키지 않는 간단한 방법 중에서</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isHighLevel</span><span class="params">(String developer)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (developer.equals(<span class="string">&quot;숙련된개발자&quot;</span>)) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>아주 간단한 코드지만, developer 라는 변수에 만약 null 값이 들어온다면?<br>바로 NullPointerException 이 발생하게 된다.</p>
+<p>아래의 코드로 이런 상황 자체를 발생시키지 않게 할 수 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">isHighLevel</span><span class="params">(String developer)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;숙련된개발자&quot;</span>.equals(developer)) &#123;</span><br><span class="line">        <span class="comment">// ...</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>동일한 로직을 갖고있는 코드지만, 이렇게 RuntimeException 에 대해  </p>
+<ul>
+<li>그 종류를 얼마나 알고 있는 지  </li>
+<li>어떻게 대비할 수 있는 지<br>숙련도를 어렴풋이 알 수 있을 것 같다.</li>
+</ul>
+<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
+<li><a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/exceptions-in-java/">https://www.geeksforgeeks.org/exceptions-in-java/</a></li>
+<li><a target="_blank" rel="noopener" href="https://people.cs.pitt.edu/~hoffmant/java-topics/Exceptions/">https://people.cs.pitt.edu/~hoffmant/java-topics/Exceptions/</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/javase/specs/">https://docs.oracle.com/javase/specs/</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/java/"># java</a>
+                    
+                        <a href="/tag/language/"># language</a>
+                    
+                        <a href="/tag/exception/"># exception</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/01/26/web-tech/1-restful-api/">RESTful API</a>
+            
+            
+            <a class="next" rel="next" href="/2023/01/20/home/3-2022-retrospect/">Korean New Year 에 작성하는 조금 늦은 2022년 회고</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

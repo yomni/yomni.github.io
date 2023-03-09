@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>어댑터 패턴(Adapter Pattern) | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">어댑터 패턴(Adapter Pattern)</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/">디자인 패턴</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <img src="/2023/02/12/design-pattern/7-adapter/adapter.png" class="">
+
+<h2 id="어댑터-패턴-Adapter-Pattern-OCP-추상화"><a href="#어댑터-패턴-Adapter-Pattern-OCP-추상화" class="headerlink" title="어댑터 패턴(Adapter Pattern) ; OCP, 추상화"></a>어댑터 패턴(Adapter Pattern) ; OCP, 추상화</h2><p>한 클래스의 인터페이스를 클라이언트에서 사용하고자 하는 다른 인터페이스로 변환한다.<br>어댑터를 이용하면 인터페이스 호환성 문제 때문에 같이 쓸 수 없는 클래스들을 연결해서 사용할 수 있다.</p>
+<h3 id="객체-어댑터-패턴-vs-클래스-어댑터-패턴"><a href="#객체-어댑터-패턴-vs-클래스-어댑터-패턴" class="headerlink" title="객체 어댑터 패턴 vs 클래스 어댑터 패턴"></a>객체 어댑터 패턴 vs 클래스 어댑터 패턴</h3><h4 id="객체-어댑터-패턴"><a href="#객체-어댑터-패턴" class="headerlink" title="객체 어댑터 패턴"></a>객체 어댑터 패턴</h4><p>‘구성(Composition)’ 을 사용하여 인터페이스를 변경하는 경우  </p>
+<ul>
+<li>구성을 사용하므로, Adapter 에서 변환 로직이 복잡한 경우, 다소 코드가 길어질 수 있음</li>
+</ul>
+<h4 id="클래스-어댑터-패턴"><a href="#클래스-어댑터-패턴" class="headerlink" title="클래스 어댑터 패턴"></a>클래스 어댑터 패턴</h4><p>‘상속(Inheritance)’ 을 사용하여 인터페이스를 변경하는 경우</p>
+<ul>
+<li>유연성이 떨어지지만, 상속의 장점인 ‘중복제거’ 측면에서 생산성은 높을 수 있음</li>
+</ul>
+<h4 id="어떤-것을-사용"><a href="#어떤-것을-사용" class="headerlink" title="어떤 것을 사용?"></a>어떤 것을 사용?</h4><p>경우에 따라 다 다르다.  </p>
+<p>다만, 유연성 vs 코드중복 관점에서는 대체로 유연성이 더 좋은 설계를 선호하기 때문에 객체 어댑터 패턴으로 구현하는 것이 좋다.</p>
+<h3 id="어댑터-패턴-장단점"><a href="#어댑터-패턴-장단점" class="headerlink" title="어댑터 패턴 장단점"></a>어댑터 패턴 장단점</h3><h4 id="장점"><a href="#장점" class="headerlink" title="장점"></a>장점</h4><ul>
+<li>Adapter 의 가장 큰 장점은 제공자 &#x2F; 클라리언트 둘 다 코드를 변경하지 않아도 된다는 점<ul>
+<li>Adapter만 새로 작성하면 됨</li>
+</ul>
+</li>
+<li>재활용성이 높음(Adapter 규격에 맞는 객체는 모두 사용 가능)</li>
+</ul>
+<h4 id="단점"><a href="#단점" class="headerlink" title="단점"></a>단점</h4><ul>
+<li>구성요소를 위해 클래스를 증가시켜야 하기 때문에 복잡도가 증가할 수 있음</li>
+<li>클래스 어댑터 패턴을 사용한다면, 상속을 사용하기 때문에 유연성이 떨어짐</li>
+</ul>
+<h2 id="일본의-전자제품을-한국에서-사용하게-변경해주는-Adapter-설계"><a href="#일본의-전자제품을-한국에서-사용하게-변경해주는-Adapter-설계" class="headerlink" title="일본의 전자제품을 한국에서 사용하게 변경해주는 Adapter 설계"></a>일본의 전자제품을 한국에서 사용하게 변경해주는 Adapter 설계</h2><p>책의 예제가 조금 이해하기 난해해서, 실생활을 추상화하여 예시를 하나 설계해보았다.<br>일본에서 산 전자제품(110v 정격전압)을 한국(220v 정격전압)에서 사용할 수 있도록 해주는 어뎁터를 실제 설계해보았다.</p>
+<h3 id="JPElectronicProduct-Interface"><a href="#JPElectronicProduct-Interface" class="headerlink" title="JPElectronicProduct Interface"></a>JPElectronicProduct Interface</h3><p>일본의 전자제품 연결을 위한 Interface</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">JPElectronicProduct</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">connect</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="JPAirConditioner-Class"><a href="#JPAirConditioner-Class" class="headerlink" title="JPAirConditioner Class"></a>JPAirConditioner Class</h3><p>일본에서 구매한 에어컨 클래스, JPElectronicProduct 를 구현하고 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JPAirConditioner</span> <span class="keyword">implements</span> <span class="title class_">JPElectronicProduct</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">connect</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;일본에서 구매한 에어컨입니다. 110v 규격과 연결됩니다.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="KRElectronicProduct-Interface"><a href="#KRElectronicProduct-Interface" class="headerlink" title="KRElectronicProduct Interface"></a>KRElectronicProduct Interface</h3><p>한국의 전자제품 연결을 위한 Interface</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">KRElectronicProduct</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">connect</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="KRRefrigerator-Class"><a href="#KRRefrigerator-Class" class="headerlink" title="KRRefrigerator Class"></a>KRRefrigerator Class</h3><p>한국에서 구매한 냉장고 클래스, KRElectronicProduct 를 구현하고 있다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">KRRefrigerator</span> <span class="keyword">implements</span> <span class="title class_">KRElectronicProduct</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">connect</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;한국에서 구매한 냉장고입니다. 220v 와 연결됩니다.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Adapter-클래스"><a href="#Adapter-클래스" class="headerlink" title="Adapter 클래스"></a>Adapter 클래스</h3><p>일본에서 구매한 전자제품을 한국의 정격전압과 연결하게 해주는 Adapter 클래스</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AdapterForKoreaElectronicProduct</span> <span class="keyword">implements</span> <span class="title class_">KRElectronicProduct</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> JPElectronicProduct jpElectronicProduct;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">AdapterForKoreaElectronicProduct</span><span class="params">(JPElectronicProduct jpElectronicProduct)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.jpElectronicProduct = jpElectronicProduct;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">connect</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;어댑터입니다. 외부에서 220v 전압을 받아 110v로 변경합니다.&quot;</span>);</span><br><span class="line">        jpElectronicProduct.connect();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="테스트-코드"><a href="#테스트-코드" class="headerlink" title="테스트 코드"></a>테스트 코드</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">AdapterTest</span> &#123;</span><br><span class="line">    <span class="comment">// 결과</span></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">        한국 정격전압은 220v을 사용합니다.</span></span><br><span class="line"><span class="comment">        어댑터입니다. 외부에서 220v 전압을 받아 110v로 변경합니다.</span></span><br><span class="line"><span class="comment">        일본에서 구매한 에어컨입니다. 110v 규격과 연결됩니다.</span></span><br><span class="line"><span class="comment">        한국 정격전압은 220v을 사용합니다.</span></span><br><span class="line"><span class="comment">        한국에서 구매한 냉장고입니다. 220v 와 연결됩니다.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">adapterTest</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="comment">// given</span></span><br><span class="line">        <span class="type">JPElectronicProduct</span> <span class="variable">airConditioner</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">JPAirConditioner</span>();</span><br><span class="line">        <span class="type">KRElectronicProduct</span> <span class="variable">refrigerator</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">KRRefrigerator</span>();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// when</span></span><br><span class="line">        <span class="type">KRElectronicProduct</span> <span class="variable">adapterWithJapanElectronicProduct</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">AdapterForKoreaElectronicProduct</span>(airConditioner);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// then</span></span><br><span class="line">        connectWithKoreaElectric(adapterWithJapanElectronicProduct);</span><br><span class="line">        connectWithKoreaElectric(refrigerator);</span><br><span class="line"></span><br><span class="line">        assertThat(adapterWithJapanElectronicProduct).isInstanceOf(KRElectronicProduct.class);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">connectWithKoreaElectric</span><span class="params">(KRElectronicProduct product)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;한국 정격전압은 220v을 사용합니다.&quot;</span>);</span><br><span class="line">        product.connect();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="Spring-속-어댑터-패턴-MultiValueMapAdapter"><a href="#Spring-속-어댑터-패턴-MultiValueMapAdapter" class="headerlink" title="Spring 속 어댑터 패턴 - MultiValueMapAdapter"></a>Spring 속 어댑터 패턴 - MultiValueMapAdapter</h2><p>Spring의 util 패키지에 (Key, List) 로 구성되는 MultiValueMap 이란 자료구조가 존재한다. </p>
+<p>MultiValueMapAdapter 는 JavaSE 의 java.util.Map 컬렉션 을 MultiValueMap으로 사용하게 끔 도와주는 어댑터이다.<br>따라서 <code>Map&lt;K, List&lt;V&gt;&gt;</code> 구조의 Map을 <code>MultiValueMap</code> 타입으로 변환하여 사용이 가능하게 한다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.util;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Adapts a given &#123;<span class="doctag">@link</span> Map&#125; to the &#123;<span class="doctag">@link</span> MultiValueMap&#125; contract.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Arjen Poutsma</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Juergen Hoeller</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 5.3</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &lt;K&gt; the key type</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &lt;V&gt; the value element type</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> CollectionUtils#toMultiValueMap</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@see</span> LinkedMultiValueMap</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@SuppressWarnings(&quot;serial&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MultiValueMapAdapter</span>&lt;K, V&gt; <span class="keyword">implements</span> <span class="title class_">MultiValueMap</span>&lt;K, V&gt;, Serializable &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;K, List&lt;V&gt;&gt; targetMap;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Wrap the given target &#123;<span class="doctag">@link</span> Map&#125; as a &#123;<span class="doctag">@link</span> MultiValueMap&#125; adapter.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> targetMap the plain target &#123;<span class="doctag">@code</span> Map&#125;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">MultiValueMapAdapter</span><span class="params">(Map&lt;K, List&lt;V&gt;&gt; targetMap)</span> &#123;</span><br><span class="line">        Assert.notNull(targetMap, <span class="string">&quot;&#x27;targetMap&#x27; must not be null&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.targetMap = targetMap;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// MultiValueMap implementation</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="meta">@Nullable</span></span><br><span class="line">    <span class="keyword">public</span> V <span class="title function_">getFirst</span><span class="params">(K key)</span> &#123;</span><br><span class="line">        List&lt;V&gt; values = <span class="built_in">this</span>.targetMap.get(key);</span><br><span class="line">        <span class="keyword">return</span> (values != <span class="literal">null</span> &amp;&amp; !values.isEmpty() ? values.get(<span class="number">0</span>) : <span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><h3 id="데코레이터-vs-어댑터"><a href="#데코레이터-vs-어댑터" class="headerlink" title="데코레이터 vs 어댑터"></a>데코레이터 vs 어댑터</h3><p>앞서 다루었던 데코레이터 패턴도 어느정도 어댑터 패턴과 공통점이 있는 것 같아서 헷갈리기 시작했다.<br>따라서 어댑터 패턴과 데코레이터 패턴의 정의로부터 목적을 다시 상기하며 비교해보았다.</p>
+<h4 id="공통점"><a href="#공통점" class="headerlink" title="공통점"></a>공통점</h4><ul>
+<li>둘 다 어떤 관점으로든 특정 객체를 <code>Wrapping</code> 하고 있다.</li>
+</ul>
+<h4 id="차이점"><a href="#차이점" class="headerlink" title="차이점"></a>차이점</h4><ul>
+<li>어댑터 : 특정 인터페이스로 변환하기 위한 목적이다.</li>
+<li>데코레이터 : 특정 기능이나 속성을 추가하기 위한 목적이다.</li>
+</ul>
+<h3 id="변화와-책임부여-관점에서-바라-본-디자인-패턴"><a href="#변화와-책임부여-관점에서-바라-본-디자인-패턴" class="headerlink" title="변화와 책임부여 관점에서 바라 본 디자인 패턴"></a>변화와 책임부여 관점에서 바라 본 디자인 패턴</h3><p>디자인 패턴을 계속 공부하다보니 대부분의 경우<br><strong><em>‘변화할 가능성이 있는 부분을 별도 객체로 분리하고, 그 객체에 변화에 대한 책임을 부여한다.’</em></strong> 라는 차원에서 접근한다.<br>그리고 그 방법에 따라 여러 디자인 패턴으로 나눌 수 있는 것 같다. 이런 사실 때문에 디자인 패턴은 단독으로 사용되는 경우가 드물며, 여러 디자인 패턴을 결합해서 사용하는 경우도 많은 것 같다.</p>
+<p>또한, 어떤 코드를 봤을 때 ‘아 이건 OOO 디자인 패턴을 사용했다.’ 라고 단정지을 수 있는 경우가 많지 않다.<br>따라서, 어떤 디자인 패턴을 학습할 때 조심해야 되는 것은 ‘어떤 기술과 구현 방법을 썼기 때문에 이 디자인 패턴은 OOO 다’ 라고 단정지으면 안된다는 생각이 들었다.<br>가장 중요한 것은 ‘어떤 문제가 발생했고, 이 문제를 어떻게 해결하는 것이 더 좋은 설계인 지’ 관점에서 디자인 패턴을 학습해야 한다.</p>
+<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/108192370">헤드퍼스트 디자인패턴</a></li>
+<li><a target="_blank" rel="noopener" href="https://springframework.guru/gang-of-four-design-patterns/adapter-pattern/">springframework.guru</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4/"># 디자인패턴</a>
+                    
+                        <a href="/tag/gof/"># GoF</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/02/13/design-pattern/8-facade/">퍼사드 패턴(Facade Pattern)</a>
+            
+            
+            <a class="next" rel="next" href="/2023/02/08/design-pattern/6-command/">커맨드 패턴(Command Pattern)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

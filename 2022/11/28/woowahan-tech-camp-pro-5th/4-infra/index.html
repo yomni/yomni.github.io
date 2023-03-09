@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>그럴듯한 서비스 만들기 (AWS를 활용한 Infra 구축) 미션 회고 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">그럴듯한 서비스 만들기 (AWS를 활용한 Infra 구축) 미션 회고</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%94%84-pro-5%EA%B8%B0-%ED%9A%8C%EA%B3%A0%EB%A1%9D/">우아한 테크 캠프 Pro 5기 회고록</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="그럴듯한-서비스-만들기-인프라-미션"><a href="#그럴듯한-서비스-만들기-인프라-미션" class="headerlink" title="그럴듯한 서비스 만들기(인프라 미션)"></a>그럴듯한 서비스 만들기(인프라 미션)</h2><p>이번 미션에서는 <code>AWS</code>를 활용하여 여러 역할별로 서버를 구축하고,<br>미션용으로 미리 준비해 둔 서비스를 직접 배포 해보고, 관리를 위한 여러 도구들을 구성해봄으로써<br>네트워크에 대한 이해와 <code>왜 클라우드 서비스를 사용하는가?</code> 에 대한 원론적인 의문도 해소가 되는 미션이었다. </p>
+<p>각 단계별로 <code>서비스 구성하기(AWS 서버에 서비스 띄우기)</code>, <code>서비스 배포하기(reverse-proxy, tls 적용)</code>, <code>배포 스크립트 작성하기</code><br>구성되어 있고, 단계별로 따라하다 보면 미션의 제목 답게 <strong><em>그럴듯한 서비스 만들기</em></strong> 가 가능한 수준까지 학습할 수 있었다.</p>
+<p>강의에서는 <em>이번 미션은 그냥 따라만 하시면 됩니다.</em> 라거나 혹은 <em>이번 미션은 쉬어가는 미션입니다.</em> 라고 하셨지만,<br>막상 해보니 네트워크나 클라우드 서비스에 대한 컨셉에 대한 기반 지식이 없다면<br>정말정말 어려운 미션일 수도 있겠다 라고 생각이 들었다.</p>
+<p>특히, 미션의 각 단계별로 추가로 적용해보면 좋을 법한 도구나 개념들을 많이 공유해주셨다</p>
+<ul>
+<li>SonarLint</li>
+<li>Flyway</li>
+<li>git submodule 을 통해 설정 파일을 별도로 관리 하는 법</li>
+</ul>
+<p>등 여러 꿀팁들을 대방출 해주셨지만, 메인 미션만 따라하는것도 조금 벅차다는 느낌에 개념만 숙지하고 넘어갔었다.</p>
+<h2 id="회고"><a href="#회고" class="headerlink" title="회고"></a>회고</h2><h3 id="이번-미션에서-잘-한-점"><a href="#이번-미션에서-잘-한-점" class="headerlink" title="이번 미션에서 잘 한 점"></a>이번 미션에서 잘 한 점</h3><h4 id="미리-가지고-있던-기반-지식을-적극적으로-활용"><a href="#미리-가지고-있던-기반-지식을-적극적으로-활용" class="headerlink" title="미리 가지고 있던 기반 지식을 적극적으로 활용"></a>미리 가지고 있던 기반 지식을 적극적으로 활용</h4><p>인프라 미션을 진행하기 앞서, 클라우드란 무엇인지, Docker, 네트워크 전반 지식 등..<br>마지막 배포 스크립트는 쉘 스크립트로 작성해야 했기에, 다소 학습이 필요했지만<br>다른 클라우드의 각종 도구를 사용하기 위해 도구 사용법은 미리 숙지해놓은 상태였다.</p>
+<p>각 단계별로 안내되어 있는 힌트들을 따라서 적절하게 진행하니 별 어려움 없이 이번 미션을 마무리할 수 있었다.</p>
+<h3 id="어려웠던-점"><a href="#어려웠던-점" class="headerlink" title="어려웠던 점"></a>어려웠던 점</h3><h4 id="커뮤니케이션"><a href="#커뮤니케이션" class="headerlink" title="커뮤니케이션"></a>커뮤니케이션</h4><p>이번 미션에서 특히 어려웠던 점이 바로 <code>리뷰어와의 커뮤니케이션</code>이었다.</p>
+<p>서비스 배포하기 단계에서 ‘설정파일을 각 환경별로 분리하라’ 라는 요구사항이 있었는데,<br>개념을 숙지하고 각 환경별로 설정파일을 분리하여 리뷰요청을 드렸다.</p>
+<p>하지만 난데없이, 설정파일에서 jwt 토큰이 어디서 사용되는지 물어보시는 리뷰를 남겨주셔서 다소 당황스러웠고, 여러 생각이 들었다.</p>
+<ul>
+<li>왜 이런 기술의 개념적인 것을 물어보시는거지?(개념을 숙지하지 않고 사용하는 것 처럼 느껴졌나?..)</li>
+<li>내가 설정파일을 뭔가 잘못 작성했나?(구동되는 것은 확인했는데..)</li>
+</ul>
+<p>여러 생각이 들면서도, 질문에 대한 답을 작성하였고</p>
+<ul>
+<li>jwt 이 사용되는 곳</li>
+<li>설정파일에서 jwt secret-key가 어떻게 활용되는 지</li>
+</ul>
+<p>이런 답변을 작성하면서도 코드리뷰라는 시스템에 대하여<br>‘리뷰어와 커뮤니케이션이 얼마나 중요한 지’에 대해 고찰할 수 있는 계기가 되었다.</p>
+<p>만약 교육생과 리뷰어라는 관계가 아니라, 직장에서 코드리뷰를 받는 상황이었다면?<br>똑같은 코드리뷰라는 행위에서도 관계에 따라 혹은 커뮤니케이션 방법에 따라 결과가<br>첨예하게 갈릴 수도 있을 것 같다는 생각이 들었다.</p>
+<p>다음 단계에서도 비슷하게, 배포하는 과정에서 기존 프로세스를 kill 하는 명령어를 함수로 작성하였는데,<br>당연하게도 실행중인 프로세스가 있을 경우에만 종료하는 식으로 구현했다.</p>
+<p>하지만 리뷰어님이 ‘실행중인 프로세스가 있을 경우에만 종료해보면 어떨까요’라는 리뷰를 남기셨는데,<br>내가 정의한 함수를 보면 분명히 그렇게 작성했는데,, 구현부분을 안보신건지 아니면 내가 함수를 잘못 작성한건지 참으로 난감했다.</p>
+<p>하지만 리뷰 자체는 merge 되어 넘어갔고,<br>그 부분이 문제가 있었다면 reject 되었을 것이라는 생각에 그냥 넘어가자고 생각이 들었다. </p>
+<h3 id="느낀점"><a href="#느낀점" class="headerlink" title="느낀점"></a>느낀점</h3><p>인프라 미션을 진행하기 전까지는 클라우드 서비스에 대해<br><strong><em>그냥 내 남는 머신에 리눅스 깔고 도커 몇개 띄우는거랑 뭐가달라?</em></strong> 라는 굉장히 보수적인 생각을 가지고 있었다.</p>
+<p>하지만, 미션을 경험하고 나니 왜 클라우드 서비스를 사용하는지 뼈저리게 느꼈다.</p>
+<p>만약 100평 정도 땅을 파서 평탄화 시켜야 한다고 가정해보자</p>
+<ul>
+<li>‘숟가락 하나로 땅을 파는 것’</li>
+<li>‘포크레인과 여러 중기계를 사용하는 것’<br>어떤 방법을 선택할 것인가? 당연히 후자를 선택할 것이다.</li>
+</ul>
+<p>클라우드 서비스도 마찬가지다.<br>서비스를 띄울 서버 하나를 구축하기 위해</p>
+<ul>
+<li>VPC를 구성</li>
+<li>네트워크를 구성</li>
+<li>서브넷을 구성</li>
+<li>라우팅 테이블을 구성</li>
+<li>보안그룹(이게 진짜 기가막혔다) 을 구성<br>하는 등의 일련의 과정을 웹 콘솔에서 진짜 쉽게 구성할 수 있었다.</li>
+</ul>
+<p>위에서 예를 들었듯이 포크레인이라는 아주 효율 좋은 기계를 사용해서 땅을 파기 위해선,<br><strong><em>포크레인의 사용법을 알아야 한다.</em></strong></p>
+<p>클라우드 서비스도 마찬가지로 VPC, 서브넷, 라우팅 테이블, 보안 그룹 등등 여러 좋은 도구들이 있지만<br>이것이 왜 필요한 지, 또한 <strong><em>하나하나의 개념이 무엇인 지 알고 사용해야 할 것 같다.</em></strong></p>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EC%9A%B0%ED%85%8C%EC%BA%A0pro/"># 우테캠Pro</a>
+                    
+                        <a href="/tag/infrastructure/"># Infrastructure</a>
+                    
+                        <a href="/tag/aws/"># AWS</a>
+                    
+                        <a href="/tag/network/"># Network</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/01/11/woowahan-tech-camp-pro-5th/5-atdd%EA%B8%B0%EB%B0%98-tdd/">인수 테스트 기반 TDD(인수 테스트 기반 리팩터링) 미션 회고</a>
+            
+            
+            <a class="next" rel="next" href="/2022/11/27/woowahan-tech-camp-pro-5th/3-atdd/">ATDD(인수테스트 주도 개발) 미션 회고</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>반복자 패턴(Iterator Pattern) | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">반복자 패턴(Iterator Pattern)</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/">디자인 패턴</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <img src="/2023/02/16/design-pattern/10-iterator/iterator.png" class="">
+
+<h2 id="반복자-패턴-Iterator-Pattern-SRP"><a href="#반복자-패턴-Iterator-Pattern-SRP" class="headerlink" title="반복자 패턴(Iterator Pattern) ; SRP"></a>반복자 패턴(Iterator Pattern) ; SRP</h2><p>반복자 패턴은 컬렉션의 구현 방법을 노출시키지 않으면서도<br>그 집합체 안에 들어 있는 모든 항목에 접근할 수 있게 해 주는 방법을 제공해줍니다.</p>
+<h3 id="단일-책임의-원칙-SRP-Single-Responsibility-Principle"><a href="#단일-책임의-원칙-SRP-Single-Responsibility-Principle" class="headerlink" title="단일 책임의 원칙(SRP : Single Responsibility Principle)"></a>단일 책임의 원칙(SRP : Single Responsibility Principle)</h3><blockquote>
+<p>클래스를 변경하는 이유가 단 한가지어야 한다.</p>
+</blockquote>
+<ul>
+<li>컬렉션의 기능과 반복하는 책임을 분리한다.<ul>
+<li>따라서 컬렉션의 기능을 변경한다면, 컬렉션 클래스를 변경하고</li>
+<li>반복하는 기능에 대한 변경을 한다면 반복자 클래스를 변경한다</li>
+</ul>
+</li>
+</ul>
+<h2 id="책에서-나오는-예제-java-util-Iterator-활용"><a href="#책에서-나오는-예제-java-util-Iterator-활용" class="headerlink" title="책에서 나오는 예제 - java.util.Iterator 활용"></a>책에서 나오는 예제 - java.util.Iterator 활용</h2><img src="/2023/02/16/design-pattern/10-iterator/collection.png" class="">
+
+<p>Java Collection 을 크게 나누면 3가지로 나눌 수 있다.</p>
+<h3 id="List"><a href="#List" class="headerlink" title="List"></a>List</h3><p>순서가 있는 집합체, 중복 허용</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">List</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">Collection</span>&lt;E&gt; &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    Iterator&lt;E&gt; <span class="title function_">iterator</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h3><p>중복을 허용하지 않는 집합</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Set</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">Collection</span>&lt;E&gt; &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    Iterator&lt;E&gt; <span class="title function_">iterator</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h3><p>&lt;Key, Value&gt; 로 구성되는 집합  </p>
+<ul>
+<li>Key 의 타입은 Set 이다.</li>
+<li>Value 의 타입은 Collection 이다.<ul>
+<li>따라서 Value 로 Map 이 다시 등장할 수도 있다.</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Map</span>&lt;K,V&gt; &#123;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    Collection&lt;V&gt; <span class="title function_">values</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Collection</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">Iterable</span>&lt;E&gt; &#123;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    Iterator&lt;E&gt; <span class="title function_">iterator</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Collection-in-iterator-결론"><a href="#Collection-in-iterator-결론" class="headerlink" title="Collection in iterator 결론"></a>Collection in iterator 결론</h3><p>컬렉션을 사용한다면 모든 요소에 편하게 접근하는 것을 기대하고 사용하는 경우가 대부분이다.<br>따라서, <strong>각 구성요소에 반복하며 접근하는 책임</strong>을 Iterator 라는 별도 인터페이스로 <strong>분리</strong>하고,<br>Collection 의 각 구현체에서 각 자료구조에 따라 반복하는 것에 대한 구현도 담당해야 한다는 것이다. </p>
+<h2 id="Spring-속-Iterator-Pattern"><a href="#Spring-속-Iterator-Pattern" class="headerlink" title="Spring 속 Iterator Pattern"></a>Spring 속 Iterator Pattern</h2><p><code>org.springframework.util.CompositeIterator</code>는 JavaSE의 Iterator 인터페이스의 구현체이다.<br>Iterator set 을 멤버로 갖고 있으며, 모든 iterator 가 반복 작업을 완료할 때 까지 순차적으로 호출되는 여러 iterator 를 유지 &#x2F; 관리 한다.<br>특히, remove 는 다중 스레드 환경에서 심각한 오류를 야기시킬 수 있기 때문에 <code>UnsupportedOperationException</code>를 발생시키는 것이 인상적이다.</p>
+<p>컴포지트 패턴으로도 볼 수 있어서 단순히 Iterator Pattern 이라고는 볼 수 없다. 하지만, 중요한 것은 <strong>반복에 대한 책임</strong>을 가지고 있는 객체라는 점이다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.springframework.util;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Iterator;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedHashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.NoSuchElementException;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Composite iterator that combines multiple other iterators,</span></span><br><span class="line"><span class="comment"> * as registered via &#123;<span class="doctag">@link</span> #add(Iterator)&#125;.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;This implementation maintains a linked set of iterators</span></span><br><span class="line"><span class="comment"> * which are invoked in sequence until all iterators are exhausted.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Erwin Vervaet</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Juergen Hoeller</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 3.0</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> &lt;E&gt; the element type</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CompositeIterator</span>&lt;E&gt; <span class="keyword">implements</span> <span class="title class_">Iterator</span>&lt;E&gt; &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> Set&lt;Iterator&lt;E&gt;&gt; iterators = <span class="keyword">new</span> <span class="title class_">LinkedHashSet</span>&lt;&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> <span class="type">boolean</span> <span class="variable">inUse</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">	 * Add given iterator to this composite.</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(Iterator&lt;E&gt; iterator)</span> &#123;</span><br><span class="line">		Assert.state(!<span class="built_in">this</span>.inUse, <span class="string">&quot;You can no longer add iterators to a composite iterator that&#x27;s already in use&quot;</span>);</span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">this</span>.iterators.contains(iterator)) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;You cannot add the same iterator twice&quot;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">this</span>.iterators.add(iterator);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">hasNext</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.inUse = <span class="literal">true</span>;</span><br><span class="line">		<span class="keyword">for</span> (Iterator&lt;E&gt; iterator : <span class="built_in">this</span>.iterators) &#123;</span><br><span class="line">			<span class="keyword">if</span> (iterator.hasNext()) &#123;</span><br><span class="line">				<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> E <span class="title function_">next</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="built_in">this</span>.inUse = <span class="literal">true</span>;</span><br><span class="line">		<span class="keyword">for</span> (Iterator&lt;E&gt; iterator : <span class="built_in">this</span>.iterators) &#123;</span><br><span class="line">			<span class="keyword">if</span> (iterator.hasNext()) &#123;</span><br><span class="line">				<span class="keyword">return</span> iterator.next();</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NoSuchElementException</span>(<span class="string">&quot;All iterators exhausted&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">remove</span><span class="params">()</span> &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">UnsupportedOperationException</span>(<span class="string">&quot;CompositeIterator does not support remove()&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>Java Collection 을 수 없이 사용하면서, Iterator 라는 인터페이스에 대해 생각해 볼 겨를이 없었던 것 같다.<br>이게 별도 패턴으로 분류되어야 하는가 싶기는 하면서도, 단일 책임의 원칙이라는 관점에서 다시 생각해보면<br>Iterator 라는 매우 단순하지만 명확한 책임을 가지고 있는 객체도 별로 없는 것 같다는 생각이 든다.</p>
+<h3 id="다형성-관점에서의-Iterator"><a href="#다형성-관점에서의-Iterator" class="headerlink" title="다형성 관점에서의 Iterator"></a>다형성 관점에서의 Iterator</h3><p>모든 Collection 은 동일한 Iterator 객체를 반환해준다. 따라서 어떤 Collection 을 사용하는 지에 상관없이(List, Set, Map)<br><strong>‘모든 구성요소에 접근하고 싶다’</strong> 는 목적이면 Iterator 를 반환해서 사용하면 된다.</p>
+<h3 id="주의-멀티스레드-환경"><a href="#주의-멀티스레드-환경" class="headerlink" title="주의(멀티스레드 환경)"></a>주의(멀티스레드 환경)</h3><p>iterator 의 <code>remove()</code>는 신중하게 사용해야 한다. 멀티 스레드 환경에서 동일한 collection 에 대해 remove 는 안전성을 보장하지 않는다.</p>
+<p>Java 의 stream 을 통한 반복에서 멀티스레드 안전성에 대해 한번 더 공부해봐야겠다는 생각이 들었다.</p>
+<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/108192370">헤드퍼스트 디자인패턴</a></li>
+<li><a target="_blank" rel="noopener" href="https://springframework.guru/gang-of-four-design-patterns/iterator-pattern/">springframework.guru</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4/"># 디자인패턴</a>
+                    
+                        <a href="/tag/gof/"># GoF</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/02/26/design-pattern/11-composite/">복합 패턴(Composite Pattern)</a>
+            
+            
+            <a class="next" rel="next" href="/2023/02/15/design-pattern/9-template-method/">템플릿 메소드 패턴(Template Method Pattern)</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

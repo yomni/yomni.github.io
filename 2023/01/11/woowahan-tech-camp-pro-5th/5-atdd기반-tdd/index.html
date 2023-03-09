@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>인수 테스트 기반 TDD(인수 테스트 기반 리팩터링) 미션 회고 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">인수 테스트 기반 TDD(인수 테스트 기반 리팩터링) 미션 회고</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%94%84-pro-5%EA%B8%B0-%ED%9A%8C%EA%B3%A0%EB%A1%9D/">우아한 테크 캠프 Pro 5기 회고록</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="인수-테스트-기반-TDD"><a href="#인수-테스트-기반-TDD" class="headerlink" title="인수 테스트 기반 TDD"></a>인수 테스트 기반 TDD</h2><p>이번 미션에서는 이전에 학습했었던 <code>ATDD(인수 테스트 주도 개발)</code>에서 한발 더 나아가서,<br>인수 테스트를 TDD나 리팩터링에 어떻게 활용하는지 경험할 수 있었다.  </p>
+<p>TDD 에서는 특히 단위 테스트를 정의 해보고,<br>협력객체의 통합과 고립이라는 측면에서 <code>Classist</code> vs <code>Mockist</code>의 관점의 차이를 많이 알게 되었다.<br>이러한 과정에서 <code>Test Double</code> 에는 <code>Stub</code>, <code>Fake</code>, <code>Mock</code> 이란 개념이 있다는 것을 알게되었다.<br>각각 기술과 차이에 대해서는 다른 포스트에서 다루어보려고 한다.<br>결론은 Top-down, Bottom-up 정답은 없다라는 것이다. 같이 일하는 사람들과 컨벤션이 있다면, 그것을 따르면 되는것이고,<br>컨벤션이 없다면 각자 취향에 맞춰서 Test double을 사용하거나 진짜 객체를 생성하는 테스트 코드를 작성하라는 것이었다.</p>
+<p>리팩터링에서는 테스트 코드의 중요성을 강조했다.<br>리팩터링 시 테스트 코드를 먼저 작성하면 여러가지 장점들이 존재했다.</p>
+<ol>
+<li><strong><em>길을 잃지 않는다</em></strong><br>여러 소스코드를 왔다갔다 하다보면 ‘내가 뭘하려고 했더라?’ 오영수 할아버지가 빙의하는 순간이 있다.<br>테스트 코드를 먼저 작성해놓으면 헷갈릴 때 리팩터링의 목적을 다시 상기시킬 수 있다. </li>
+<li><strong><em>사이드 이펙트의 피드백을 바로바로 받을 수 있다</em></strong><br>테스트 코드로 기존 코드를 보호해놨으므로, 사이드 이펙트가 생길 경우 바로바로 확인할 수 있다.</li>
+<li><strong><em>안심하고 작은 단위로 메서드를 분리</em></strong><br>테스트 코드로 보호했기 때문에, 안심하고 작은 단위로 메서드를 분리할 수 있다.(어차피 큰 테스트 코드 내에서 벗어나지 않으므로)</li>
+</ol>
+<p>이런 리팩터링에서 가장 처음 해야 할 것이 바로 이전에 학습했던 <code>인수 테스트</code>작성이었다.</p>
+<p>더 나아가서 리팩터링이 완료되어 기능 구현 후 운영관점에서 정책적인 가이드도 제시해주었다.  </p>
+<ul>
+<li>스트랭글러 패턴(Strangler pattern)<ul>
+<li>레거시 시스템의 일부를 새로운 애플리케이션이나 서비스로 교체(리팩터링)</li>
+<li>일정 기간이 지난 후, 대체된 레거시 기능을 제거한다.(기존 코드를 어느정도 두었다가 안정화되면 삭제)</li>
+</ul>
+</li>
+</ul>
+<p>이런 패턴은 라이브로 운영 되는 서비스를 리팩터링할 때 아주 유용하게 활용 할 수 있다.</p>
+<h2 id="회고"><a href="#회고" class="headerlink" title="회고"></a>회고</h2><h3 id="이번-미션에서-잘-한-점"><a href="#이번-미션에서-잘-한-점" class="headerlink" title="이번 미션에서 잘 한 점"></a>이번 미션에서 잘 한 점</h3><h4 id="강의-내용을-충실하게-이행"><a href="#강의-내용을-충실하게-이행" class="headerlink" title="강의 내용을 충실하게 이행"></a>강의 내용을 충실하게 이행</h4><p>강의에서 가이드했던 방식대로</p>
+<ol>
+<li>리팩터링 인수 테스트를 작성</li>
+<li>top-down을 베이스로, bottom-up 방식으로 구현</li>
+</ol>
+<p>2 가지 프로세스를 충실하게 이행했다.<br>지하철의 경로를 조회하는 별도 라이브러리를 사용함에 있어서도<br><code>학습 테스트</code>를 진행하여 라이브러리 활용 방법에 대해 숙지하고, 바로 활용 할 수 있었다.</p>
+<p>예상했던 병목지점이었던 ‘지하철 경로 조회 기능 구현’ 에서는 최단거리 라이브러리를 사용하니 금방 구현할 수 있었다.<br>하지만, 또 예상외로 ‘요금 조회 기능 구현’ 에서는 나이에 따른 할인율을 직접 찾아보거나 정책을 인터페이스로 추상화 하는 등의<br>설계관점에서도 꽤나 고민할 것이 많아 예상보다 오래 걸리게 되었다.</p>
+<p>그래도 강의의 내용대로 테스트 코드를 먼저 작성하면 좋은 점에 대해 확실히 공감하고 이해할 수 있었다.<br>중간 중간에 인수 테스트를 보면서 각 기능의 목적을 다시 확인하니 비교적 쾌적하게 기능 구현이나 리팩터링을 진행할 수 있었다.</p>
+<h3 id="어려웠던-점"><a href="#어려웠던-점" class="headerlink" title="어려웠던 점"></a>어려웠던 점</h3><h4 id="Annotation의-활용"><a href="#Annotation의-활용" class="headerlink" title="Annotation의 활용"></a>Annotation의 활용</h4><p>이번 미션에서 어려웠던 점은 인증과 관련된 Custom Annotation 을 적용하는 부분이었다.</p>
+<p>토큰 발급 방식은 익숙했었는데, Resolver 부분에서 Annotation 기반으로 인증모듈을 별도로 적용했던 것은<br>구조를 파악하기 전엔 파격적이게 느껴졌다.  </p>
+<p>사실 어려웠던점 보다는 흥미로운점에 가까웠다.<br>이런 깔끔한 방법이 있다는 것을 처음 알게되었고,<br>Github에서 best-practice 같은 좋은 코드를 많이 찾아봐야겠다는 생각이 들기도 했다. </p>
+<h3 id="느낀점"><a href="#느낀점" class="headerlink" title="느낀점"></a>느낀점</h3><p>TDD 의 장점을 확실히 느낄 수 있었던 미션이었다.</p>
+<p>특히, 리팩터링 시 TDD를 활용한다는 점은 여러 이점이 있는 것처럼 느껴졌다.</p>
+<p>다만, 미션의 특성상 TDD와 적합한 구현 난이도, 주제 등을 고려했을 때<br>이상적인 리팩터링 환경이 아니라면 어떻게 해야하는 지 생각해봐야할 것 같았다.</p>
+<p>예를 들면, <code>기존 테스트 코드가 한개도 없는 상황이라면?</code>, <code>스트랭글러 패턴을 적용할 수 없는 소스코드라면?</code><br>등의 문제는 사실 실제 업무를 보는 환경에서는 빈번하게 발생할 수 있는 상황이다.<br>테스트 코드가 없는 경우라면 오히려 적용해볼 수 있는 좋은 경우지만,<br>올드한 코드의 경우나 Service 레이어에 비즈니스 로직이 몰빵되어 있는 그런 경우라면,<br>사실 Mockito 같은 라이브러리를 써도 테스트 코드 하나가 Service 레이어의 특정 메서드에 집중될 수 밖에 없기 때문이다.</p>
+<p>객체지향언어에서의 TDD는 객체지향이라는 장점을 잘 살린 코드에서 잘 적용할 수 있는 기술인 것 같다.</p>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EC%9A%B0%ED%85%8C%EC%BA%A0pro/"># 우테캠Pro</a>
+                    
+                        <a href="/tag/atdd/"># ATDD</a>
+                    
+                        <a href="/tag/tdd/"># TDD</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/01/12/woowahan-tech-camp-pro-5th/6-diagnose-service/">서비스 진단하기(웹 성능 진단) 미션 회고</a>
+            
+            
+            <a class="next" rel="next" href="/2022/11/28/woowahan-tech-camp-pro-5th/4-infra/">그럴듯한 서비스 만들기 (AWS를 활용한 Infra 구축) 미션 회고</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

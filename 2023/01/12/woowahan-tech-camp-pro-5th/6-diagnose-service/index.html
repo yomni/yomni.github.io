@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>서비스 진단하기(웹 성능 진단) 미션 회고 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">서비스 진단하기(웹 성능 진단) 미션 회고</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%94%84-pro-5%EA%B8%B0-%ED%9A%8C%EA%B3%A0%EB%A1%9D/">우아한 테크 캠프 Pro 5기 회고록</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="서비스-진단하기"><a href="#서비스-진단하기" class="headerlink" title="서비스 진단하기"></a>서비스 진단하기</h2><p>이번 미션에서는 본격적으로 ‘성능’에 대한 점검 방법 및 필요성에 대해 학습했다.  </p>
+<ol>
+<li>webpagetest, pagespeed를 활용하여 웹 성능의 예산을 고민하는 법</li>
+<li>부하 테스트를 통해 점진적으로 목표치를 설정하는 방법</li>
+<li><code>USE 방법론</code>을 활용하여 서버 진단 &amp; Thread 덤프를 통해 서버의 이상점을 점검하는 방법</li>
+</ol>
+<p>성능 점검과 그 개선점에 정답은 없다.<br>따라서 서비스 특성을 고려하고 정책적인 결정을 내려야 하기 때문에 많은 시간과 이해당사자간 협의가 필요하다.</p>
+<p>하지만, 성능을 개선하는데 있어서 어느정도 기준이 필요하다.<br>크게 3가지로 나눌 수 있다.</p>
+<ul>
+<li>정량 기반(<code>Quantity Based Metric</code>)<ul>
+<li>ex1) 메인 페이지의 모든 오브젝트 파일 크기는 <code>10mb 미만</code>으로 제한한다.</li>
+<li>ex2) 모든 웹 페이지의 각 페이지 내 포함된 자바스크립트 크기는 <code>1mb 미만</code> 이어야 한다.</li>
+<li>ex3) 검색 페이지에는 <code>2mb 미만</code>의 이미지가 포함되어야 한다.</li>
+</ul>
+</li>
+<li>시간 기반(<code>Timing Based Metric</code>)<ul>
+<li>ex) LTE 환경에서의 모바일 기기의 <code>TTI(Time To Interactive)</code>는 <code>5초 미만</code>이어야 한다.</li>
+</ul>
+</li>
+<li>규칙 기반(<code>Rule Based Metric</code>)<ul>
+<li>ex) Lighthouse 성능 검사에서 <code>80점 이상</code>이어야 한다.</li>
+</ul>
+</li>
+</ul>
+<p>복합적일 경우 더욱 엄격한 시스템이 될 수 있을 지 언정,<br>각 성능 개선 목적의 기준은 상호 배제되는 기준이 아니다.<br>예를 들어, 메인 페이지의 모든 오브젝트 파일 크기는 10mb 미만 이면서,<br>Lighthouse 성늠검사에서 70점 이상 이라는 예산을 잡을 수 있을 것이다.</p>
+<p>참고로 대표적으로 많이 활용되는 가장 중요한 예산은 아래와 같다.</p>
+<ul>
+<li>시스템에서 가장 트래픽이 많은 페이지, 가장 중요한 페이지 기준으로<ul>
+<li>경쟁사 대비 20% 차이</li>
+<li>3초 안에 로딩</li>
+</ul>
+</li>
+</ul>
+<p>아무래도 사용자의 심리적인 요소가 감안된 것으로,<br>경쟁사 대비 20% 초과하여 느리거나, 3초 안에 로딩이 되지 않으면<br>대부분의 사용자들이 ‘느리다’라는 인식을 갖게 된다는 것이다.</p>
+<p>OS의 리소스가 성능에 영향을 끼치는지 검증하는 방법으로<br><code>USE 방법론</code>를 학습해봤다.</p>
+<ul>
+<li>Utilization : 얼만큼 자원을 썼는 지</li>
+<li>Saturation : 얼마나 많은 부하가 몰리는 지</li>
+<li>Error : 에러가 발생했는 지</li>
+</ul>
+<p>또한 성능 개선의 해결방법 차원에서 Scale up 혹은 Scale out 의 각각 개념에 대해 학습해보았다.</p>
+<ul>
+<li>Scale up : 서버의 스펙을 올리는 것(메모리를 더 꽂는다 등등..)</li>
+<li>Scale out : 장비를 추가해서 확장</li>
+</ul>
+<h2 id="회고"><a href="#회고" class="headerlink" title="회고"></a>회고</h2><h3 id="이번-미션에서-잘-한-점"><a href="#이번-미션에서-잘-한-점" class="headerlink" title="이번 미션에서 잘 한 점"></a>이번 미션에서 잘 한 점</h3><h4 id="성능-점검-필요성에-대한-높은-수준의-이해"><a href="#성능-점검-필요성에-대한-높은-수준의-이해" class="headerlink" title="성능 점검 필요성에 대한 높은 수준의 이해"></a>성능 점검 필요성에 대한 높은 수준의 이해</h4><p>성능 점검은 시스템을 운영하는데 반드시 필요한 행위이다.</p>
+<p>이제까지 나를 돌아보면 어떤 기술의 개념에 집중해서 학습했던 경향이 있다.<br>혹은 유지보수성을 고려해서 소스코드를 작성하는 방법이라던지 철저히 개발을 하는 입장에서 모든 것을 고려했다.</p>
+<p>부득이하게 이번 ‘서비스 진단하기’ 미션을 ‘레거시 코드 리팩터링’ 미션과 일부 겹치는 기간에 동시에 병행하게 되었다.<br>레거시 코드 리팩터링에서 자세하게 회고 해 볼 예정이지만, 이런 말이 나온다.<br><strong><em>소프트웨어의 본질은 해당 소프트웨어의 사용자를 위해 도메인에 관련된 문제를 해결하는 능력에 있다.</em></strong><br>나는 개발자로서 늘 ‘문제를 정의’하고 ‘해결법을 제시’하는 차원에서 학습하고 실제 업무에 적용해왔다.  </p>
+<p>하지만, 성능 점검은 철저히 사용자 측면에서 접근해야 한다.<br>사용자는 냉정하다. ‘3초 안에 로딩’이 되지 않으면, 그 서비스를 극단적으로 사용하지 않게 된다.<br>더 나아가선 그 서비스에 대해 좋은 감정을 가지지 못하게 된다.<br>따라서, 성능 점검은 어쩌면 개발의 모든 과정 중에서 가장 중요한 과정이라고 볼 수 있을 것 같다.</p>
+<p>단순히 성능 점검하는 방법이나 어떻게 개선하는 지 방법에 대한 학습을 떠나서,<br>성능 점검 &amp; 개선에 대한 필요성을 경험할 수 있는 좋은 시간이었다.</p>
+<p>마지막으로 소프트웨어의 정의를 기업을 운영하는 입장에서 다시 정의를 해본다면, 아래와 같을 것 같다.<br><strong><em>소프트웨어의 본질은 사용자의 문제를 소프트웨어를 통해 해결해주고, 그 대가로 상응하는 금전적 보상을 받는 것</em></strong><br>이라고 볼 수 있지 않을까?</p>
+<p>따라서, 성능 점검 및 개선은 사용자를 모으기 위해선 정말정말정말 중요하고,<br>이미 많은 기업들은 성능 개선을 위해 많은 투자를 하고 있다고 생각했다.</p>
+<h3 id="어려웠던-점"><a href="#어려웠던-점" class="headerlink" title="어려웠던 점"></a>어려웠던 점</h3><h4 id="웹-성능의-예산을-고려하는데-정답은-없다"><a href="#웹-성능의-예산을-고려하는데-정답은-없다" class="headerlink" title="웹 성능의 예산을 고려하는데 정답은 없다"></a>웹 성능의 예산을 고려하는데 정답은 없다</h4><p>이번 미션에서 가장 어려웠던 점은 ‘성능 예산 설정’이었다.  </p>
+<p>위에서 다루었던 내용처럼 정량적인 기준은 설정할 수 있다.<br>다만 어느정도 예산을 두고 설정해야 ‘사용자가 만족할 수 있는 지?’에는 정답도 없고 끝도 없다.</p>
+<p>따라서, 적절한 예산을 설정하는 것이 가장 어려웠다.</p>
+<p>가령, 이번 미션에서 구축했던 시스템은 ‘지하철 노선도 검색 서비스’ 인데,<br>노선 검색기능에 대하여 경쟁사 대비 20% 예산, 3초 내 로딩 이라는 목적을 이루기 위해선,<br>이제까지 다루었던 ‘코드를 어떻게 효율적으로 작성하는가?’ 라는 문제를 떠나서,  </p>
+<p>경쟁사의 성능 자료, 사용자 수 등을 파악하는 것 조차 막막한 일 이었다.<br>결과적으론 웹 브라우저의 퍼포먼스 탭을 활용하거나, webpagetest, pagespeed 등을 활용해서<br>경쟁사의 성능을 확인 할 순 있었지만, 나의 서비스의 초기 사용자 수를 어느정도 설정해야 하는가? 등등<br>문제가 꼬리에 꼬리를 물고 계속해서 생겨났다..</p>
+<p>‘정답이 없는 문제를 해결하라’는 것은 정말 어렵다.<br>이번 미션 중에서 ‘성능 예산 작성하기’가 나에겐 정답이 없는 문제 였다..</p>
+<h3 id="느낀점"><a href="#느낀점" class="headerlink" title="느낀점"></a>느낀점</h3><p>이번 미션에서 잘한 점에서 밝혔듯이 성능 점검의 필요성에 대해 깊은 수준에서 고민할 수 있는 좋은 기회였다.</p>
+<p>앞으로 프로그래밍과 관련된 학습도 꾸준히 진행하지만, 그에 못지 않게 성능과 관련된 학습도 병행해야겠다고 생각이 든다.<br>당장에 기획하고 있는 side-project 중 하나를 실제 서비스하는 수준까지 진행할 예정인데,<br>이와 관련해서 서비스 진단하기에서 학습했던 내용들을 반드시 적용하고, 계속 학습해야겠다는 생각이 들었다.</p>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EC%9A%B0%ED%85%8C%EC%BA%A0pro/"># 우테캠Pro</a>
+                    
+                        <a href="/tag/%EC%84%B1%EB%8A%A5%EC%A0%90%EA%B2%80/"># 성능점검</a>
+                    
+                        <a href="/tag/%EB%B6%80%ED%95%98%ED%85%8C%EC%8A%A4%ED%8A%B8/"># 부하테스트</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2023/01/13/woowahan-tech-camp-pro-5th/7-refactoring/">레거시 리팩터링(도메인 주도 설계) 미션 회고</a>
+            
+            
+            <a class="next" rel="next" href="/2023/01/11/woowahan-tech-camp-pro-5th/5-atdd%EA%B8%B0%EB%B0%98-tdd/">인수 테스트 기반 TDD(인수 테스트 기반 리팩터링) 미션 회고</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

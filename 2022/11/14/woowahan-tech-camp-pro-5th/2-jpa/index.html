@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>JPA 미션 회고 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">JPA 미션 회고</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EC%9A%B0%EC%95%84%ED%95%9C-%ED%85%8C%ED%81%AC-%EC%BA%A0%ED%94%84-pro-5%EA%B8%B0-%ED%9A%8C%EA%B3%A0%EB%A1%9D/">우아한 테크 캠프 Pro 5기 회고록</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="JPA"><a href="#JPA" class="headerlink" title="JPA"></a>JPA</h2><p>이번 미션에서는 <code>JPA(Java Persistence API)</code>에 대해 집중적으로 학습하기 위한 미션으로,<br>QnA 게시판의 백엔드 로직을 JPA 기반으로 구현하는 것이 목적이었다.</p>
+<p>각 단계별로 <code>엔티티 매핑</code>, <code>연관 관계 매핑</code>, <code>질문 삭제하기 리팩터링</code>으로 구성되어 있었고,<br><code>엔티티 매핑</code>, <code>연관 관계 매핑</code> 단계에선 각 단계의 제목대로 요구사항이 주어졌다.  </p>
+<p>QnA 서비스는 <code>User</code>, <code>Question</code>, <code>Answer</code>, <code>DeleteHistory</code> 총 4개의 도메인으로 이루어져 있었으며,<br>마지막 <code>질문 삭제하기 리펙터링</code>의 경우 <strong><em>‘본인이 작성한 질문과 답글만 삭제할 수 있고, 이 이력을 DeleteHistory에<br>저장해야 한다.’</em></strong> 라는 요구사항이었다.</p>
+<p>하지만 <code>삭제</code>라고 해서 DB에서 row가 삭제되는 것이 아니라, <code>삭제 상태(deleted = true)</code>로 만드는 것이라,<br>DB에서는 update가 되는 것이고, delete_history 테이블에는 insert가 되는것이므로 도메인의 비즈니스 로직에서 잘 처리해줘야 한다.<br>또한, 이전 단계에서 엔티티 매핑과 연관 관계 매핑을 잘 처리해놨어야 3단계에서 비교적 매끄럽게 진행이 가능하다.  </p>
+<p>3단계를 진행하면서 이전에 학습했던 TDD, Refactoring 방법등을 적극 활용하여<br>이번 미션을 무난하게 진행 할 수 있었다</p>
+<h2 id="회고"><a href="#회고" class="headerlink" title="회고"></a>회고</h2><h3 id="이번-미션에서-잘-한-점"><a href="#이번-미션에서-잘-한-점" class="headerlink" title="이번 미션에서 잘 한 점"></a>이번 미션에서 잘 한 점</h3><h4 id="엔티티-매핑-및-연관관계-매핑"><a href="#엔티티-매핑-및-연관관계-매핑" class="headerlink" title="엔티티 매핑 및 연관관계 매핑"></a>엔티티 매핑 및 연관관계 매핑</h4><p>QnA의 시스템 중에서 가장 중요한 연관관계 매핑을 간단히 그려보면 아래와 같다.</p>
+<img src="/2022/11/14/woowahan-tech-camp-pro-5th/2-jpa/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84%EB%A7%A4%ED%95%91.jpeg" class="">
+
+<p><code>DeleteHistory</code>라는 엔티티의 책임에 대한 고민이 많았다.<br>속성중에 content_id 라는 Question &#x2F; Answer의 id를 가지고 있었으나,<br>이 엔티티의 역할로 보면 <strong><em>History라는 측면에선 연관 관계를 맺지 않았다.</em></strong></p>
+<p>이렇게 설계한 연관 관계가 3단계에서 꽤나 유연하게 설계할 수 있는 밑거름이 되었다.<br>엔티티 매핑과 연관관계 매핑 단계가 JPA를 잘 알았던 사람이라면 금방 끝낼 수 있는 미션이지만,<br><strong><em>각 엔티티의 역할과 책임을 적절히 고려하여 연관관계 매핑을 해줘야 한다는 점</em></strong> 에서<br>꽤나 오랫동안 고민하며 설계했던 것이 도움이 많이 되었다.</p>
+<h3 id="어려웠던-점"><a href="#어려웠던-점" class="headerlink" title="어려웠던 점"></a>어려웠던 점</h3><h4 id="엔티티-설계에-대한-깊은-고민"><a href="#엔티티-설계에-대한-깊은-고민" class="headerlink" title="엔티티 설계에 대한 깊은 고민"></a>엔티티 설계에 대한 깊은 고민</h4><h5 id="Question-엔티티"><a href="#Question-엔티티" class="headerlink" title="Question 엔티티"></a>Question 엔티티</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;question&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Question</span> <span class="keyword">extends</span> <span class="title class_">BaseDateTimeEntity</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">boolean</span> <span class="variable">CONTENT_DELETED_FLAG</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">EXCEPTION_MESSAGE_FOR_CANNOT_DELETE</span> <span class="operator">=</span> <span class="string">&quot;질문을 삭제할 권한이 없습니다.&quot;</span>;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="meta">@Column(nullable = false, length = 100)</span></span><br><span class="line">    <span class="keyword">private</span> String title;</span><br><span class="line">    <span class="meta">@Lob</span></span><br><span class="line">    <span class="keyword">private</span> String contents;</span><br><span class="line">    <span class="meta">@ManyToOne(fetch = FetchType.LAZY)</span></span><br><span class="line">    <span class="meta">@JoinColumn(name = &quot;writer_id&quot;, foreignKey = @ForeignKey(name = &quot;fk_question_writer&quot;))</span></span><br><span class="line">    <span class="keyword">private</span> User writer;</span><br><span class="line">    <span class="meta">@Embedded</span></span><br><span class="line">    <span class="keyword">private</span> Answers answers;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="variable">deleted</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="Answer-엔티티"><a href="#Answer-엔티티" class="headerlink" title="Answer 엔티티"></a>Answer 엔티티</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;answer&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Answer</span> <span class="keyword">extends</span> <span class="title class_">BaseDateTimeEntity</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">boolean</span> <span class="variable">CONTENT_DELETED_FLAG</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">EXCEPTION_MESSAGE_FOR_CANNOT_DELETE</span> <span class="operator">=</span> <span class="string">&quot;질문을 삭제할 권한이 없습니다.&quot;</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">EXCEPTION_MESSAGE_FOR_DUPLICATION_QUESTION</span> <span class="operator">=</span> <span class="string">&quot;이미 다른 질문에 달려있는 답글입니다.&quot;</span>;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="meta">@ManyToOne(fetch = FetchType.LAZY)</span></span><br><span class="line">    <span class="meta">@JoinColumn(name = &quot;writer_id&quot;, foreignKey = @ForeignKey(name = &quot;fk_answer_writer&quot;))</span></span><br><span class="line">    <span class="keyword">private</span> User writer;</span><br><span class="line">    <span class="meta">@ManyToOne(fetch = FetchType.LAZY)</span></span><br><span class="line">    <span class="meta">@JoinColumn(name = &quot;question_id&quot;, foreignKey = @ForeignKey(name = &quot;fk_answer_to_question&quot;))</span></span><br><span class="line">    <span class="keyword">private</span> Question question;</span><br><span class="line">    <span class="meta">@Lob</span></span><br><span class="line">    <span class="keyword">private</span> String contents;</span><br><span class="line">    <span class="meta">@Column(nullable = false)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="variable">deleted</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>두 엔티티를 보면 공통적으로 <code>content</code>, <code>writer</code>, <code>id</code>, <code>deleted</code> 라는 속성을 가지고 있다.</p>
+<p>나는 처음에 <strong><em>중복 코드를 최대한 배제하자</em></strong> 라는 생각으로 공통된 속성을 하나의<br><code>BaseContentEntity</code>라는 <code>@MappedSuperclass</code>로 분리하여, 이를 상속받는 구조로 구현을 했다.</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@MappedSuperclass</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">BaseContentEntity</span> <span class="keyword">extends</span> <span class="title class_">BaseDateTimeEntity</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">boolean</span> <span class="variable">CONTENT_DELETED_FLAG</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">String</span> <span class="variable">EXCEPTION_MESSAGE_FOR_CANNOT_DELETE</span> <span class="operator">=</span> <span class="string">&quot;질문을 삭제할 권한이 없습니다.&quot;</span>;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="keyword">private</span> Long id;</span><br><span class="line">    <span class="meta">@Lob</span></span><br><span class="line">    <span class="keyword">private</span> String contents;</span><br><span class="line">    <span class="meta">@Column(nullable = false)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="variable">deleted</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="meta">@ManyToOne(fetch = FetchType.LAZY)</span></span><br><span class="line">    <span class="meta">@JoinColumn(name = &quot;writer_id&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> User writer;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>하지만, 리뷰어님의 피드백은 <code>BaseContentEntity</code>는 과도한 책임을 가지고 있는 슈퍼클래스가 되어 버렸고,<br>추가 확장에 유연하지 못할 것 같다는 의견을 주시며 내 생각이 어떠한지 물어보셨다.😅</p>
+<img src="/2022/11/14/woowahan-tech-camp-pro-5th/2-jpa/BaseContentEntity_review_comment.jpeg" class="">
+
+<p>각 속성에 대해 다시 한번 고민 해 본 결과</p>
+<ul>
+<li>id : 변경에 유연하지 못하고, MappedSuperclass 보다는 이를 상속받는 근본 Entity가 가지고 있는 것이 더 바람직하다.  </li>
+<li>writer : Question &#x2F; Answer의 writer는 나중에 다른 비즈니스 로직이 적용될 가능성이 높다.</li>
+<li>deleted : 이미 3단계 미션에서 요구사항이 다름(삭제에 필요한 비즈니스 로직이 다르게 전개됨).<br>따라서, 만약 공통 속성으로 뺀다면 <code>content</code>만 남게 된다.</li>
+</ul>
+<p>그렇다면 추가로 고민해볼 것이, <code>content</code>가 공통 속성으로 뺄만한 가치가 있는가?<br>–&gt; 그렇지 않다는게 나의 결론이었다. content는 공통 속성으로 뺄만한 복잡한 비즈니스 로직이 없거니와,<br>만일 뺀다고 했을때 구현 복잡도가 오히려 증가한다는 결론을 내리고, BaseContentEntity를 아예 삭제하는 식으로 다시 원복했다..😭</p>
+<p>이제와서 다시 생각해보면, 단일 책임의 원칙으로 고려해봤을 때<br><code>BaseContentEntity</code>는 <code>content</code>와 관련된 <strong>역할</strong>과 <strong>책임</strong>만 가지고 있어야 됐다.   </p>
+<h3 id="느낀점"><a href="#느낀점" class="headerlink" title="느낀점"></a>느낀점</h3><p>이번 미션을 진행하면서 가장 크게 느낀점은 <strong><em>JPA는 DataBase를 위한 기술이 아니라, 객체지향설계를 위한 기술</em></strong> 이라는 것이다.  </p>
+<ul>
+<li>각 속성을 어떻게 매핑하는지</li>
+<li>연관 관계는 어디서 어떤 방향으로(<strong>DB의 관계에선 방향이 없다.</strong>) 매핑해야 하는지</li>
+<li>시스템의 설계 상 어떤 임의의 도메인이 다른 도메인과 자주 사용되는지에 따라 변경이 예상되는 부분을 고려<br>하는 등등.. 여러 가지 측면에서 봤을 때, JPA도 결국은 객체지향을 위한 기술 이라는 것이었다.</li>
+</ul>
+<p>이 부분을 크게 간과하고 이번 미션에 임했던 것이 많은 시행착오를 야기시켰다.<br><strong><em>JPA 사용 시 <code>엔티티 매핑</code>, <code>연관 관계 매핑</code>단계 에서는 반드시 객체지향적인 설계를 동반해야 한다!</em></strong> </p>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>이번 미션을 완료 한 시점에 ‘좋은 객체지향 설계란 무엇인가?’ 라는 의문이 생겼다.<br>이 질문에 대한 좋은 답을 내고 있는 책을 찾게 되었다.<br>바로 ‘객체지향의 사실과 오해 - 조영호 지음(위키북스)’ 이다.  </p>
+<p>개인적으론 이 책을 읽으며 책의 제목 그대로<br>내가 객체지향에 대해 잘못 알고 있는 부분이 많았다는 것이다.<br>위 책에 대한 독후감은 다른 포스트에서 좀 더 자세히 다뤄 볼 예정이다.</p>
+<p>또한, 기술적으로 바로 도입해볼 수 있는 것들은..<br>적어도 어떤 개발이라도 객체지향의 5대 원칙(SOLID)를 체크리스트로 만들어서,<br>원칙을 잘 지키고 있는지를 체크하고 넘어가도 좋을 것 같다는 생각이 든다.🧐</p>
+<h2 id="JPA를-학습하기-위한-How에-대한-추천"><a href="#JPA를-학습하기-위한-How에-대한-추천" class="headerlink" title="JPA를 학습하기 위한 How에 대한 추천"></a>JPA를 학습하기 위한 How에 대한 추천</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.inflearn.com/course/ORM-JPA-Basic">Inflearn : 자바 ORM 표준 JPA 프로그래밍 - 기본편(김영한)</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/19040233">책 : 자바 ORM 표준 JPA 프로그래밍</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.slideshare.net/ssusere4d67c/jpa-56081624">영속성 컨텍스트로 보는 JPA</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/playlist?list=PL9mhQYIlKEhfpMVndI23RwWTL9-VL-B7U">토크ON JPA프로그래밍 기본기 다지기</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EC%9A%B0%ED%85%8C%EC%BA%A0pro/"># 우테캠Pro</a>
+                    
+                        <a href="/tag/jpa/"># JPA</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/11/27/woowahan-tech-camp-pro-5th/3-atdd/">ATDD(인수테스트 주도 개발) 미션 회고</a>
+            
+            
+            <a class="next" rel="next" href="/2022/11/10/woowahan-tech-camp-pro-5th/1-tdd-refactoring/">TDD, Refactoring 미션 회고</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
