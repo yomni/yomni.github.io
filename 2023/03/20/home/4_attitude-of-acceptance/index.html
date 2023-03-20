@@ -17,7 +17,7 @@
 
 
 
-<title>프록시 패턴(State Pattern) | Yomni의 Y-Log</title>
+<title>비판적인 자세로 기술 수용하기 | Yomni의 Y-Log</title>
 
 
 
@@ -197,7 +197,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">프록시 패턴(State Pattern)</h1>
+            <h1 class="post-title">비판적인 자세로 기술 수용하기</h1>
             
                 <div class="post-meta">
                     
@@ -207,7 +207,7 @@
                         <span class="post-category">
                     Category:
                             
-                                <a href="/category/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/">디자인 패턴</a>
+                                <a href="/category/home/">Home</a>
                             
                         </span>
                     
@@ -216,40 +216,29 @@
         </header>
 
         <div class="post-content">
-            <blockquote>
-<p>프록시 패턴은 RMI 라는 상당히 오래된 기술을 바탕으로 구현 방법을 제시하고 있습니다. 따라서, 이번 챕터에서는  </p>
+            <h2 id="이-글을-쓴-계기"><a href="#이-글을-쓴-계기" class="headerlink" title="이 글을 쓴 계기"></a>이 글을 쓴 계기</h2><p>개발과 관련된 콘텐츠를 주로 올리는 포프TV 라는 유투브 채널에서 <code>클린코드 때문에 취업 실패한 썰</code> 이란 제목의 영상을 보게되었다.</p>
+<p>어그로성 제목으로 인해 거부감이 들 순 있지만, 개인적으로 정리해 본 영상의 요지는 <code>무조건적인 기술의 수용에 대한 부작용</code>에 대하여 말하고 있는 것 같았다.</p>
+<p>개인적으로 영상을 보면서 불편한 감정을 느끼면서도, 공감가는 내용도 있어서 이를 잘 순화시켜서 정리해보려고 한다.</p>
+<h2 id="비판적인-자세로-기술-수용하기"><a href="#비판적인-자세로-기술-수용하기" class="headerlink" title="비판적인 자세로 기술 수용하기"></a>비판적인 자세로 기술 수용하기</h2><p><code>클린코드</code>, <code>객체지향</code>, <code>TDD</code>, <code>DDD</code> 간혹 이런 단어를 보면 치를 떨고 비난하는 사람들을 종종 볼 수 있다.<br>반대로 위와 같은 도구나 개발 방법에 대해 굉장히 긍정적으로 찬양하며 좋은 개발자라면 반드시 익혀둬야 하는 기술로 보는 사람도 있다.<br><strong>무조건적으로 비난하는 것도, 반대로 무조건적인 찬양도 협업을 위한 건설적인 토론에는 아무런 도움이 안된다고 생각한다.</strong></p>
+<p>나는 기술 서적을 고를 때, 극한의 효율을 위해 이미 잘 알려진 기술 서적(클린코드, TDD By Example, Effective Java …) 을 위주로 보는 편이다.<br>책을 피기도 전에 그 책이 유명하다는 사실에 지배되어 반사적으로 긍정적인 평가를 하며 책을 읽어나가곤 한다.<br>그래서 종종 책을 읽고나서 그 책에 나오는 내용이 진리인 양 생각하는 경향이 있는데, 나중에 되돌아보면 날카롭게 비판하는 것을 보면<br>무조건 진리로 받아들였던 내가 부끄러워지는 경우가 있다.</p>
+<p>클린코드로 예를 들면, 책의 내용에는 협업을 위해 실제 경험을 바탕으로 <strong>깨끗한 코드</strong>를 작성하는 것이 얼마나 중요한지에 대해<br>그리고 그 방법에 대해 자세하게 설명하고 있고, 개인적으로 매우 흥미롭게 읽었다.</p>
+<p><a target="_blank" rel="noopener" href="https://overreacted.io/ko/goodbye-clean-code/">GoodBye, Clean Code - Dan Abramov</a>를 보면 클린코드에 얽매여있을 때 오는 부작용에 대해 경험한 바를 잘 설명하고 있다.  </p>
+<p>위 글의 내용을 좀 정리하자면<br>“클린코드에 나오는 내용에 따라 중복제거를 했지만, <strong>동료 개발자들과 논의 없이</strong>, <strong>리팩토링을 고려하지 않고</strong> 반사적으로 적용했다”는 것이 잘못된 적용이었다고 말하고 있다.</p>
+<p>클린코드를 보다 보면 ‘프로그래밍은 사회 활동이다.’ 라는 구절이 있다. 클린코드의 저자인 로버트 C. 마틴도 협업을 전제로<br>서로 읽기 좋은 코드(이름 잘 짓기, 함수 쪼개기 등등 …)가 가져다주는 긍정적인 면에 대해 이야기 하고 있는 것이다.  </p>
+<p>클린코드를 비롯한 많은 기술들을 <strong>나의 업무에 적용시키기 전엔 반드시 비판적인 자세로 수용</strong>해야 한다.  </p>
+<p>새로운 기술에 대해 학습한 후, 이를 나의 실제 업무에 적용시키기 전에<br>그 기술을 적용함으로써 얻게되는 장점과 단점에 대해 반드시 생각해봐야 한다.<br>‘적용했을 때 오는 장점이 훨씬 많다’라고 판단이 되면,<br>동료 개발자들을 잘 설득시키기 위해 <strong>그 기술에 대해 제대로 알아야 한다.</strong></p>
+<p>이런 과정이 없다면, 단순히 입 터는 개발자가 될 수 밖에 없다.</p>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>최근에 이직을 하게 되면서 </p>
 <ul>
-<li>어떤 문제가 있는지?</li>
-<li>프록시 패턴이 뭔지?</li>
-<li>어떻게 해결 하는지? : RMI</li>
-<li>RMI의 한계점과 그 대체재</li>
+<li>‘어떻게 팀에 자연스럽게 녹아들 수 있을까?’</li>
+<li>‘빠르게 팀의 개발 업무에 적응하여 도움이 되고싶다.’</li>
 </ul>
-<p>이런 내용들에 대해 다루어 보려고 합니다.</p>
-</blockquote>
-<img src="/2023/02/28/design-pattern/13-proxy/proxy.png" class="">
-
-
-<h2 id="프록시-패턴-State-Pattern-추상화"><a href="#프록시-패턴-State-Pattern-추상화" class="headerlink" title="프록시 패턴(State Pattern) ; 추상화"></a>프록시 패턴(State Pattern) ; 추상화</h2><p>어떤 객체에 대한 접근을 제어하기 위한 용도로 대리인이나 대변인에 해당하는 객체를 제공하는 패턴</p>
-<h2 id="책에서-나오는-예제-뽑기기계-리모트에서-모니터링하기"><a href="#책에서-나오는-예제-뽑기기계-리모트에서-모니터링하기" class="headerlink" title="책에서 나오는 예제 - 뽑기기계 리모트에서 모니터링하기"></a>책에서 나오는 예제 - 뽑기기계 리모트에서 모니터링하기</h2><p>이 챕터에서 나오는 프록시 패턴은 비교적 최근 말하는 프록시 객체에 대한 이야기가 아니다.<br><strong>클라이언트 - 서버 간 객체를 주고받기 위한 대리인 객체를 어떻게 설계할 것인가에 대한 문제</strong>이다.</p>
-<p>따라서, 객체를 어떻게 네트워크로 주고 받을 것인가? 에 대해 <code>Java RMI</code> API를 그 해결법으로 제시하고 있다.</p>
-<img src="/2023/02/28/design-pattern/13-proxy/RMI1.png" class="">
-<img src="/2023/02/28/design-pattern/13-proxy/RMI2.png" class="">
-
-
-
-<h3 id="RMI-Remote-Method-Invocation"><a href="#RMI-Remote-Method-Invocation" class="headerlink" title="RMI(Remote Method Invocation)"></a>RMI(Remote Method Invocation)</h3><p>자바의 원격 메소드 호출 라이브러리(Java.rmi.Remote)</p>
-<p>장점</p>
-<ul>
-<li>이기종 시스템 간 객체를 주고 받아 활용할 수 있다.</li>
-</ul>
-<p>단점</p>
-<ul>
-<li>RMI 는 자바 라이브러리이기 때문에, 클라이언트 - 서버 둘 다 자바로 작성해야 한다.(결국 내부적으론 객체 직렬화 - 역직렬화)</li>
-</ul>
-<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>프록시 패턴은 ‘이기종 시스템 간 객체를 어떻게 제어하는가?’ 에 대한 문제를<br>‘객체를 주고 받는 역할과 책임을 가진 별도 객체로 분리’하는 방법이다.</p>
-<p>책에서 RMI 로 구현하고 있긴 하지만, 결국 <code>REST</code>를 통해 json 으로 주고 받느냐<br><code>gRPC</code>, <code>GraphQL</code> 등등 Infrastructure 차원에서는 변경이 있을 수 있으나,<br>결국 객체를 어떻게 원격에서 제어할 것인지? 에 대한 해결방법으로는 동일하다고 볼 수 있다.</p>
+<p>위와 같은 생각이 들었다.</p>
+<p>이번 글을 작성하면서, 내가 진리로 받아들였던 많은 기술들에 대한 <strong>좋은 비판</strong>글을 많이 찾아보게 되었는데,<br>가장 중요하게 생각하는 바는 ‘협업’이었다.<br><del>물론 아무 논리적 근거 없이 비난하는 사람도 많았다.</del></p>
+<p>앞으로 회사에서 동료들과 같이 일하면서 항상 ‘협업’이란 키워드를 염두해 두고 개발해야겠다는 생각이 들었다.  </p>
 <h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
-<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/108192370">헤드퍼스트 디자인패턴</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=HoP8qWpucWA&ab_channel=%ED%8F%AC%ED%94%84TV">포프TV - 클린코드 때문에 취업 실패한 썰</a></li>
+<li><a target="_blank" rel="noopener" href="https://overreacted.io/ko/goodbye-clean-code/">GoodBye, Clean Code - Dan Abramov</a></li>
 </ul>
 
         </div>
@@ -278,9 +267,7 @@
                 <span class="tag">
                     
                     
-                        <a href="/tag/%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4/"># 디자인패턴</a>
-                    
-                        <a href="/tag/gof/"># GoF</a>
+                        <a href="/tag/%EC%83%9D%EA%B0%81/"># 생각</a>
                     
                         
                 </span>
@@ -293,10 +280,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2023/03/20/home/4_attitude-of-acceptance/">비판적인 자세로 기술 수용하기</a>
             
-            
-            <a class="next" rel="next" href="/2023/02/27/design-pattern/12-state/">스테이트 패턴(State Pattern)</a>
+            <a class="next" rel="next" href="/2023/02/28/design-pattern/13-proxy/">프록시 패턴(State Pattern)</a>
             
         </section>
 
