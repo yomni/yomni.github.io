@@ -17,7 +17,7 @@
 
 
 
-<title>프록시 패턴(State Pattern) | Yomni의 Y-Log</title>
+<title>도메인 주도 개발 시작하기를 읽고 | Yomni의 Y-Log</title>
 
 
 
@@ -197,60 +197,49 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">프록시 패턴(State Pattern)</h1>
+            <h1 class="post-title">도메인 주도 개발 시작하기를 읽고</h1>
             
                 <div class="post-meta">
                     
 
                     
                     
-                        <span class="post-category">
-                    Category:
-                            
-                                <a href="/category/%EB%94%94%EC%9E%90%EC%9D%B8-%ED%8C%A8%ED%84%B4/">디자인 패턴</a>
-                            
-                        </span>
-                    
                 </div>
             
         </header>
 
         <div class="post-content">
-            <blockquote>
-<p>프록시 패턴은 RMI 라는 상당히 오래된 기술을 바탕으로 구현 방법을 제시하고 있습니다. 따라서, 이번 챕터에서는  </p>
+            <img src="/2023/04/17/book-report/2-domain-driven-design-start/book-cover.png" class="" width="300" title="도메인 주도 개발 시작하기(최범균 지음)">
+
+<h2 id="도메인-주도-개발-시작하기를-읽게-된-계기"><a href="#도메인-주도-개발-시작하기를-읽게-된-계기" class="headerlink" title="도메인 주도 개발 시작하기를 읽게 된 계기"></a>도메인 주도 개발 시작하기를 읽게 된 계기</h2><p>이전에 객체지향의 사실과 오해(조영호 지음) 을 읽고 나니 조금 더 객체지향을 공부해 보고 싶은 욕구가 생겼고 방법은 여러가지가 있었다. </p>
 <ul>
-<li>어떤 문제가 있는지?</li>
-<li>프록시 패턴이 뭔지?</li>
-<li>어떻게 해결 하는지? : RMI</li>
-<li>RMI의 한계점과 그 대체재</li>
+<li>객체지향 언어에 대한 공부</li>
+<li>객체 <strong>설계</strong>에 대한 공부</li>
 </ul>
-<p>이런 내용들에 대해 다루어 보려고 합니다.</p>
-</blockquote>
-<img src="/2023/02/28/design-pattern/13-proxy/proxy.png" class="">
-
-
-<h2 id="프록시-패턴-State-Pattern-추상화"><a href="#프록시-패턴-State-Pattern-추상화" class="headerlink" title="프록시 패턴(State Pattern) ; 추상화"></a>프록시 패턴(State Pattern) ; 추상화</h2><p>어떤 객체에 대한 접근을 제어하기 위한 용도로 대리인이나 대변인에 해당하는 객체를 제공하는 패턴</p>
-<h2 id="책에서-나오는-예제-뽑기기계-리모트에서-모니터링하기"><a href="#책에서-나오는-예제-뽑기기계-리모트에서-모니터링하기" class="headerlink" title="책에서 나오는 예제 - 뽑기기계 리모트에서 모니터링하기"></a>책에서 나오는 예제 - 뽑기기계 리모트에서 모니터링하기</h2><p>이 챕터에서 나오는 프록시 패턴은 비교적 최근 말하는 프록시 객체에 대한 이야기가 아니다.<br><strong>클라이언트 - 서버 간 객체를 주고받기 위한 대리인 객체를 어떻게 설계할 것인가에 대한 문제</strong>이다.</p>
-<p>따라서, 객체를 어떻게 네트워크로 주고 받을 것인가? 에 대해 <code>Java RMI</code> API를 그 해결법으로 제시하고 있다.</p>
-<img src="/2023/02/28/design-pattern/13-proxy/RMI1.png" class="">
-<img src="/2023/02/28/design-pattern/13-proxy/RMI2.png" class="">
-
-
-
-<h3 id="RMI-Remote-Method-Invocation"><a href="#RMI-Remote-Method-Invocation" class="headerlink" title="RMI(Remote Method Invocation)"></a>RMI(Remote Method Invocation)</h3><p>자바의 원격 메소드 호출 라이브러리(Java.rmi.Remote)</p>
-<p>장점</p>
+<p>이런 고민을 하던 중 우테캠 교육과정을 같이 수강했던 인원들과 ‘도메인 주도 개발 시작하기’<br>라는 책으로 스터디를 모집한다는 소식을 접하게 되었고, 객체지향에 대한 심도있는 학습의 수단으로서<br>이 책을 읽게 되었다.</p>
+<h3 id="데이터-중심에서-도메인-중심으로"><a href="#데이터-중심에서-도메인-중심으로" class="headerlink" title="데이터 중심에서 도메인 중심으로"></a>데이터 중심에서 도메인 중심으로</h3><p>개발이란 일을 업으로 삼다보면, 개발 기술에만 초점이 맞춰지고 그것만이 진리라고 느껴지는 때가 가끔 들긴한다.<br>물론 <strong>개발을 잘하는 것은 정말 매우 중요</strong>하다. 하지만, <strong>개발 실력만큼 중요한 것은 바로 협업하는 능력</strong>이라고 생각한다.</p>
+<p>이 책의 1장인 ‘도메인 모델 시작하기’ 에선 위에서 말한 협업 능력과 개발 능력을 어떻게 조화롭게 소화하는 지에 대한 방법이 설명되어 있다.<br>각 도메인 모델엔 전문가가 따로 있다. 개발자는 도메인 모델 전문가와 적극적으로 소통하며, 모델을 시스템에 어떻게 녹여낼 지<br>도메인 전문가와 <strong>협업</strong> 해야 한다. 그리고 충분한 협업으로 도메인에 대한 이해를 바탕으로 그 도메인 모델을 구현 해내는 데에는 개발 능력이 필요하다.</p>
+<p>도메인 전문가와의 협업이 없으면 개발자는 당연하게도 데이터로부터 모든 비즈니스 로직을 도출할 수 밖에 없다.</p>
+<h4 id="도메인-모델-vs-애그리거트-vs-바운디드-컨텍스트"><a href="#도메인-모델-vs-애그리거트-vs-바운디드-컨텍스트" class="headerlink" title="도메인 모델 vs 애그리거트 vs 바운디드 컨텍스트"></a>도메인 모델 vs 애그리거트 vs 바운디드 컨텍스트</h4><p>책을 읽다보면 도메인, 애그리거트, 바운디드 컨텍스트 같은 단어들이 휘몰아쳐서 길을 잃기 쉽상이다.<br>따라서 아래와 같은 단어는 반드시 개인적으로 개념을 숙지해야한다.</p>
 <ul>
-<li>이기종 시스템 간 객체를 주고 받아 활용할 수 있다.</li>
+<li>도메인 모델 : 소프트웨어로 해결해야하는 가장 큰 개념 혹은 논리</li>
+<li>애그리거트 : 일관성을 위해 관련 도메인 개체를 그룹화</li>
+<li>바운디드 컨텍스트 : 관리 용이성을 위해 큰 도메인 모델을 더 작은 부분으로 나누는 방법<ul>
+<li><strong>같은 용어에 대해 다른 의미로 사용하고 있다면</strong> 바운디드 컨텍스트를 나눠야 하는 지 의심해야함</li>
 </ul>
-<p>단점</p>
+</li>
+</ul>
+<h3 id="어떻게-도메인-중심으로-개발하나요"><a href="#어떻게-도메인-중심으로-개발하나요" class="headerlink" title="어떻게 도메인 중심으로 개발하나요?"></a>어떻게 도메인 중심으로 개발하나요?</h3><p>크게 보면 아래와 같이 2가지 방식이 도메인 주도 설계의 핵심 방법이다.<br>방법에 따라 특징이 아래와 같고, 각 방법에 따라 장&#x2F;단점이 나뉜다.</p>
 <ul>
-<li>RMI 는 자바 라이브러리이기 때문에, 클라이언트 - 서버 둘 다 자바로 작성해야 한다.(결국 내부적으론 객체 직렬화 - 역직렬화)</li>
+<li>Layered Architecture : 표현, 응용, 도메인, 인프라스트럭처 로 계층을 나누고 <strong>상위에선 하위 계층으로만 의존</strong>한다.  <img src="/2023/04/17/book-report/2-domain-driven-design-start/layered.png" class="" width="500"></li>
+<li>Hexagonal Architecture(포트 및 어댑터라고도 함) : 외부 시스템과의 통신을 처리하는 어댑터와 포트가 도메인 모델을 둘러싸고 있는 형상   <img src="/2023/04/17/book-report/2-domain-driven-design-start/hexagonal.png" class="" width="500"></li>
 </ul>
-<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>프록시 패턴은 ‘이기종 시스템 간 객체를 어떻게 제어하는가?’ 에 대한 문제를<br>‘객체를 주고 받는 역할과 책임을 가진 별도 객체로 분리’하는 방법이다.</p>
-<p>책에서 RMI 로 구현하고 있긴 하지만, 결국 <code>REST</code>를 통해 json 으로 주고 받느냐<br><code>gRPC</code>, <code>GraphQL</code> 등등 Infrastructure 차원에서는 변경이 있을 수 있으나,<br>결국 객체를 어떻게 원격에서 제어할 것인지? 에 대한 해결방법으로는 동일하다고 볼 수 있다.</p>
-<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
-<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/108192370">헤드퍼스트 디자인패턴</a></li>
-</ul>
+<p>가만 읽다보면 architecture 에 집중하도록 할 것 같은데,<br>개인적으로 가장 중요한 것은 <strong>도메인 간 의존성</strong> 혹은 <strong>계층 간 의존성</strong>이라고 느껴졌다. </p>
+<h3 id="객체지향-밸런스"><a href="#객체지향-밸런스" class="headerlink" title="객체지향 밸런스"></a>객체지향 밸런스</h3><p>도메인 모델로 시작해서 핵심 비즈니스 로직을 도메인에 집중시키는 방법은 객체지향과 그 결이 같다고 느껴졌다.<br>하지만, 책을 읽으면 읽을수록 도메인 서비스나 CQRS 등 도메인 모델과 애그리거트가 조금 더 독립성(?)을 갖도록 해주는 여러 도구들에 대해 설명해준다.  </p>
+<p>맨처음 이 부분을 읽을때는 정 반대의 개념을 설명하면서 ‘도메인 모델에 대한 모순이 아닌가?’ 싶었지만,<br>곰곰히 다시 생각해보니 결국 애그리거트의 응집도를 높이기 위해 결합도를 낮추는 방법에 대한 이야기였다.  </p>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><p>백엔드 개발자로 일을 하다보면 ‘도메인’, ‘엔티티’, ‘스키마’ 등의 단어를 무분별하게 사용하곤 한다.<br>단어 하나 하나 의미를 곱씹어보면 얼마나 무분별하게 사용했는 지 이 책을 읽으며 알게되었다.<br>앞으론 도메인, 애그리거트, 엔티티 등등 각 의미를 알고 소통해야겠다는 생각이 들었다.  </p>
+<p>또한 다시금 이분법에 빠져선 안된다는 생각이 들었다.<br>이 책을 읽고나서 도메인 모델이 마치 데이터 중심의 설계보다 더 뛰어나다는 생각을 갖기 쉽상이다.<br>하지만, 왜 도메인 모델로 설계해야하는 지 그 이유를 먼저 생각봐야 한다.<br>이 책을 통해 도메인 모델 설계라는 좋은 무기를 손에 넣었을 뿐이다.</p>
+<p>다만, 객체지향적인 관점에서 보면 도메인 주도 설계라는 방법은 꽤나 이상적이다.<br>도메인 전문가와 협업하면서 비교적 큰 시스템을 도메인 모델로 설계한다면 그것이 진짜 객체지향이라고 부를 수도 있을 것 같다.</p>
 
         </div>
 
@@ -278,9 +267,13 @@
                 <span class="tag">
                     
                     
-                        <a href="/tag/%EB%94%94%EC%9E%90%EC%9D%B8%ED%8C%A8%ED%84%B4/"># 디자인패턴</a>
+                        <a href="/tag/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5/"># 객체지향</a>
                     
-                        <a href="/tag/gof/"># GoF</a>
+                        <a href="/tag/%EB%8F%85%ED%9B%84%EA%B0%90/"># 독후감</a>
+                    
+                        <a href="/tag/ddd/"># DDD</a>
+                    
+                        <a href="/tag/%EB%8F%84%EB%A9%94%EC%9D%B8/"># 도메인</a>
                     
                         
                 </span>
@@ -293,10 +286,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2023/03/20/home/4_attitude-of-acceptance/">비판적인 자세로 기술 수용하기</a>
             
-            
-            <a class="next" rel="next" href="/2023/02/27/design-pattern/12-state/">스테이트 패턴(State Pattern)</a>
+            <a class="next" rel="next" href="/2023/03/20/home/4_attitude-of-acceptance/">비판적인 자세로 기술 수용하기</a>
             
         </section>
 
