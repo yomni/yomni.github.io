@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>AWS Summit 2023 Seoul 을 다녀와서... | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">AWS Summit 2023 Seoul 을 다녀와서...</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/home/">Home</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="AWS-Summit-2023-Seoul"><a href="#AWS-Summit-2023-Seoul" class="headerlink" title="AWS Summit 2023 Seoul"></a>AWS Summit 2023 Seoul</h2><p>워낙 자발적 은둔형 개발자 코스프레를 하다보니, 자연스럽게 인싸들만 가는 이런 컨퍼런스(?) 행사들은 유투브나 SlideShare 를 통해 자료가 공개되기만을 기다리곤 했다.<br>업무의 일환으로 반 강제적으로 참여하다보니 ‘하나라도 업무에 적용할 거리를 찾아보자!’ 라는 마음을 갖고 적극적으로 참여하게 되었다.</p>
+<p>개발자로서는 모든 기술들을 습득하고 적용해보고 싶은 욕구가 컸지만, 한편으로 <strong>AWS 상품의 잠재적 구매자</strong> 입장에선 ‘이런 상품을 구매해서 만족하게 될까?’ 라는 의문도 갖게 되었다.</p>
+<p>각설하고, 이번 포스팅에선 AWS Summit 2023 Seoul 세션중에서 가장 재미있고 인상깊게 들었던<br><strong><em>12가지 패턴으로 알아보는 클라우드 네이티브 디자인패턴</em></strong> 에 대해 정리하고 짧게 후기를 작성해보려고 한다.</p>
+<h2 id="12가지-패턴으로-알아보는-클라우드-네이티브-디자인-패턴"><a href="#12가지-패턴으로-알아보는-클라우드-네이티브-디자인-패턴" class="headerlink" title="12가지 패턴으로 알아보는 클라우드 네이티브 디자인 패턴"></a>12가지 패턴으로 알아보는 클라우드 네이티브 디자인 패턴</h2><ul>
+<li>김형일 솔루션즈 아키텍트(AWS)</li>
+<li>박진현 솔루션즈 아키텍트(AWS)</li>
+</ul>
+<h3 id="클라우드-네이티브-마이크로-서비스-아키텍처-CN-MSA"><a href="#클라우드-네이티브-마이크로-서비스-아키텍처-CN-MSA" class="headerlink" title="클라우드 네이티브 마이크로 서비스 아키텍처 ; CN MSA"></a>클라우드 네이티브 마이크로 서비스 아키텍처 ; CN MSA</h3><ul>
+<li>클라우드 네이티브(CN) 이란? : <a target="_blank" rel="noopener" href="https://aws.amazon.com/ko/what-is/cloud-native/">https://aws.amazon.com/ko/what-is/cloud-native/</a><ul>
+<li>클라우드 컴퓨팅 환경에서 현대적 애플리케이션을 구축, 배포 및 관리할 때의 소프트웨어 접근 방식</li>
+</ul>
+</li>
+<li>클라우드 네이티브 특징<ul>
+<li><strong>확장성, 유연성, 복원력</strong></li>
+<li>Loose Coupling (느슨한 결합) 시스템</li>
+<li>자동화</li>
+</ul>
+</li>
+<li>MSA 설계 원칙<ul>
+<li>자율성과 기술 다양성에 따라 팀이 구성되어야 한다.</li>
+<li>Front Door 로 확장 가능한 API 설계</li>
+<li><strong>비동기</strong>를 통한 낮은 결합도와 높은 응집도 시스템 구축</li>
+<li>테스트하기 좋은 환경구성</li>
+<li>높은 자동화 수준 유지</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="디자인-패턴과-원칙"><a href="#디자인-패턴과-원칙" class="headerlink" title="디자인 패턴과 원칙"></a><strong>디자인 패턴과 원칙</strong></h3><ul>
+<li>디자인 패턴이란? : 컨텍스트 내에서 <strong>공통적이고 일반적인 문제에 대한 재사용 가능한 솔루션</strong></li>
+<li>클라우드 네이티브 MSA 주요 디자인 패턴<ul>
+<li>API 관리 및 소비 패턴</li>
+<li>마이그레이션 패턴</li>
+<li>데이터 관리 패턴</li>
+<li>이벤트 드리븐 패턴</li>
+<li>연결성 및 조합 패턴</li>
+<li>커뮤니케이션 패턴</li>
+</ul>
+</li>
+<li>잘 설계 되었는 지 어떻게 검증하나요?<ul>
+<li>온디맨드 : 필요한 용량을 더 이상 추측하지 말 것</li>
+<li>운영 규모에서 시스템을 테스팅</li>
+<li>아키텍처 실험을 더 쉽게 하기 위한 자동화</li>
+<li>진화적인 아키텍처를 허용</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="참조-아키텍처로-알아보는-디자인-패턴"><a href="#참조-아키텍처로-알아보는-디자인-패턴" class="headerlink" title="참조 아키텍처로 알아보는 디자인 패턴"></a>참조 아키텍처로 알아보는 디자인 패턴</h3><h4 id="API-관리-및-소비"><a href="#API-관리-및-소비" class="headerlink" title="API 관리 및 소비"></a>API 관리 및 소비</h4><ul>
+<li><p><strong>API Gateway 패턴(API Facade pattern)</strong></p>
+<ul>
+<li><p>여러 클라이언트 애플리케이션이 포함된 <strong>복잡하거나 대규모 마이크로 서비스 기반 애플리케이션을 설계하고 구축하려는 경우</strong> API 게이트웨이 패턴을 사용하는 것이 좋습니다.</p>
+<ul>
+<li><strong>Reverse Proxy (인증, 화이트 리스트, 캐싱, 데이터 압축)</strong></li>
+<li>게이트웨이 라우팅</li>
+<li><strong>여러 Microservice API 통합</strong></li>
+</ul>
+</li>
+<li><p><strong>다중 API Gateway</strong></p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/multi-gateway.png" class="">
+</li>
+<li><p><strong>단일 API Gateway</strong></p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/single-gateway.png" class=""></li>
+</ul>
+</li>
+<li><p><strong>BFF(Backend For Frontend) 패턴</strong></p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/bff-pattern.png" class="" title="BFF(Backend For Frontend) with Pub &#x2F; Sub architecture">
+
+<ul>
+<li>전통적인 Back-end 는 <strong>모든 UI 유형을 수용하는 단일 서버측 API를 제공</strong>하고<br>시간이 지남에 따라 <strong>새로운 유형의 UI와 상호작용을 지원하기 위해 더 많은 기능을 추가</strong>하게 됩니다.<br>그런 결과 아래와 같은 유형의 문제가 발생할 수 있습니다.<ul>
+<li>모바일 장치는 비교적 적은 수의 호출을 하고 데스크탑 장치와 다른 (더 <strong>콤팩트한</strong>)<strong>데이터</strong> 표시하기를 원합니다.<br>이는 API 백엔드가 모바일 인터페이스를 지원하기 위한 추가 기능이 필요함을 의미합니다.</li>
+<li>최신 애플리케이션 UI는 사용자에게 실시간 피드백을 제공하기 위해 Websocket 같은 반응형 전략을 점점 더 많이 채택하고 있으며,<br><strong>서로 다른 장치는 이를 지원하기 위해 서로 다른 기술 스택을 구현</strong>할 수 있습니다.</li>
+<li>특정 UI 만을 위한 배포 진행 시(minor update) 이로 인해<br><strong>단일 API 백엔드가 롤아웃 시 병목 현상이 발생</strong>할 수 있습니다.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="Migration"><a href="#Migration" class="headerlink" title="Migration"></a>Migration</h4><ul>
+<li><strong>Strangler Fig 패턴</strong><ul>
+<li>복잡도가 높고 대규모의 모놀리식 애플리케이션의 특정 기능을 새로운 MSA 로 마이그레이션 하는 경우 적용 가능한 패턴으로, <strong>목표는 기존 버전과 현대화된 새 버전이 공존하는 것</strong>입니다.</li>
+<li>새로운 시스템은 처음에 기존 시스템에서 지원되며 기존 시스템을 대체합니다. 이러한 지원을 통해 새 시스템을 확장하고 기존 시스템을 완전히 대체할 수 있는 시간을 확보할 수 있습니다.<ul>
+<li><p><strong>Strangler Fig ; 교살자 무화과</strong> : 무화과 나무의 일종으로 공생할 Host Tree 위 쪽 가지에 스스로 씨를 뿌리는 것이 특징입니다.<br>Host Tree를 지지 기반으로 삼으며 뿌리를 땅으로 보내고, Host Tree 가 죽을때 까지 공존합니다.</p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/strangler_fig.png" class="" width="400">
+</li>
+<li><p><strong>Strangler Fig 패턴을 적용한 Migration 과정</strong></p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/strangler_fig-pattern.png" class="">
+
+<ol>
+<li>Migration 대상인 모놀리식 시스템이 존재합니다.</li>
+<li>MSA 로 일부 서비스만 우선 분리하고, <strong>Reverse Proxy 를 활용하여 동일한 사용자 요청에 대해 새로운 서비스로 유도</strong>합니다.<br>(이 때, 필요에 따라 <strong>모놀리식의 구버전 서비스와 새로운 Microservice 가 공존</strong>할 수 있습니다.)</li>
+<li>MSA 의 운영 안정성을 충분히 검토한 후 구버전 서비스를 종료합니다.</li>
+<li>ii. 의 과정을 서비스마다 반복하여 <strong>모놀리식 시스템을 안정적으로 CN MSA 로 전환</strong>할 수 있습니다.</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>장점</th>
+<th>단점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>서비스에서 하나 이상의 대체 서비스로 정상적으로 마이그레이션 할 수 있습니다.</td>
+<td>복잡성이 낮고 크기가 작은 소규모 시스템에는 적합하지 않습니다.</td>
+</tr>
+<tr>
+<td>업데이트된 버전으로 리팩터링 하는 동안 이전 서비스를 계속 사용할 수 있습니다.</td>
+<td>백엔드 시스템에 대한 요청을 가로채서 라우팅할 수 없는 시스템은 이 패턴을 사용할 수 없습니다.<br/>(Reverse Proxy 역할을 수행할 수 있는 모듈이 반드시 필요합니다.)</td>
+</tr>
+<tr>
+<td>이전 서비스를 리팩터링 하면서 새 서비스 및 기능을 추가할 수 있는 기능을 제공합니다.</td>
+<td>프록시 또는 파사드 레이어는 새로운 서비스가 제대로 설계되지 않은 경우 단일 장애 지점이나 성능 병목현상의 지점이 될 수 있습니다.</td>
+</tr>
+<tr>
+<td><strong>API 버전 관리에 사용</strong>할 수 있습니다.</td>
+<td>문제가 발생할 경우 작업을 빠르고 안전하게 수행하는 이전 방식으로 되돌리려면 각 리팩터링된 서비스에 대한 롤백 계획이 필요합니다.</td>
+</tr>
+<tr>
+<td>업그레이드 되지 않았거나 업그레이드 되지 않을 솔루션의 <strong>기존 상호작용에 사용</strong>할 수 있습니다.</td>
+<td></td>
+</tr>
+<tr>
+<td>Reverse Proxy가 존재한다면, 구버전 서비스와 새로운 서비스가 공존하는 기간에 <strong>쉽게 롤백</strong> 할 수 있습니다.</td>
+<td></td>
+</tr>
+</tbody></table>
+<h4 id="데이터-관리"><a href="#데이터-관리" class="headerlink" title="데이터 관리"></a>데이터 관리</h4><ul>
+<li><p>Database Per Service 패턴</p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/database-per-service-pattern.png" class="" width="600">
+
+<ul>
+<li>마이크로서비스 간 느슨한 결합을 필요로 하거나 각 마이크로서비스 간 상이한 규정 혹은 보안 요구사항이 있는 경우 <strong>마이크로서비스 별로 다른 Database를 사용하는 것</strong>이 이 패턴의 핵심입니다.<ul>
+<li>마이크로서비스 간 데이터 계층을 공유하지 않습니다.</li>
+<li>마이크로서비스간 적합한 DBMS 솔루션을 선택할 수 있습니다.</li>
+<li>마이크로서비스의 개별 데이터베이스에 대한 변경 사항은 다른 마이크로서비스에 영향을 미치지 않습니다.</li>
+<li>개별 데이터 스토어는 다른 마이크로서비스에서 직접 액세스할 수 없으며, 영구 데이터는 API를 통해 허용된 인터페이스로만 액세스할 수 있습니다.</li>
+<li>Database를 분리하면 전체 애플리케이션의 복원력이 향상되고, 단일 Database에 비해 단일 장애지점(병목현상)이 생기지 않도록 할 수 있습니다.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>CQRS(Command Query Responsibility Segregation) 패턴</p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/cqrs-pattern.png" class="" width="600">
+
+<ul>
+<li>일반적인 시스템은 <strong>데이터의 상태변경 보다 조회에 대한 처리가 훨씬 많습니다.</strong><br>따라서 <strong>애플리케이션을 명령(create, delete, update)과 조회(query)로 분리</strong>하거나,<br>Command 용도의 별도 서비스와 Query 용도의 별도 <strong>서비스를 분리</strong>합니다.<ul>
+<li>명령 : 데이터의 변경 혹은 시스템의 명령 부분(회원 정보 업데이트, 회원 생성, 회원 삭제 등등..)</li>
+<li>쿼리 : 조회 목적의 모든 기능</li>
+</ul>
+</li>
+<li>Database per service 패턴과 복합적으로 적용한다면, 조회용 데이터 저장소(OpenSearch, 등등 …)와<br>명령 서비스에는 Transaction을 지원하는 데이터 정합성을 위한 저장소를 별도로 구성하는 것을 고려할 수 있습니다.</li>
+</ul>
+</li>
+<li><p>Materialized View 패턴</p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/materialized-view-pattern.png" class="" width="600">
+
+<ul>
+<li>계산된 결과 데이터 Materialized View 로 미리 구성해서 실행부에 가깝게 배치하는 방법</li>
+</ul>
+</li>
+<li><p>복잡한 조인이나 의존적인 외부 데이터 서비스 영향으로 데이터 조회 성능 저하가 발생하는 경우</p>
+<ul>
+<li>요구되는 데이터를 로컬 데이터 저장소나 캐시에 미리 최적의 형식으로 저장하여 조회 성능 향상</li>
+</ul>
+</li>
+</ul>
+<h4 id="이벤트-드리븐"><a href="#이벤트-드리븐" class="headerlink" title="이벤트 드리븐"></a>이벤트 드리븐</h4><ul>
+<li><p>Publish - Subcribe 패턴</p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/publish-subscribe-pattern.png" class="" width="600">
+</li>
+<li><p>메시지 발행자가 메시지를 토픽에 발행하면 모든 구독자가 수신하는 비동기 메시지 전달 패턴</p>
+<ul>
+<li>대규모 분산 시스템의 병렬성과 확장성 요구와 <strong>동기식</strong> 이벤트 전달이 가지는 <strong>대기시간 문제</strong> 해결</li>
+<li>복수의 발행자가 메시지 브로커의 토픽으로 전송한 메시지를 복수의 구독자가 모두 수신</li>
+</ul>
+</li>
+</ul>
+<h4 id="연결성-및-조합"><a href="#연결성-및-조합" class="headerlink" title="연결성 및 조합"></a>연결성 및 조합</h4><ul>
+<li><p>SideCar 패턴 : 하나의 컨테이너에는 하나의 책임만 가지고 있어야 한다.</p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/side-car.png" class="" width="600">
+
+<img src="/2023/05/15/home/5_aws-summit-2023-review/side-car-pattern.png" class="" width="600">
+
+<ul>
+<li>애플리케이션 컨테이너의 기능을 확장하고 강화하는 용도로 사이드카 컨테이너를 추가하는 방식<ul>
+<li>애플리케이션 컨테이너의 변경 없이 <strong>통신</strong>, <strong>모니터링</strong>, <strong>보안</strong> 등의 공통적인 기능을 확장</li>
+<li>주 컨테이너와 함께 스케줄링 및 동작하는 사이드카 컨테이너를 추가해 재사용 가능한 부가 기능 구현<ul>
+<li>이기종 application container과 sidecar container 가 공존 가능</li>
+<li>애플리케이션에선 비즈니스 로직에 집중, 부수적인 역할은 sidecar 의 책임</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Service Mesh 패턴</p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/service-mesh-pattern.png" class="" width="600">
+
+<img src="/2023/05/15/home/5_aws-summit-2023-review/service-mesh-example.png" class="" width="600">
+
+<ul>
+<li>분산 애플리케이션에서 서비스 간 통신과 보안, 로깅, 로드밸런싱, 모니터링 등의 기능을 중앙에서 관리<ul>
+<li>마이크로서비스들과 시스템들 간의 통신에서 연결성 로직을 마이크로서비스가 직접 관리해야 하는 문제</li>
+<li>서비스간 통신 로직 처리는 Sidecar proxy (Data Plane)를 사용하고 제어는 Control Plane 이 담당</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Service Choreography 패턴</p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/service-choreography-pattern.png" class="" width="600">
+
+<ul>
+<li>여러 마이크로서비스를 조합하는 비즈니스 기능의 구현을 이벤트 기반의 비동기 통신으로 합성하는 패턴<ul>
+<li>유연성과 확장성, 변경 비용을 고려해서 서비스들간의 낮은 결합도와 비동기 통신이 필요한 경우<ul>
+<li>다른 마이크로 서비스를 직접 호출하지 않고, 이벤트와 메시지를 기반으로 반응모드로 작동</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Service Orchestration 패턴</p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/service-orchestration-pattern.png" class="" width="600">
+
+<ul>
+<li>중앙 컨트롤러 서비스(Orchestrator)가 서비스 흐름 제어, 서비스 상호작용을 조정하여 프로세스 관리<ul>
+<li>단일 마이크로 서비스의 분산에 따른 한계 존재<ul>
+<li>여러 마이크로 서비스에 분산되어 있는 상호작용을 중앙의 단일 서비스를 통해 비즈니스 로직 구현</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Saga 패턴</p>
+<img src="/2023/05/15/home/5_aws-summit-2023-review/saga-pattern.png" class="" width="600">
+
+<ul>
+<li><strong>여러 트랜잭션을 그룹으로 관리</strong> 및 조정하여 <strong>일관성을 유지</strong>하도록 하는 <strong>분산 트랜잭션의 장애 관리 패턴</strong><ul>
+<li>마이크로 서비스 구조에서 긴밀한 결합 없이 여러 마이크로 서비스에 걸친 트랜잭션 처리의 복잡성<br>(결제 → 재고관리 → 배송 → 외부 결제 시스템 결제 여부 → …)</li>
+<li><strong>모든 트랜잭션 이벤트를 게시하고 결과에 따라 다음 트랜잭션을 시작, 혹은 실패할 경우 보상 트랜잭션 실행</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="간략-정리"><a href="#간략-정리" class="headerlink" title="간략 정리"></a>간략 정리</h2><ul>
+<li>작고 서비스 목적에 맞는 MSA 설계</li>
+<li><strong>비동기 통신</strong>을 통한 느슨한 결합</li>
+<li><strong>독립적 테스트</strong>와 배포</li>
+<li>필요한 만큼 확장 또는 축소</li>
+<li>목적에 맞는 데이터베이스와 툴 사용</li>
+</ul>
+<hr>
+<h2 id="짧은-회고"><a href="#짧은-회고" class="headerlink" title="짧은 회고"></a>짧은 회고</h2><ul>
+<li>패턴은 시험 문제 족보와 다름없다.</li>
+<li>AWS Summit 2023 의 핵심 키워드는 ‘<strong>비동기</strong>’</li>
+<li>인프라적인 패턴으로부터 소스코드 작성에 대한 패턴으로의 확장<ul>
+<li>API Gateway → 일종의 Facade  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">purchaseFacadeService</span><span class="params">()</span>&#123;</span><br><span class="line">  productService.manageInventory();</span><br><span class="line">  paymentService.payment();</span><br><span class="line">  <span class="comment">// ... </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>Strangler Fig → 리팩터링 방법으로 접목  <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// AS - IS</span></span><br><span class="line"></span><br><span class="line"><span class="meta">@GetMapping(&quot;/api/v1/purchase&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">oldPurchase</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  purchaseService.oldFashionedPurchase();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">newPurchase</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  purchaseService.newPurchase();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// TO - BE : Strangler Fig 패턴 적용</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">oldPurchase</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  purchaseService.oldFashionedPurchase();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@GetMapping(&quot;/api/v1/purchase&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">newPurchase</span><span class="params">()</span> &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  purchaseService.newPurchase();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/ko_kr/prescriptive-guidance/latest/modernization-decomposing-monoliths/strangler-fig.html">스트랭글러 무화과 패턴 - AWS규범적 지침</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/ko_kr/prescriptive-guidance/latest/modernization-integrating-microservices/api-gateway-pattern.html">API 게이트웨이 패턴 - AWS규범적 지침</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/ko_kr/prescriptive-guidance/latest/modernization-data-persistence/cqrs-pattern.html">CARS 패턴 - AWS규범적 지침</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.aws.amazon.com/ko_kr/prescriptive-guidance/latest/modernization-data-persistence/saga-pattern.html">Saga패턴 - AWS규범적 지침</a></li>
+<li>BFF 패턴 : <a target="_blank" rel="noopener" href="https://aws.amazon.com/ko/blogs/mobile/backends-for-frontends-pattern/">https://aws.amazon.com/ko/blogs/mobile/backends-for-frontends-pattern/</a></li>
+<li>클라우드 네이티브 : <a target="_blank" rel="noopener" href="https://aws.amazon.com/ko/what-is/cloud-native/">https://aws.amazon.com/ko/what-is/cloud-native/</a></li>
+<li>게임데이 : <a target="_blank" rel="noopener" href="https://aws.amazon.com/ko/gameday/">https://aws.amazon.com/ko/gameday/</a></li>
+<li><a target="_blank" rel="noopener" href="https://shopify.engineering/refactoring-legacy-code-strangler-fig-pattern">Refactoring Legacy Code with the Strangler Fig Pattern</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.slideshare.net/awskorea/aws-summit-seoul-2023-12">AWS Summit Seoul 2023 | 12가지 디자인 패턴으로 알아보는 클라우드 네이티브 마이크로서비스 아키텍처</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%ED%9A%8C%EA%B3%A0/"># 회고</a>
+                    
+                        <a href="/tag/%ED%9B%84%EA%B8%B0/"># 후기</a>
+                    
+                        <a href="/tag/aws-summit-2023-seoul/"># AWS Summit 2023 Seoul</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2023/05/02/spring-framework/spring-retry/">Spring @Retryable 에 대하여</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
