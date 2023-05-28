@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Yomni">
+
+
+    <meta name="subtitle" content="Hexo 기반의 기술 블로그">
+
+
+    <meta name="description" content="기술 블로그입니다.">
+
+
+
+<title>오브젝트(코드로 이해하는 객체지향 설계) 3장 - 역할, 책임, 협력 | Yomni의 Y-Log</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+  <script src='https://unpkg.com/mermaid@9.4.0/dist/mermaid.min.js'></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({theme: 'default'});
+    }
+  </script>
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Yomni&#39;s Y-Log</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Yomni&#39;s Y-Log</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    var tocbot_timer;
+    var DEPTH_MAX = 6;    // 为 6 时展开所有
+    var tocbot_default_config = {
+        tocSelector: '.tocbot-list',
+        contentSelector: '.post-content',
+        headingSelector: 'h1, h2, h3, h4, h5',
+        orderedList: false,
+        scrollSmooth: true,
+        onClick: extend_click,
+    };
+
+    function extend_click() {
+        clearTimeout(tocbot_timer);
+        tocbot_timer = setTimeout(function () {
+            tocbot.refresh(obj_merge(tocbot_default_config, { hasInnerContainers: true }));
+        }, 420); // 这个值是由 tocbot 源码里定义的 scrollSmoothDuration 得来的
+    }
+
+    document.ready(function () {
+        tocbot.init(obj_merge(tocbot_default_config, { collapseDepth: 1 }));
+    });
+
+    function expandToc() {
+        var b = document.querySelector('.tocbot-toc-expand');
+        var expanded = b.getAttribute('data-expanded');
+        expanded ? b.removeAttribute('data-expanded') : b.setAttribute('data-expanded', true);
+        tocbot.refresh(obj_merge(tocbot_default_config, { collapseDepth: expanded ? 1 : DEPTH_MAX }));
+        b.innerText = expanded ? 'Expand all' : 'Collapse all';
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function obj_merge(target, source) {
+        for (var item in source) {
+            if (source.hasOwnProperty(item)) {
+                target[item] = source[item];
+            }
+        }
+        return target;
+    }
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">오브젝트(코드로 이해하는 객체지향 설계) 3장 - 역할, 책임, 협력</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/category/%EB%8F%85%ED%9B%84%EA%B0%90/">독후감</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="역할-책임-협력"><a href="#역할-책임-협력" class="headerlink" title="역할, 책임, 협력"></a>역할, 책임, 협력</h2><ul>
+<li><strong>객체지향 패러다임</strong>의 핵심(객체지향은 클래스지향이 아니다.)<ul>
+<li>역할(Role)</li>
+<li>책임(Responsibility)</li>
+<li>협력(Collaboration)</li>
+</ul>
+</li>
+<li>객체지향의 본질은 협력하는 객체들의 공동체를 창조하는 것<ul>
+<li><strong>협력</strong>을 위해 어떤 <strong>역할</strong>과 <strong>책임</strong>이 필요한 지 고민한다.</li>
+</ul>
+</li>
+</ul>
+<h3 id="협력-Collaboration"><a href="#협력-Collaboration" class="headerlink" title="협력(Collaboration)"></a>협력(Collaboration)</h3><blockquote>
+<p>💡 사전적 의미 : 힘을 합하여 돕는 것</p>
+</blockquote>
+<img src="/2023/05/29/book-report/3-object/collaboration.gif" class="">
+
+<blockquote>
+<p>💡 객체들이 애플리케이션의 기능을 구현하기 위해 수행하는 상호작용</p>
+</blockquote>
+<ul>
+<li>두 객체 사이의 협력은 <strong>하나의 객체가 다른 객체에게 도움을 요청할 때 시작</strong>된다.<ul>
+<li><strong>메시지 전송</strong> : <strong>객체 사이의 협력</strong>을 위해 사용할 수 있는 <strong>유일한 커뮤니케이션 수단</strong></li>
+<li>상호작용을 통해 더 큰 책임을 수행한다.</li>
+<li>메시지를 수신한 객체는 <strong>메서드를 실행</strong>해 요청에 응답한다.<ul>
+<li><strong>캡슐화</strong> : <strong>자율적인 존재가 되기 위해</strong> 자신이 알고 있는 정보를 이용해 직접 책임을 다하는 것</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>협력이 설계를 위한 문맥을 결정한다.<ul>
+<li>객체 : <strong>상태</strong>와 <strong>행동</strong>을 함께 <strong>캡슐화</strong> 하는 실행 단위<ul>
+<li>상태와 행동을 어떤 기준으로 결정해야 하는가? —&gt; 협력</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>영화 예매 시스템에서 Movie는 예매하기 위한 협력에 참여하고 있고, 요금을 계산하는 책임을 지고 있다.</li>
+<li>객체가 참여하는 협력이 객체를 구성하는 행동과 상태를 모두 결정한다.<br>따라서 협력은 객체를 설계하는 데 필요한 일종의 <strong>문맥(Context)를 제공</strong>한다.</li>
+</ul>
+<hr>
+<h3 id="책임-Responsibility"><a href="#책임-Responsibility" class="headerlink" title="책임(Responsibility)"></a>책임(Responsibility)</h3><blockquote>
+<p>💡 사전적 의미 : 맡아서 행하지 않으면 안 되는 임무</p>
+</blockquote>
+<ul>
+<li>협력을 위해 객체가 수행하는 행동</li>
+<li>객체에 의해 정의되는 응집도 있는 행위의 집합<br>—&gt; 객체가 유지해야 하는 정보와 수행할 수 있는 행동에 대해 개략적으로 서술한 문장<ul>
+<li>무엇을 알고 있는가?</li>
+<li>무엇을 할 수 있는가?</li>
+</ul>
+</li>
+<li>객체지향 설계에서 가장 중요한 것<ul>
+<li>적절한 책임을 할당해야 설계의 전체적인 품질을 결정할 수 있다.</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>💡 CRC 카드 Candidate(후보), Responsibility(책임), Collaborator(협력자)를 나열한 카드  </p>
+<ul>
+<li>선이 없는 면 : 후보의 목적을 기술</li>
+<li>선이 있는 면 : 후보와 책임을 적고, 우측에 협력할 협력자들을 나열한다.</li>
+</ul>
+</blockquote>
+<img src="/2023/05/29/book-report/3-object/CRC_CARD.png" class="">
+
+<h4 id="하는-것"><a href="#하는-것" class="headerlink" title="하는 것"></a>하는 것</h4><ul>
+<li>객체를 생성하거나 계산을 수행하는 등의 스스로 하는 것</li>
+<li>다른 객체의 행동을 시작시키는 것</li>
+<li>다른 객체의 활동을 제어하고 조절하는 것</li>
+</ul>
+<h4 id="아는-것"><a href="#아는-것" class="headerlink" title="아는 것"></a>아는 것</h4><ul>
+<li>사적인 정보에 관해 아는 것</li>
+<li>관련된 객체에 관해 아는 것</li>
+<li>자신이 유도하거나 계산할 수 있는 것에 관해 아는 것</li>
+</ul>
+<p>Screening</p>
+<ul>
+<li>하는 것<ul>
+<li>영화를 예매한다.</li>
+</ul>
+</li>
+<li>아는 것<ul>
+<li>자신이 상영할 영화</li>
+</ul>
+</li>
+</ul>
+<p>Movie</p>
+<ul>
+<li>하는 것<ul>
+<li>요금을 계산한다.</li>
+</ul>
+</li>
+<li>아는 것<ul>
+<li>가격</li>
+<li>적용된 할인 정책</li>
+</ul>
+</li>
+</ul>
+<p><strong><em>자율적인 객체를 만들기 위해선 책임을 수행하는 데 필요한 정보를 가장 잘 알고 있는 전문가에게 그 책임을 할당하는 것이다.</em></strong></p>
+<ul>
+<li>Movie는 요금을 알고 있기 때문에, 계산의 책임을 할당한다.</li>
+<li>책임을 할당하기 위해선 협력이라는 문맥을 먼저 정의해야 한다.</li>
+</ul>
+<h4 id="책임-주도-설계-Responsibility-Driven-Design-RDD"><a href="#책임-주도-설계-Responsibility-Driven-Design-RDD" class="headerlink" title="책임 주도 설계(Responsibility - Driven Design, RDD)"></a>책임 주도 설계(Responsibility - Driven Design, RDD)</h4><ul>
+<li>시스템이 사용자에게 제공해야 하는 기능인 시스템 책임을 파악한다 (예매하라)</li>
+<li>시스템 책임을 더 작은 책임으로 분할한다</li>
+<li>분할된 책임을 수행할 수 있는 적절한 객체 또는 역할을 찾아 책임을 할당한다</li>
+<li>객체가 책임을 수행하는 도중 다른 객체의 도움이 필요한 경우 이를 책임질 적절한 객체 또는 역할을 찾는다</li>
+<li>해당 객체 또는 역할에게 책임을 할당함으로써 두 객체가 협력하게 한다.</li>
+</ul>
+<h4 id="메시지가-객체를-결정한다"><a href="#메시지가-객체를-결정한다" class="headerlink" title="메시지가 객체를 결정한다."></a>메시지가 객체를 결정한다.</h4><ul>
+<li>책임을 할당하려면 필요한 메시지를 먼저 식별하고 메시지를 처리할 객체를 나중에 선택한다.</li>
+<li>메시지에 의해 객체가 선택된다.</li>
+</ul>
+<ol>
+<li>최소한의 인터페이스를 갖게 된다.<ul>
+<li>필요한 메시지가 식별될 때까지 객체의 퍼블릭 인터페이스에 어떤 것도 추가하지 않게 된다.</li>
+</ul>
+</li>
+<li>추상적인 인터페이스를 갖게 된다.<ul>
+<li>인터페이스는 무엇(what)을 하는 지 표현해야 하지만, 어떻게(how)를 수행하는지를 노출해서는 안 된다 (캡슐화 ; 자율적인 객체)</li>
+</ul>
+</li>
+</ol>
+<h4 id="행동이-상태를-결정한다"><a href="#행동이-상태를-결정한다" class="headerlink" title="행동이 상태를 결정한다."></a>행동이 상태를 결정한다.</h4><ul>
+<li>객체가 다른 객체에게 제공하는 행동으로부터 협력이 일어난다 (메시지 전송)</li>
+<li>객체지향 패러다임에선 객체의 행동에 초점을 맞춰야 한다(not 상태)</li>
+</ul>
+<hr>
+<h3 id="역할-Role"><a href="#역할-Role" class="headerlink" title="역할(Role)"></a>역할(Role)</h3><blockquote>
+<p>💡 사전적 의미 : 대상이 어떤 일에 있어서 가지는 자격이나 의무</p>
+</blockquote>
+<ul>
+<li><p>역할 : 객체가 어떤 특정한 협력 안에서 수행하는 책임의 집합</p>
+<ul>
+<li>실제로 협력을 모델링할 때는 특정한 객체가 아니라 역할에게 책임을 할당한다고 생각하는게 좋다</li>
+</ul>
+</li>
+<li><p>예를 들어, 영화 예매 협력에서 <code>예매하라</code> 라는 메시지를 처리하기에 적합한 객체로 <code>Screening</code> 을 선택했다.</p>
+<ol>
+<li>영화를 예매할 수 있는 적절한 <strong>역할</strong>이 무엇인가?</li>
+<li>역할을 수행할 객체로 Screening 인스턴스 선택(<strong>책임</strong>)</li>
+</ol>
+<ul>
+<li>정리해보면, 역할을 먼저 고려하고 적절한 책임을 부여해야 한다.</li>
+<li>왜 역할을 고려하는 과정을 거쳐야 하는가? 역할이 없어도 객체만으로 충분히 협력을 설계할 수 있는거 아닌가 ?</li>
+</ul>
+</li>
+</ul>
+<img src="/2023/05/29/book-report/3-object/role1.png" class="" width="500">
+
+<img src="/2023/05/29/book-report/3-object/role2.png" class="" width="800">
+
+<h4 id="유연하고-재사용-가능한-협력"><a href="#유연하고-재사용-가능한-협력" class="headerlink" title="유연하고 재사용 가능한 협력"></a>유연하고 재사용 가능한 협력</h4><ul>
+<li>역할을 통해 유연하고 재사용 가능한 협력을 얻을 수 있다.</li>
+<li>만약 역할을 고려하지 않는다면?<ul>
+<li>예시) <code>할인 요금 계산</code> 협력에서 역할을 고려하지 않고 책임을 부여한다면?</li>
+</ul>
+</li>
+</ul>
+<img src="/2023/05/29/book-report/3-object/role3.png" class="" width="800">
+
+<ul>
+<li>이런 방법으로 구현하면 대부분 코드가 중복된다. 중복은 모든 문제의 근원이기 때문에 피해야 한다.<ul>
+<li>문제를 해결하기 위해 책임이 아닌 역할에 초점을 맞춰야 한다.</li>
+<li>책임을 다시 생각해보면, 동일하게 <code>할인 요금 계산</code> 이라는 동일한 책임을 수행하고 있다.<ul>
+<li>다른 두 가지 협력을 하나로 통합할 수 있다.</li>
+<li>대표자 &#x3D; 객체를 갈아 끼울 수 있는 슬롯</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>💡 역할은 다른 것으로 교체할 수 있는 책임의 집합이다.</p>
+</blockquote>
+<img src="/2023/05/29/book-report/3-object/role4.png" class="" width="800">
+
+<ul>
+<li>역할은 여러 종류의 구체적인 객체를 포괄하는 <strong>추상화</strong>와 같다.</li>
+<li>역할의 구현<ul>
+<li>추상클래스 &#x2F; 인터페이스 사용</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>💡 개인적인 생각) 기계적으로 <code>역할 == 인터페이스</code> 로 보는 것은 지양 해야 할 것 같다</p>
+</blockquote>
+<h4 id="객체-vs-역할"><a href="#객체-vs-역할" class="headerlink" title="객체 vs 역할"></a>객체 vs 역할</h4><ul>
+<li>협력에 적합한 책임을 수행하는 대상이 단일 &#x3D; 객체</li>
+<li>협력에 적합한 책임을 수행하는 대상이 다수 &#x3D; 역할(추상클래스 &#x2F; 인터페이스)<ul>
+<li>역할은 협력 안에서 각자의 위치를 가지는 객체들에 대한 별칭</li>
+</ul>
+</li>
+</ul>
+<img src="/2023/05/29/book-report/3-object/role5.png" class="" width="800">
+
+<ul>
+<li>설계 초기에 적절한 책임과 협력의 큰 그림을 탐색해야 하고, 역할과 객체를 명확하게 구분하는 것은 중요하지 않다.<ul>
+<li>변경에 유연하게 대응할 수 있는 구조로 만들고, 필요한 순간에 객체로부터 역할을 분리해내는 것이 가장 좋은 설계</li>
+</ul>
+</li>
+</ul>
+<h4 id="역할과-추상화"><a href="#역할과-추상화" class="headerlink" title="역할과 추상화"></a>역할과 추상화</h4><ul>
+<li>역할은 일종의 객체의 추상화<ul>
+<li>추상화의 장점이 협력의 관점에서 역할에도 동일하게 적용된다.</li>
+</ul>
+</li>
+</ul>
+<p>추상화의 장점</p>
+<ul>
+<li>세부 사항에 억눌리지 않고도 상위 수준의 정책을 쉽고 간단하게 표현한다(인터페이스)</li>
+</ul>
+<img src="/2023/05/29/book-report/3-object/role6.png" class="" width="800">
+
+<ul>
+<li>설계를 유연하게 만들 수 있다<ul>
+<li>역할은 여러 객체를 갈아 끼울 수 있는 일종의 <strong>슬롯</strong></li>
+</ul>
+</li>
+</ul>
+<h4 id="배우와-배역"><a href="#배우와-배역" class="headerlink" title="배우와 배역"></a>배우와 배역</h4><ul>
+<li>실세계로 추상화를 해봅시다<ul>
+<li>나 라는 존재의 역할과 책임은? 누구와 협력하는가?<ul>
+<li>직장인</li>
+<li>운전자</li>
+<li>보행자</li>
+<li>스터디원</li>
+<li>배우자</li>
+<li>부모</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>객체는 다양한 역할을 가질 수 있습니다.<ul>
+<li><strong>협력에서 하나의 역할로 보여집니다</strong>.</li>
+<li><strong>여러 협력에 참여</strong>할 수 있습니다.</li>
+<li>역할은 특정한 <strong>객체의 종류를 캡슐화</strong>하기 때문에 동일한 <strong>역할을 수행하고 계약을 준수하는 대체 가능한 객체</strong>들은 <strong>다형적</strong>입니다.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="생각해보자"><a href="#생각해보자" class="headerlink" title="생각해보자"></a>생각해보자</h2><ul>
+<li><p>캡슐화의 진정한 의미</p>
+<ul>
+<li>진정한 의미 : 자율적인 객체 ; 메시지 ; public interface</li>
+<li>교과서적으로의 의미 : <del>정보은닉 ; 데이터 은닉 ; 멤버 변수 ; 상태가 아닌 데이터</del></li>
+</ul>
+</li>
+<li><p>객체지향을 실무에 자연스럽게 적용할 수 있는 방법이 뭐가 있을까?</p>
+<ul>
+<li><del>“저희 CRC 카드를 작성 해 볼까요?”</del></li>
+</ul>
+</li>
+</ul>
+<h4 id="참고자료"><a href="#참고자료" class="headerlink" title="참고자료"></a>참고자료</h4><ul>
+<li><a target="_blank" rel="noopener" href="http://www.yes24.com/Product/Goods/74219491">오브젝트 - 코드로 이해하는 객체지향 설계 : 조영호 저</a></li>
+</ul>
+
+        </div>
+
+        
+        <div class="comments">
+            <script>
+                // load utteranc comment
+                const currentTheme = window.localStorage && window.localStorage.getItem('theme');
+
+                let theme = currentTheme === 'dark' ? 'github-dark' : 'github-light';
+                let s = document.createElement('script');
+                s.src = 'https://utteranc.es/client.js';
+                s.setAttribute('repo', 'yomni/yomni.github.io');
+                s.setAttribute('issue-term', 'pathname');
+                s.setAttribute('theme', theme);
+                s.setAttribute('crossorigin', 'anonymous');
+                s.setAttribute('async', '');
+                document.querySelector('div.comments').innerHTML = '';
+                document.querySelector('div.comments').appendChild(s);
+            </script>
+        </div>
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tag/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%EC%9D%B4%EB%9E%80/"># 객체지향이란?</a>
+                    
+                        <a href="/tag/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5/"># 객체지향</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2023/05/15/home/5_aws-summit-2023-review/">AWS Summit 2023 Seoul 을 다녀와서...</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© <a href="https://yomni.github.io/" target="_blank">Yomni</a> | Powered by <a href="https://hexo.io" target="_blank">Hexo</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>
