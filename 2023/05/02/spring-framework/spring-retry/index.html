@@ -63,7 +63,7 @@
     }
   </script>
 
-<meta name="generator" content="Hexo 6.3.0"></head>
+<meta name="generator" content="Hexo 7.3.0"></head>
 
 <body>
     <!-- Google Tag Manager (noscript) -->
@@ -242,8 +242,10 @@
 <h2 id="Retryable-어떻게-쓰나요"><a href="#Retryable-어떻게-쓰나요" class="headerlink" title="@Retryable 어떻게 쓰나요?"></a><code>@Retryable</code> 어떻게 쓰나요?</h2><h3 id="1-의존성-추가"><a href="#1-의존성-추가" class="headerlink" title="1. 의존성 추가"></a>1. 의존성 추가</h3><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation <span class="string">&#x27;org.springframework.retry:spring-retry&#x27;</span></span><br></pre></td></tr></table></figure>
 
 <h3 id="2-EnableRetry-설정"><a href="#2-EnableRetry-설정" class="headerlink" title="2. EnableRetry 설정"></a>2. EnableRetry 설정</h3><ul>
-<li>Application 혹은 AppConfig 에 <code>@EnableRetry</code>를 추가해준다.<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.retry.annotation.EnableRetry;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableRetry</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppConfig</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>Application 혹은 AppConfig 에 <code>@EnableRetry</code>를 추가해준다.</li>
 </ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.retry.annotation.EnableRetry;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@EnableRetry</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">AppConfig</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h3 id="3-Retryable-으로-재시도-할-메서드-설정"><a href="#3-Retryable-으로-재시도-할-메서드-설정" class="headerlink" title="3. @Retryable 으로 재시도 할 메서드 설정"></a>3. <code>@Retryable</code> 으로 재시도 할 메서드 설정</h3><p>속성 정리</p>
 <ul>
 <li>maxAttempts : Retry 최대 시도 횟수</li>
