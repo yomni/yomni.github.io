@@ -25,7 +25,7 @@
 
 
 
-<title>TIL writerside 프로젝트 전환기 | Yomni의 Y-Log</title>
+<title>PARA 메모법 | Yomni의 Y-Log</title>
 
 
 
@@ -210,7 +210,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">TIL writerside 프로젝트 전환기</h1>
+            <h1 class="post-title">PARA 메모법</h1>
             
                 <div class="post-meta">
                     
@@ -229,46 +229,50 @@
         </header>
 
         <div class="post-content">
-            <h1 id="TIL-기록-시스템을-WriterSide로-전환하다"><a href="#TIL-기록-시스템을-WriterSide로-전환하다" class="headerlink" title="TIL 기록 시스템을 WriterSide로 전환하다"></a>TIL 기록 시스템을 WriterSide로 전환하다</h1><h2 id="계기-왜-TIL-환경을-Writerside-로-바꾸게-되었나"><a href="#계기-왜-TIL-환경을-Writerside-로-바꾸게-되었나" class="headerlink" title="계기 : 왜 TIL 환경을 Writerside 로 바꾸게 되었나?"></a>계기 : 왜 TIL 환경을 Writerside 로 바꾸게 되었나?</h2><h3 id="기존-방식"><a href="#기존-방식" class="headerlink" title="기존 방식"></a>기존 방식</h3><blockquote>
-<p>파일 시스템 기반 : 디렉토리로 카테고리를 분리하고 글은 <code>.md</code>(markdown) 형식으로 작성.<br>백문이 불여일견 : <a target="_blank" rel="noopener" href="https://github.com/yomni/til/tree/before-writerside">https://github.com/yomni/til/tree/before-writerside</a></p>
-</blockquote>
-<h3 id="문제점"><a href="#문제점" class="headerlink" title="문제점"></a>문제점</h3><ol>
-<li><strong>찾기 힘든 글</strong> : 시간이 지나면 내가 쓴 글을 다시 찾아보는 일이 고역이 됨.</li>
-<li><strong>이미지 첨부 문제</strong> : 본문에 이미지 삽입할 때 경로 설정이 배포되었다는 가정 하에 작성해야 되기 때문에 여간 귀찮은 일이 아니다..</li>
-</ol>
-<blockquote>
-<p><strong>결론 : 작성한 TIL을 다시 보지 않게 됐다. “내가 왜 썼더라?” 하는 순간이 자주 찾아옴.</strong></p>
-</blockquote>
-<h2 id="writerside"><a href="#writerside" class="headerlink" title="writerside?"></a>writerside?</h2><blockquote>
-<p><a target="_blank" rel="noopener" href="https://www.jetbrains.com/ko-kr/writerside/">Writerside 공식 홈페이지</a> </p>
-</blockquote>
-<p><strong>WriterSide</strong>는 Jetbrains 에서 개발한 문서 작성용 IDE로, 문서 작성에 최적화된 강력한 개발 환경<br>… (중략) 각설하고, 현재는 얼리 액세스 프로그램(EAP) 기간으로 <strong>무료로 사용 가능</strong>하다.<br>공식 소개글을 보면, Rest API Docs 을 대체할 수단으로도 활용이 가능 한 듯 하다.  </p>
-<p>jetbrains에서 제공하는 공식 문서들도 writerside 로 작성이 된 것도 있는 것 같고…<br>ex) <a target="_blank" rel="noopener" href="https://kotlinlang.org/docs/home.html">Kotlin docs</a></p>
-<h3 id="주요-기능"><a href="#주요-기능" class="headerlink" title="주요 기능"></a>주요 기능</h3><ul>
-<li><strong>Docs-as-code</strong> : 코드를 기반으로 문서를 작성하고 관리</li>
-<li><strong>실시간 미리보기</strong> : 로컬에서 변경 사항을 즉시 확인 가능</li>
+            <h2 id="PARA-노트-정리법"><a href="#PARA-노트-정리법" class="headerlink" title="PARA 노트 정리법"></a><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=L-D_xlAdzXI&list=WL&index=5&ab_channel=%EB%8B%A5%ED%84%B0%EA%B0%80%EB%93%9C%EB%84%88">PARA 노트 정리법</a></h2><ul>
+<li><strong>실행도</strong>를 기준으로 정리</li>
+<li>세컨드 브레인을 만드는 구조에 관한 설명</li>
 </ul>
-<h3 id="장점"><a href="#장점" class="headerlink" title="장점"></a>장점</h3><ol>
-<li><strong>심플한 디자인</strong> : 디자인이 군더더기 없이 깔끔하다. <strong>개발자 스럽다.</strong></li>
-<li><strong>즉각적인 피드백</strong> : 웹으로 리소스를 띄워 준실시간으로 변경점을 확인 할 수 있다.</li>
-<li><strong>집중된 환경</strong> : 초기 설정만 잘 해놓으면, <strong>‘글쓰기’라는 작업에만 몰입 할 수 있다.</strong></li>
-</ol>
-<h3 id="단점"><a href="#단점" class="headerlink" title="단점"></a>단점</h3><ol>
-<li><strong>마이그레이션 작업</strong> : 기존 글을 옮기는 과정에서 삽질을 좀 할 수 있다.<ul>
-<li>큰 단점이라곤 생각하지 않지만, 마이그레이션 해야 하는 글이 많으면 많을 수록 힘들 것 같긴 하다.</li>
+<h3 id="1-Project"><a href="#1-Project" class="headerlink" title="1. Project"></a>1. Project</h3><ul>
+<li><p>끝이 명확함</p>
+</li>
+<li><p>실행도가 가장 높음</p>
+</li>
+<li><p>예시 : 자격증 합격하기, 시험공부, 블로그 글 작성, 제품 런칭, 전자책 출간, 이사하기</p>
+</li>
+<li><p>이사하기 (project)</p>
+<ul>
+<li>부동산 목록</li>
+<li>가구 목록</li>
+<li>인테리어 정보</li>
+<li>부동산 계약 주의사항</li>
+<li>…</li>
 </ul>
 </li>
-</ol>
-<h2 id="결과"><a href="#결과" class="headerlink" title="결과"></a>결과</h2><p>WriterSide로 전환한 후 실제로 적용된 결과물은 아래 링크에서 확인 가능하다.</p>
-<blockquote>
-<p><a href="https://yomni.github.io/til">TIL WriterSide 사이트</a></p>
-</blockquote>
-<img src="/2025/05/06/home/6-applying-writerside-to-til/sample.png" class="" width="500">
-
-
-<h2 id="마무리"><a href="#마무리" class="headerlink" title="마무리"></a>마무리</h2><ul>
-<li>WriterSide로의 전환은 단순히 새로운 도구를 도입한 것 이상의 경험이었다. 작업 환경이 효율적으로 바뀌었고, <strong>“글쓰기”라는 본질적인 작업에 더 집중할 수 있는 계기</strong>가 되었다.</li>
-<li>다음 글에서는 마이그레이션 과정에서 겪은 문제들과 이를 해결했던 방법들을 자세히 다룰 예정이다. 혹시나 Writerside 를 도입하려고 한다면, 도움이 되길 바란다.</li>
+<li><p>만약 프로젝트가 끝나면?</p>
+<ul>
+<li>영역 &#x2F; 자원 &#x2F; 아카이브 폴더로 이동</li>
+<li>예시) 이사하기 &gt; 부동산 계약 주의사항 은 이사하기가 끝나면 자원이나 영역으로 이동</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-Area"><a href="#2-Area" class="headerlink" title="2. Area"></a>2. Area</h3><ul>
+<li>끝이 없음. 진행중</li>
+<li>나의 책임이나 역할이 있음</li>
+<li>예시 : 운동, 건강, 경제 계획, 직업, 가족</li>
+<li>프로젝트는 이 영역들 중 하나를 발전시키는 경우가 많다.</li>
+</ul>
+<h3 id="3-Resource"><a href="#3-Resource" class="headerlink" title="3. Resource"></a>3. Resource</h3><ul>
+<li>내가 관심 있는 분야</li>
+<li>내 책임은 없음</li>
+<li>예시 : 음악, 커피, 미술, 역사, 뇌과학, 마케팅, 글쓰기, …</li>
+<li>영역과 자원의 차이는 <strong>개인의 책임</strong></li>
+<li>자료는 아님</li>
+</ul>
+<h3 id="4-Archive"><a href="#4-Archive" class="headerlink" title="4. Archive"></a>4. Archive</h3><ul>
+<li>실행도가 0임.</li>
+<li>종료된 프로젝트, 중단된 프로젝트</li>
+<li>책임이 사라진 영역, 관심이 사라진 자원</li>
 </ul>
 
         </div>
@@ -297,9 +301,7 @@
                 <span class="tag">
                     
                     
-                        <a href="/tag/%EC%A0%81%EC%9A%A9%EA%B8%B0/"># 적용기</a>
-                    
-                        <a href="/tag/writerside/"># writerside</a>
+                        <a href="/tag/%EA%B3%B5%EB%B6%80%EB%B2%95/"># 공부법</a>
                     
                         
                 </span>
@@ -312,8 +314,10 @@
         </section>
         <section class="post-nav">
             
+                <a class="prev" rel="prev" href="/2025/05/07/home/8_code_collection/">CODE 수집법</a>
             
-            <a class="next" rel="next" href="/2025/05/06/home/6_para_memo/">PARA 메모법</a>
+            
+            <a class="next" rel="next" href="/2025/01/16/home/6-applying-writerside-to-til/">TIL writerside 프로젝트 전환기</a>
             
         </section>
 
